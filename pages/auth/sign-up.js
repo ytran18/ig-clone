@@ -1,10 +1,19 @@
 import { useState } from "react"
 
+// firebase
+import { ref, set, child, get } from "firebase/database"
+import { db, auth, app } from "../../src/firebase"
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth"
+
 import Line from "../../public/shared/Line"
 import Input from "../../public/shared/Input"
-import { IgLogo, FacebookIcon } from "../../public/icons/icons"
+import { IgLogo } from "../../public/icons/icons"
+import GOOGLE_ICON from "../../public/icons/7123025_logo_google_g_icon.svg"
 import Button from "../../public/shared/Button"
 import { isEmail, enoughNumCountPass, hasWhiteSpaceAndValidLength, isEmpty } from "../../public/utils/functions"
+
+const uuid = require("uuid")
+const dbRef = ref(db)
 
 function SignUp ()
 {
@@ -16,20 +25,88 @@ function SignUp ()
 
     const handleSummit = (email, name, username, password) =>
     {
+        const id = uuid.v4() // id of user
+        // check validate
         if(isEmpty(email) || isEmpty(name) || isEmpty(username) || isEmpty(password))
         {
-            console.log("vui long dien het thong tin");
+            alert("vui long dien het thong tin");
+            return
         }
         if(!isEmail(email))
         {
-            console.log("invalid email");
+            alert("invalid email");
+            return
+        }
+        if(hasWhiteSpaceAndValidLength(username))
+        {
+            alert("user name ko duoc co khoang trong")
             return
         }
         if(password.length < 6)
         {
-            console.log("password chua dung");
+            alert("password chua dung");
             return
         }
+        // sign up for user
+        get(child(dbRef, "users/"))
+            .then((snapshot) =>
+            {
+                const record = snapshot.val() ?? []
+                const values = Object.values(record)
+                const isUserExisting = values.some((item) => item.email === email || item.username === username)
+                if(isUserExisting) alert("tai khoan da ton tai")
+                let newUser = {
+                    userId: id,
+                    name: name,
+                    email: email,
+                    password: password,
+                    avatar: "",
+                    create_at: new Date().getTime()
+                }
+                set(ref(db, `users/${id}/`), newUser)
+                    .then(() => { alert("dang ki thanh cong") })
+                    .catch((err) => { alert(err) })
+            })
+            .catch((err) => { alert(err) })
+    }
+
+    const handleGoogleLogin = () =>
+    {
+        signOut(auth)
+            .then(async () =>
+            {
+                const id = uuid.v4()
+                const provider = new GoogleAuthProvider(app)
+                provider.setCustomParameters({
+                    login_hint: "user@example.com"
+                })
+                await signInWithPopup(auth, provider)
+                .then((result) =>
+                {
+                    const newUser = {
+                        userId: id,
+                        name: result._tokenResponse.email.slice(0, result._tokenResponse.email.lastIndexOf("@")),
+                        email: result._tokenResponse.email,
+                        password: "123456",
+                        avatar: result._tokenResponse.photoUrl,
+                        create_at: new Date().getTime()
+                    }
+                    get(child(ref(db), "users/"))
+                        .then((snapshot) =>
+                        {
+                            const record = snapshot.val() ?? []
+                            const values = Object.values(record)
+                            const isUserExisting = values.some(
+                                (item) => item.email === newUser.email
+                            )
+                            if(isUserExisting) alert("tai khoan da ton tai")
+                            set(ref(db, `users/${id}/`), newUser)
+                                .then(() => { alert("dang ki thanh cong") })
+                                .catch((err) => { alert(err) })
+                        })
+                        .catch((err) => { alert(err) })
+                })
+            })
     }
 
     return (
@@ -40,17 +117,19 @@ function SignUp ()
                 <div className="w-4/5 h-[34px] mb-4">
                     <Button 
                         hoverColor={"rgb(26,119,242)"}
-                        icon={FacebookIcon} 
-                        backgroundColor={"rgb(0,149,246)"} 
+                        icon={GOOGLE_ICON} 
+                        backgroundColor={"rgb(255,255,255)"} 
                         iconColor={"white"} 
-                        content={"Login with Facebook"}
-                        contentColor={"white"}
+                        content={"Login with Google"}
+                        contentColor={"black"}
                         rounded={"10px"}
+                        onClick={handleGoogleLogin}
+                        border
                     />
                 </div>
                 <div className="w-4/5 mb-4"><Line content={"OR"}/></div>
                 <div className="w-4/5 mb-4">
-                    <div className="mb-2 h-[38px]"> <Input type={"text"} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Mobile number or email address"/> </div>
+                    <div className="mb-2 h-[38px]"> <Input type={"text"} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address"/> </div>
                     <div className="mb-2 h-[38px]"> <Input type={"text"} value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name"/> </div>
                     <div className="mb-2 h-[38px]"> <Input type={"text"} value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Username"/> </div>
                     <div className="mb-2 h-[38px]"> <Input type={"password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"/> </div>
