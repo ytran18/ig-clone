@@ -5,7 +5,7 @@ import "firebase/auth"
 import "firebase/storage"
 import "firebase/analytics"
 import "firebase/performance"
-import { getAuth } from "firebase/auth"
+import { getAuth} from "firebase/auth"
 import { getStorage } from "firebase/storage"
 
 const firebaseConfig = {
