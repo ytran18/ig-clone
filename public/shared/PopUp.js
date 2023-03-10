@@ -1,6 +1,6 @@
-import { SuccessIcon, FailIcon } from "../icons/icons"
+import { SuccessIcon, FailIcon, CloseIcon } from "../icons/icons"
 
-function PopUp ({ statement, isSuccess })
+function PopUp ({ statement, isSuccess, closePopUp })
 {
     return (
         <div className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgb(89,89,89)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl">
@@ -21,6 +21,7 @@ function PopUp ({ statement, isSuccess })
                         </div>
                     )
                 }
+                <div onClick={closePopUp} className="text-[rgb(255,0,0)] absolute right-2 top-2 cursor-pointer hover:bg-[rgb(102,102,102)] hover:text-white rounded-[50px]">{CloseIcon}</div>
             </div>
         </div>
     )
