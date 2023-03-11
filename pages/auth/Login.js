@@ -1,10 +1,45 @@
 import { auth, db } from '../../src/firebase'
 import {signInWithPopup, GoogleAuthProvider, } from "firebase/auth"
-import { ref, set } from "firebase/database"
+import { child, onValue, ref, set } from "firebase/database"
+import {useEffect, useRef, useState } from 'react'
+import PopUp from '../../public/shared/PopUp'
 
 function Login() {
+    const [datas , setDatas] = useState([])
+    const [isSuccess, setIsSuccess] = useState(false)
+    const [isPopUp, setIsPopUp] = useState(false)
+    const [statement, setStatement] = useState('Vui lòng kiểm tra lại email, password')
     const provider = new GoogleAuthProvider()
+    const emailRef = useRef()
+    const passRef = useRef()
+
+    useEffect( () => {
+        onValue(ref(db, '/users'), (snapshot) => {
+            var data1 = []
+            snapshot.forEach( (childSnapshot) =>{
+                data1.push(childSnapshot.val())
+            } )
+            setDatas(data1)
+        } )
+    }, [])
+
+    const handlePopUp = () => {
+        setIsPopUp(!isPopUp)
+    }
+
     const handleLogIn = () => {
+        datas.forEach( (data) => {
+            if(data.email == emailRef.current.value && data.password == passRef.current.value){
+                setIsSuccess(true)
+                setStatement('Đăng nhập thành công')
+            }
+        } )
+        setIsPopUp(!isPopUp)
+        console.log(isSuccess)
+        console.log(isPopUp)
+    } 
+
+    const handleLogInGoogle = () => {
         signInWithPopup(auth,provider)
             .then( (result) => {
                 set( ref(db, 'users/' + result.user.uid ), {
@@ -22,19 +57,30 @@ function Login() {
 
     return(
         <div className="flex flex-col items-center mt-[30px]">
+            <div className={ isPopUp ? "block" : "hidden"} > 
+                <PopUp 
+                    statement={statement}
+                    isSuccess = {isSuccess}
+                /> 
+            </div>
             <div className="border-[1px] w-[350px] h-[370px] flex flex-col items-center	 ">
                 <div className="text-[50px] font-bold h-[30%]">Instagram</div>
                 <div className="h-[70%] flex flex-col">
                     <input 
+                        ref={emailRef}
                         className="outline-none	border-[1px] rounded w-[280px] h-[36px] text-[12px] p-[10px]"
                         placeholder="Phone number, user name, or email"
                     />
                     <input 
+                        ref={passRef}
                         className="outline-none	border-[1px] rounded w-[280px] h-[36px] text-[12px] p-[10px] mt-[10px]"
                         placeholder="Password"
                     />
 
-                    <div className=" bg-[#4db5f9] rounded w-[280px] h-[32px] text-center py-[5px] text-white mt-[10px] font-bold">
+                    <div 
+                        className="cursor-default bg-[#4db5f9] rounded w-[280px] h-[32px] text-center py-[5px] text-white mt-[10px] font-bold"
+                        onClick={handleLogIn}
+                    >
                         Log in
                     </div>
 
@@ -46,7 +92,7 @@ function Login() {
 
                     <div 
                         className="text-center text-[#385185] font-semibold cursor-pointer mt-[10px]"
-                        onClick={handleLogIn}
+                        onClick={handleLogInGoogle}
                     >
                         Log in with Google
                     </div>
