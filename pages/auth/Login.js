@@ -1,7 +1,9 @@
 import { auth, db } from '../../src/firebase'
+import Image from 'next/image'
 import {signInWithPopup, GoogleAuthProvider, } from "firebase/auth"
 import { child, onValue, ref, set } from "firebase/database"
 import {useEffect, useRef, useState } from 'react'
+import GoogleIcon from '../../public/icons/7123025_logo_google_g_icon.svg'
 import PopUp from '../../public/shared/PopUp'
 
 function Login() {
@@ -59,6 +61,7 @@ function Login() {
         <div className="flex flex-col items-center mt-[30px]">
             <div className={ isPopUp ? "block" : "hidden"} > 
                 <PopUp 
+                    closePopUp={handlePopUp}
                     statement={statement}
                     isSuccess = {isSuccess}
                 /> 
@@ -91,9 +94,10 @@ function Login() {
                     </div>
 
                     <div 
-                        className="text-center text-[#385185] font-semibold cursor-pointer mt-[10px]"
+                        className="text-center text-[#385185] font-semibold cursor-pointer mt-[10px] flex items-center justify-center"
                         onClick={handleLogInGoogle}
                     >
+                        <Image className='w-[20px] h-[20px] mr-[5px]' src = {GoogleIcon} />
                         Log in with Google
                     </div>
 
