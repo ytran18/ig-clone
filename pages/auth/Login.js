@@ -66,7 +66,7 @@ function Login() {
                     isSuccess = {isSuccess}
                 /> 
             </div>
-            <div className="border-[1px] w-[350px] h-[370px] flex flex-col items-center	 ">
+            <div className="sm:border-[1px] sm:w-[350px] h-[370px] flex flex-col items-center w-screen">
                 <div className="text-[50px] font-bold h-[30%]">Instagram</div>
                 <div className="h-[70%] flex flex-col">
                     <input 
@@ -107,9 +107,9 @@ function Login() {
                 </div>
             </div>
 
-            <div className="w-[350px] h-[45px] border-[1px] mt-[10px] p-[10px] flex items-center justify-center">
-                <div className="mr-[5px]"> Don't have an account?</div>
-                <div className="text-[#0095f6]">Sign up</div>
+            <div className="sm:w-[350px] sm:h-[45px] h-[45px] sm:border-[1px] mt-[10px] p-[10px] flex items-center justify-center w-screen">
+                <div className="mr-[10px] sm:mr-[5px] text-[20px] font-semibold"> Don't have an account?</div>
+                <div className="text-[#0095f6] text-[20px]">Sign up</div>
             </div>
         </div>
     )
