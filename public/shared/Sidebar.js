@@ -102,7 +102,7 @@ function Sidebar ()
                 {
                     showSearch ?
                     (
-                        <div ref={searchBoxRef} className="w-[400px] bg-white h-screen ">
+                        <div ref={searchBoxRef} className="w-[400px] hidden md:flex lg:flex bg-white h-screen ">
                             <Search />
                         </div>
                     )
