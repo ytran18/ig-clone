@@ -15,6 +15,7 @@ function Sidebar ()
     // hanlde click outside to close more options pop up
     const morePopUpRef = useRef(null)
     const searchRef = useRef(null)
+    const searchBoxRef = useRef(null)
 
     useEffect(() =>
     {
@@ -24,7 +25,7 @@ function Sidebar ()
             {
                 setShowMore(false)
             }
-            if (searchRef.current && !searchRef.current.contains(e.target))
+            if (searchRef.current && !searchRef.current.contains(e.target) && searchBoxRef.current && !searchBoxRef.current.contains(e.target))
             {
                 setShowSearch(false)
             }
@@ -101,7 +102,7 @@ function Sidebar ()
                 {
                     showSearch ?
                     (
-                        <div className="w-[400px] bg-white h-screen ">
+                        <div ref={searchBoxRef} className="w-[400px] bg-white h-screen ">
                             <Search />
                         </div>
                     )
