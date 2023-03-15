@@ -77,6 +77,7 @@ function Login() {
                     />
                     <input 
                         ref={passRef}
+                        type = "password"
                         className="outline-none	border-[1px] rounded w-[280px] h-[36px] text-[12px] p-[10px] mt-[10px]"
                         placeholder="Password"
                     />
