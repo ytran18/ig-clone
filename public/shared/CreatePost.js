@@ -1,6 +1,37 @@
 import {MediaIcon} from "../icons/icons"
+import { storage,db } from "../../src/firebase"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { set, ref as ref2} from "firebase/database"
+import { useState } from "react"
 
 function CreatePost( {handleCreatePost} ) {
+    const handleChange = (e) => {
+        const file = e.target.files[0]
+        const imageRef = ref(storage, `posts/test/${file.name}`)
+        uploadBytes(imageRef, file)
+            .then( (snapshot) => {
+                getDownloadURL(imageRef)
+                    .then((url) => {
+                        set(ref2(db, "posts/" + "test"), {
+                            postId: 123,
+                            owner: 123,
+                            create_at: new Date().getTime(),
+                            assets: url,
+                            likes: 0,
+                            comment: 0,
+                            status: 'test',
+                        })
+                    })
+                    .catch( (error) => {
+                        console.log(error.message)
+                    })
+                console.log('Uploaded a blob or file!');
+            })
+            .catch( (error) => {
+                console.log(error.message)
+            })
+    }
+
     return(
         <div 
             className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgba(35,35,35,0.16)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl"
@@ -23,8 +54,14 @@ function CreatePost( {handleCreatePost} ) {
                     <div className="mb-[20px]">
                         {MediaIcon} 
                     </div>
+
                     <div className="mb-[10px] text-[22px]">Drag photos and videos here</div>
-                    <input type="file" id="uploadBtn" className="hidden"/>
+
+                    <input 
+                        type="file" id="uploadBtn" className="hidden"
+                        onChange={handleChange}
+                    />
+
                     <label htmlFor="uploadBtn" className="w-[200px] cursor-pointer text-center py-[5px] bg-[#0095f6] hover:bg-[#1877f2] text-white font-semibold rounded-lg">
                         Select from computer
                     </label>
