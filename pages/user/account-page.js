@@ -7,13 +7,25 @@ import Sidebar from "../../public/shared/Sidebar"
 import Posts from "../../public/shared/Posts"
 import Saved from "../../public/shared/Saved"
 import Tagged from "../../public/shared/Tagged"
+import FollowingPopUp from "../../public/shared/FollowingPopUp"
+import FollowersPopUp from "../../public/shared/FollowersPopUp"
 
 function AccountPage() {
     const [isEdit, setIsEdit] = useState(false)
+    const [followingPopUp, setFollowingPopUp] = useState(false)
+    const [followersPopUp, setFollowersPopUp] = useState(false)
     const [tab, setTab] = useState(1)
 
     const handleEditPopUp = () => {
         setIsEdit(!isEdit)
+    }
+
+    const handleFollowingPopUp = () => {
+        setFollowingPopUp(!followingPopUp)
+    } 
+
+    const handleFollowersPopUp = () => {
+        setFollowersPopUp(!followersPopUp)
     }
 
     return(
@@ -21,6 +33,12 @@ function AccountPage() {
             <div> <Sidebar/> </div>
             <div className = {isEdit ? "block" : "hidden"}>
                 <EditPopUp handleClose = { handleEditPopUp }/>
+            </div>
+            <div className={ followingPopUp ? "block" : "hidden" } >
+                <FollowingPopUp handleClose = {handleFollowingPopUp}/>
+            </div>
+            <div className={ followersPopUp ? "block" : "hidden" }>
+                <FollowersPopUp handleClose = {handleFollowersPopUp}/>
             </div>
 
             <div className="flex flex-col w-full pb-[10px] pt-[40px]">
@@ -46,8 +64,20 @@ function AccountPage() {
                         </div>
                         <div className="flex">
                             <p className="mr-[40px]">0 posts</p>
-                            <p className="mr-[40px]">0 followers</p>
-                            <p className="mr-[40px]">168 following</p>
+
+                            <p 
+                                className="mr-[40px] cursor-pointer"
+                                onClick={handleFollowersPopUp}
+                            >   
+                                0 followers
+                            </p>
+
+                            <p 
+                                className="mr-[40px] cursor-pointer"
+                                onClick={handleFollowingPopUp}
+                            >
+                                168 following
+                            </p>
                         </div>
                     </div>
                 </div>
