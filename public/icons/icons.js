@@ -153,4 +153,8 @@ const CommentIcon = (
     </svg>
 )
 
-export { IgLogo, FacebookIcon, SuccessIcon, FailIcon, CloseIcon, HomeIcon, Explore, ReelIcon, MessagesIcon, NotificationIcon, CreateIcon, IgSidebar, IgIcon, EditIcon, PostsIcon, SavedIcon, TaggedIcon, SearchIcon, MoreIcon, HomeSelectIcon, SearchSelectIcon, ExploreSelectIcon, ReelSelectIcon, MessagesSelectIcon, NotificationSelectIcon, CreateSelectIcon, MoreSelectIcon, TimeIcon, SavedIconBig, MoonIcon, MediaIcon, CloseIconSmall, LoveIcon, CommentIcon }
+const MoreDotIcon = (
+    <svg aria-label="More Options" class="_ab6-" color="currentColor" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle></svg>
+)
+
+export { IgLogo, FacebookIcon, SuccessIcon, FailIcon, CloseIcon, HomeIcon, Explore, ReelIcon, MessagesIcon, NotificationIcon, CreateIcon, IgSidebar, IgIcon, EditIcon, PostsIcon, SavedIcon, TaggedIcon, SearchIcon, MoreIcon, HomeSelectIcon, SearchSelectIcon, ExploreSelectIcon, ReelSelectIcon, MessagesSelectIcon, NotificationSelectIcon, CreateSelectIcon, MoreSelectIcon, TimeIcon, SavedIconBig, MoonIcon, MediaIcon, CloseIconSmall, LoveIcon, CommentIcon, MoreDotIcon }
