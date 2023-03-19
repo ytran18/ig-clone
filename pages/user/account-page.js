@@ -29,8 +29,8 @@ function AccountPage() {
     }
 
     return(
-        <div className="flex">
-            <div> <Sidebar/> </div>
+        <div className={(isEdit || followingPopUp || followersPopUp) ? "fixed flex" : "flex"}>
+            <div className="fixed"> <Sidebar/> </div>
             <div className = {isEdit ? "block" : "hidden"}>
                 <EditPopUp handleClose = { handleEditPopUp }/>
             </div>
@@ -41,8 +41,8 @@ function AccountPage() {
                 <FollowersPopUp handleClose = {handleFollowersPopUp}/>
             </div>
 
-            <div className="flex flex-col w-full pb-[10px] pt-[40px]">
-                <div className="h-[30%] flex border-b-[1px] mx-[30px]">
+            <div className="flex flex-col pb-[10px] pt-[40px] ml-[245px] w-full">
+                <div className="flex border-b-[1px] mx-[30px] pb-[10px]">
                     <div className=" w-[290px] h-[150px] px-[20px] flex justify-center">
                         <Image  
                             className="w-[150px] h-[150px] text-center"
@@ -112,7 +112,7 @@ function AccountPage() {
                         <p className="ml-[5px] text-[13px] ">TAGGED</p>
                     </div>
                 </div>
-                <div className="mx-[30px]">
+                <div className="mx-[30px] mt-[30px]">
                     <div className={tab == 1 ?"block" : "hidden"}>
                         <Posts/>
                     </div>

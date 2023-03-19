@@ -2,7 +2,7 @@ import { auth, db } from '../../src/firebase'
 import Image from 'next/image'
 import Link from 'next/link'
 import {signInWithPopup, GoogleAuthProvider, } from "firebase/auth"
-import { child, onValue, ref, set } from "firebase/database"
+import {onValue, ref, set } from "firebase/database"
 import {useEffect, useRef, useState } from 'react'
 import GoogleIcon from '../../public/icons/7123025_logo_google_g_icon.svg'
 import PopUp from '../../public/shared/PopUp'
