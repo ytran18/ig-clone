@@ -26,6 +26,7 @@ function CreatePost( {handleCreatePost} ) {
                         console.log(error.message)
                     })
                 console.log('Uploaded a blob or file!');
+                handleCreatePost()
             })
             .catch( (error) => {
                 console.log(error.message)
