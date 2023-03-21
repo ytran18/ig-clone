@@ -31,7 +31,7 @@ export default function Home() {
                         <PostArea />
                     </div>
                 </div>
-                <div className="w-[319px] flex justify-center">
+                <div className="hidden lg:flex justify-center">
                     <Right />
                 </div>
             </div>
