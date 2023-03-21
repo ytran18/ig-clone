@@ -1,7 +1,10 @@
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import DefaultProfile from "../../public/icons/defaultProfile.jpg"
+import { storage,db } from "../../src/firebase"
 import { EditIcon, PostsIcon, SavedIcon, TaggedIcon } from "../../public/icons/icons"
+import { set, ref as ref2, update, onValue} from "firebase/database"
+import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
 import EditPopUp from "../../public/shared/EditPopUp"
 import Sidebar from "../../public/shared/Sidebar"
 import Posts from "../../public/shared/Posts"
@@ -14,7 +17,15 @@ function AccountPage() {
     const [isEdit, setIsEdit] = useState(false)
     const [followingPopUp, setFollowingPopUp] = useState(false)
     const [followersPopUp, setFollowersPopUp] = useState(false)
+    const [avatar, setAvatar] = useState()
     const [tab, setTab] = useState(1)
+
+    useEffect( () => {
+        const avatarRef = ref2(db, 'users/' + "08343a66-0609-455b-b0bb-f2b1739ef480" + '/avatar')
+        onValue(avatarRef, (snapshot) => {
+            setAvatar(snapshot.val())
+        })
+    }, [])
 
     const handleEditPopUp = () => {
         setIsEdit(!isEdit)
@@ -26,6 +37,27 @@ function AccountPage() {
 
     const handleFollowersPopUp = () => {
         setFollowersPopUp(!followersPopUp)
+    }
+
+    const handleChange = (e) => {
+        const file = e.target.files[0]
+        const imageRef = ref(storage, `images/${file.name}`)
+        uploadBytes(imageRef, file)
+            .then( (snapshot) => {
+                getDownloadURL(imageRef)
+                    .then((url) => {
+                        update(ref2(db, "users/" + "08343a66-0609-455b-b0bb-f2b1739ef480"), {
+                            avatar: url
+                        })
+                    })
+                    .catch( (error) => {
+                        console.log(error.message)
+                    })
+                console.log('Uploaded a blob or file!');
+            })
+            .catch( (error) => {
+                console.log(error.message)
+            })
     }
 
     return(
@@ -43,12 +75,17 @@ function AccountPage() {
 
             <div className="flex flex-col pb-[10px] pt-[40px] ml-[245px] w-full">
                 <div className="flex border-b-[1px] mx-[30px] pb-[10px]">
-                    <div className=" w-[290px] h-[150px] px-[20px] flex justify-center">
-                        <Image  
-                            className="w-[150px] h-[150px] text-center"
-                            src={DefaultProfile} 
+                    <label htmlFor="uploadBtn" className=" w-[290px] h-[150px] px-[20px] flex justify-center cursor-pointer">
+                        <img
+                            className="w-[150px] h-[150px] text-center rounded-full"
+                            src={avatar} 
                         />
-                    </div>
+                    </label>
+                    <input 
+                        type="file" id="uploadBtn" className="hidden"
+                        onChange={handleChange}
+                    />
+
                     <div>
                         <div className="flex items-center mb-[30px]">
                             <p className="text-[20px] mr-[20px]">nphggg11</p>

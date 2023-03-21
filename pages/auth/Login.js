@@ -7,6 +7,9 @@ import {useEffect, useRef, useState } from 'react'
 import GoogleIcon from '../../public/icons/7123025_logo_google_g_icon.svg'
 import PopUp from '../../public/shared/PopUp'
 
+const uuid = require("uuid")
+
+
 function Login() {
     const [datas , setDatas] = useState([])
     const [isSuccess, setIsSuccess] = useState(false)
@@ -45,12 +48,13 @@ function Login() {
     const handleLogInGoogle = () => {
         signInWithPopup(auth,provider)
             .then( (result) => {
-                set( ref(db, 'users/' + result.user.uid ), {
+                const id = uuid.v4()
+                set( ref(db, 'users/' + id ), {
                     avatar: result.user.photoURL,
                     create_at: new Date().getTime(),
                     email: result.user.email,
                     name: result.user.displayName,
-                    userId: result.user.uid
+                    userId: id
                 })
             } )
             .catch( (error) => {
