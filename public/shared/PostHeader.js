@@ -4,11 +4,15 @@ import AVT from "../../public/img/default-avatar.png"
 import { MoreDotIcon } from "../icons/icons"
 import OverLayBlock from "./OverLayBlock"
 import PostOptions from "./PostOptions"
+import PopUp from "./PopUp"
 
 function PostHeader ()
 {
 
     const [showOptions, setShowOptions] = useState(false)
+    const [showPopUp, setShowPopUp] = useState(false)
+    const [statement, setStatement] = useState("")
+    const [isSuccess, setIsSuccess] = useState(false)
 
     const optionsRef = useRef(null)
 
@@ -27,6 +31,35 @@ function PostHeader ()
             document.removeEventListener("click", handleClickOutSide)
         }
     },[])
+
+    const handleClosePopUp = () =>
+    {
+        setShowPopUp(false)
+    }
+
+    const handleCopyLink = (value) =>
+    {
+        if ( value = false ) return 
+        setShowPopUp(true)
+        setIsSuccess(true)
+        setStatement("Link copied !!!")
+        setTimeout(() =>
+        {
+            setShowPopUp(false)
+        },2000)
+    }
+
+    const handleUnfollow = (value) =>
+    {
+        if ( value = false ) return
+        setShowPopUp(true)
+        setIsSuccess(true)
+        setStatement("Successfull unfollow !!!")
+        setTimeout(() =>
+        {
+            setShowPopUp(false)
+        },2000)
+    }
 
     return (
         <>
@@ -47,8 +80,16 @@ function PostHeader ()
                 showOptions ?
                 (
                     <div ref={optionsRef}>
-                        <OverLayBlock><PostOptions close={() => setShowOptions(false)}/></OverLayBlock> 
+                        <OverLayBlock><PostOptions unFollow={handleUnfollow} copyLink={handleCopyLink} close={() => setShowOptions(false)}/></OverLayBlock> 
                     </div>
+                )
+                :
+                (<></>)
+            }
+            {
+                showPopUp ? 
+                (
+                    <div><PopUp statement={statement} isSuccess={isSuccess} closePopUp={handleClosePopUp}/></div>
                 )
                 :
                 (<></>)
