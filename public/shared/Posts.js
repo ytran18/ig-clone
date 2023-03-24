@@ -19,6 +19,7 @@ function Posts() {
                 posts1.push(childSnapshot.val())
             });
             setPosts(posts1)
+            console.log(posts)
         });
     }, [])
 
