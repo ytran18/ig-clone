@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-function SliderPicture( {fileArray} ) {
+function SliderPicture( {selectedFile, handleChange} ) {
     const [currentIndex, setCurrentIndex] = useState(0)
     
     const handleChevronLeft = () => {
@@ -15,10 +15,9 @@ function SliderPicture( {fileArray} ) {
     }
 
     const handleChevronRight = () => {
-        console.log(fileArray.length)
         setCurrentIndex( prev => {
-            if(prev == fileArray.length - 1){
-                return fileArray.length - 1
+            if(prev == selectedFile.length - 1){
+                return selectedFile.length - 1
             }
             else{
                 return prev + 1
@@ -34,13 +33,13 @@ function SliderPicture( {fileArray} ) {
             >
                 <div className="h-[10%] flex items-center justify-between border-b-[1px] border-slate-300 font-semibold px-[20px]">
                     <div> icon </div>
-                    <div>Create new post</div>
+                    <div>Crop</div>
                     <div className="text-[#0095f6] cursor-pointer hover:text-black">Next</div>
                 </div>
                 <div className="h-[90%] relative">
                     <img
                         className="w-full h-full"
-                        src={fileArray[currentIndex].url}
+                        src={selectedFile[currentIndex]}
                     />
                     <div 
                         className="absolute left-3 top-[50%] text-white font-extrabold cursor-pointer"
@@ -55,7 +54,14 @@ function SliderPicture( {fileArray} ) {
                     >
                         RIGHT
                     </div>
+                    <label htmlFor="addFile" className=" font-extrabold text-[50px] text-white absolute bottom-0 right-2 cursor-pointer">
+                        +
+                    </label>
                 </div>
+                <input
+                    type={"file"} id = "addFile" className="hidden"
+                    onChange={handleChange}
+                />
             </div>
         </div>
     )

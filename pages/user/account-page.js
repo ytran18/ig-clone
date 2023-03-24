@@ -75,14 +75,14 @@ function AccountPage() {
 
             <div className="flex flex-col pb-[10px] pt-[40px] ml-[245px] w-full">
                 <div className="flex border-b-[1px] mx-[30px] pb-[10px]">
-                    <label htmlFor="uploadBtn" className=" w-[290px] h-[150px] px-[20px] flex justify-center cursor-pointer">
+                    <label htmlFor="uploadAvatar" className=" w-[290px] h-[150px] px-[20px] flex justify-center cursor-pointer">
                         <img
                             className="w-[150px] h-[150px] text-center rounded-full"
                             src={avatar} 
                         />
                     </label>
                     <input 
-                        type="file" id="uploadBtn" className="hidden"
+                        type="file" id="uploadAvatar" className="hidden"
                         onChange={handleChange}
                     />
 
