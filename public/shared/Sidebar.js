@@ -39,7 +39,7 @@ function Sidebar ()
     },[])
 
     return (
-            <div className="flex h-screen" style={{overflowY:"hidden"}}>
+            <div className="flex scrollbar-hide h-screen" style={{overflowY:"hidden"}}>
                 <div className={`hidden md:flex md:flex-col md:justify-between md:items-center lg:flex lg:flex-col lg:justify-between lg:items-center md:w-[73px] h-full border-r-[1px] border-[rgb(219,219,219)] py-8 ${state === 1 ? "lg:w-[73px]]" : `${state === 2 ? "lg:w-[73px]" : "lg:w-[245px]"}`}`}>
                     <div className="flex flex-col w-full">
                         <Link className={`md:hidden lg:flex px-7 mb-8 ${state === 1 ? "lg:hidden" : `${state === 2 ? "lg:hidden" : "lg:flex"}`}`} href="/" >
