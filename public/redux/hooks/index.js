@@ -1,2 +1,2 @@
 export * from "./userHook"
-export * from "./userHook"
+export * from "./postHook"
