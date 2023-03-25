@@ -61,7 +61,7 @@ function AccountPage() {
     }
 
     return(
-        <div className={(isEdit || followingPopUp || followersPopUp) ? "fixed flex" : "flex"}>
+        <div className={"flex" }>
             <div className="fixed"> <Sidebar/> </div>
             <div className = {isEdit ? "block" : "hidden"}>
                 <EditPopUp handleClose = { handleEditPopUp }/>
