@@ -1,7 +1,19 @@
 import { useState } from "react"
+import { useDispatch } from "react-redux"
+import { postPackage } from "../redux/actions"
+import { useRouter } from "next/router"
 
 function SliderPicture( {selectedFile, handleChange} ) {
     const [currentIndex, setCurrentIndex] = useState(0)
+
+    const router = useRouter()
+
+    const dispatch = useDispatch()
+
+    const handleNext = () => {
+        dispatch(postPackage(selectedFile))
+        router.push("/")
+    }
     
     const handleChevronLeft = () => {
         setCurrentIndex( prev => {
@@ -34,7 +46,12 @@ function SliderPicture( {selectedFile, handleChange} ) {
                 <div className="h-[10%] flex items-center justify-between border-b-[1px] border-slate-300 font-semibold px-[20px]">
                     <div> icon </div>
                     <div>Crop</div>
-                    <div className="text-[#0095f6] cursor-pointer hover:text-black">Next</div>
+                    <div 
+                        className="text-[#0095f6] cursor-pointer hover:text-black"
+                        onClick={handleNext}
+                    >
+                        Next
+                    </div>
                 </div>
                 <div className="h-[90%] relative">
                     <img
