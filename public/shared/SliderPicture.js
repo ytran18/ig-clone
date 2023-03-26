@@ -1,84 +1,85 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { postPackage } from "../redux/actions"
-import { useRouter } from "next/router"
 
-function SliderPicture( {selectedFile, handleChange} ) {
+//component
+import PrePost from "./PrePost"
+
+//icon
+import { ArrowLeft, ChevronLeft, ChevronRight, Plus } from "../icons/icons" 
+
+function SliderPicture( {selectedFile, handleChange, handleDiscardPost} ) {
     const [currentIndex, setCurrentIndex] = useState(0)
-
-    const router = useRouter()
+    const [prePost, setPrePost] = useState(false)
 
     const dispatch = useDispatch()
 
     const handleNext = () => {
         dispatch(postPackage(selectedFile))
-        router.push("/")
+        setPrePost(!prePost)
+    }
+
+    const handlePrePost = () => {
+        setPrePost(!prePost)
     }
     
     const handleChevronLeft = () => {
-        setCurrentIndex( prev => {
-            if(prev == 0){
-                return 0
-            }
-            else{
-                return prev - 1
-            }
-        } )
+        setCurrentIndex(prev => prev - 1)
     }
 
     const handleChevronRight = () => {
-        setCurrentIndex( prev => {
-            if(prev == selectedFile.length - 1){
-                return selectedFile.length - 1
-            }
-            else{
-                return prev + 1
-            }
-        } )
+        setCurrentIndex( prev => prev + 1)
     }
 
     return(
-        <div>
+        <div className="w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <div className={prePost ? " w-full h-full flex items-center justify-center" : "hidden"}>
+                <PrePost handlePrePost = {handlePrePost}/>
+            </div>
             <div 
-                className="w-[400px] h-[440px] bg-white rounded-xl"
-                onClick={(e) => e.stopPropagation()}
+                className={`w-[400px] h-[440px] bg-white rounded-xl  ${prePost ? "hidden" : "block"}`}
+                
             >
-                <div className="h-[10%] flex items-center justify-between border-b-[1px] border-slate-300 font-semibold px-[20px]">
-                    <div> icon </div>
-                    <div>Crop</div>
-                    <div 
-                        className="text-[#0095f6] cursor-pointer hover:text-black"
-                        onClick={handleNext}
-                    >
-                        Next
+                <div className={"h-full w-full"}>
+                    <div className={"h-[10%] flex items-center justify-between border-b-[1px] border-slate-300 font-semibold px-[20px]"}>
+                        <div className="text-black cursor-pointer" onClick={handleDiscardPost}> 
+                            {ArrowLeft} 
+                        </div>
+                        <div>Crop</div>
+                        <div 
+                            className="text-[#0095f6] cursor-pointer hover:text-black"
+                            onClick={handleNext}
+                        >
+                            Next
+                        </div>
                     </div>
-                </div>
-                <div className="h-[90%] relative">
-                    <img
-                        className="w-full h-full"
-                        src={selectedFile[currentIndex]}
-                    />
-                    <div 
-                        className="absolute left-3 top-[50%] text-white font-extrabold cursor-pointer"
-                        onClick={handleChevronLeft}
-                    >
-                        LEFT
-                    </div>
+                    <div className="h-[90%] relative flex items-center justify-center bg-black">
+                        <img
+                            className=" w-full max-h-full select-none"
+                            src={selectedFile[currentIndex].url}
+                        />
+                        <div 
+                            className={`absolute left-3 top-[50%] text-white font-extrabold cursor-pointer ${currentIndex == 0 ? "hidden" : "block"}`}
+                            onClick={handleChevronLeft}
+                        >
+                        {ChevronLeft}
+                        </div>
 
-                    <div 
-                        className="absolute right-3 top-[50%] text-white font-extrabold cursor-pointer"
-                        onClick={handleChevronRight}
-                    >
-                        RIGHT
+                        <div 
+                            className={`absolute right-3 top-[50%] text-white font-extrabold cursor-pointer ${currentIndex == selectedFile.length -1 ? "hidden" : "block"}`}
+                            onClick={handleChevronRight}
+                        >
+                            {ChevronRight}
+                        </div>
+                        <label htmlFor="addFile" className=" font-extrabold text-[50px] text-white absolute bottom-2 right-2 cursor-pointer">
+                            {Plus}
+                        </label>
                     </div>
-                    <label htmlFor="addFile" className=" font-extrabold text-[50px] text-white absolute bottom-0 right-2 cursor-pointer">
-                        +
-                    </label>
+                    <input
+                        type={"file"} id = "addFile" className="hidden"
+                        onChange={handleChange}
+                    />
                 </div>
-                <input
-                    type={"file"} id = "addFile" className="hidden"
-                    onChange={handleChange}
-                />
             </div>
         </div>
     )

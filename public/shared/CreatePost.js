@@ -7,21 +7,17 @@ import SliderPicture from "./SliderPicture"
 import DiscardPost from "./DiscardPost"
 
 function CreatePost( {handleCreatePost} ) {
-    // const picture = [
-    //     {url: "https://firebasestorage.googleapis.com/v0/b/ig-clone-6d3e1.appspot.com/o/posts%2Ftest%2FBangTan.jpeg?alt=media&token=d6767d89-04c1-4a8a-8371-d377358c3f81"},
-    //     {url: "https://firebasestorage.googleapis.com/v0/b/ig-clone-6d3e1.appspot.com/o/posts%2Ftest%2FWIN_20210922_11_03_50_Pro.jpg?alt=media&token=4462ab1a-8b54-434f-9107-0d3edd948887"},
-    //     {url: "https://firebasestorage.googleapis.com/v0/b/ig-clone-6d3e1.appspot.com/o/posts%2Ftest%2Fscreenshot_1632283977%20(2).png?alt=media&token=81fc4ce1-1031-41a6-bf90-a2c1bd260acc"},
-    //     {url: "https://firebasestorage.googleapis.com/v0/b/ig-clone-6d3e1.appspot.com/o/posts%2Ftest%2Fscreenshot_1632283977.png?alt=media&token=297fa23d-e2f2-4861-98c2-9b685020dbfe"}
-    // ]
-    // const [imageArray, setImageArray] = useState(picture)
 
     const [selectedFile, setSelectedFile] = useState([])
 
     const [discardPost, setDiscardPost] = useState(false)
 
     const handleChange = (e) => {
-        const file = URL.createObjectURL(e.target.files[0])
-        setSelectedFile( prev => [...prev,file] )
+        if(e.target.files.length !== 0){
+            const url = URL.createObjectURL(e.target.files[0])
+            const file = e.target.files[0]
+            setSelectedFile( prev => [...prev,{url: url, file: file}])
+        } 
     }
 
     const handleDiscardPost = () => {
@@ -62,8 +58,8 @@ function CreatePost( {handleCreatePost} ) {
 
     return(
         <div 
-            className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgba(35,35,35,0.16)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl"
-            onClick={selectedFile.length == 0 ? handleCreatePost : handleDiscardPost}
+            className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgb(89,89,89)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl"
+            
         >
             <div className={discardPost ? "block" : "hidden"}>
                 <DiscardPost 
@@ -72,7 +68,10 @@ function CreatePost( {handleCreatePost} ) {
                 />
             </div>
 
-            <div className="absolute right-[10px] top-[10px] text-white text-[20px] font-semibold cursor-pointer">
+            <div 
+                className="absolute right-[10px] top-[10px] text-white text-[20px] font-semibold cursor-pointer"
+                onClick={selectedFile.length == 0 ? handleCreatePost : handleDiscardPost}
+            >
                 X
             </div>
 
@@ -109,6 +108,7 @@ function CreatePost( {handleCreatePost} ) {
                     <SliderPicture 
                         selectedFile = {selectedFile}
                         handleChange = {handleChange}
+                        handleDiscardPost = {handleDiscardPost}
                     />
                 )
             }

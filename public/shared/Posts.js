@@ -10,18 +10,18 @@ import Loading from "./Loading"
 
 function Posts() {
     const [createPost, setCreatePost] = useState(false)
-    const [posts, setPosts] = useState()
+    const [posts, setPosts] = useState([])
 
-    useLayoutEffect( () => {
-        onValue(ref(db, '/posts'), (snapshot) => {
-            var posts1 = []
-            snapshot.forEach( (childSnapshot) => {
-                posts1.push(childSnapshot.val())
-            });
-            setPosts(posts1)
-            console.log(posts)
-        });
-    }, [])
+    // useLayoutEffect( () => {
+    //     onValue(ref(db, '/posts'), (snapshot) => {
+    //         var posts1 = []
+    //         snapshot.forEach( (childSnapshot) => {
+    //             posts1.push(childSnapshot.val())
+    //         });
+    //         setPosts(posts1)
+    //         console.log(posts)
+    //     });
+    // }, [])
 
     const handleCreatePost = () => {
         setCreatePost(!createPost)

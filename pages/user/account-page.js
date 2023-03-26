@@ -1,6 +1,5 @@
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import DefaultProfile from "../../public/icons/defaultProfile.jpg"
 import { storage,db } from "../../src/firebase"
 import { EditIcon, PostsIcon, SavedIcon, TaggedIcon } from "../../public/icons/icons"
 import { set, ref as ref2, update, onValue} from "firebase/database"
