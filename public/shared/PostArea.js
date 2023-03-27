@@ -1,5 +1,5 @@
 // firebase
-import { ref, get, child, query, onValue } from "firebase/database"
+import { ref, query, onValue } from "firebase/database"
 import { useEffect, useState } from "react"
 import { db } from "../../src/firebase"
 
