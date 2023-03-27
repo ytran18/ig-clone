@@ -24,35 +24,29 @@ function PrePost( {handlePrePost} ) {
     
     const handleShare = () => {
         const id = uuid.v4()
-        imgs.map((img) => {
+        var media = []
+        imgs.forEach((img) => {
             const imageRef = ref(storage, `posts/${id}/${img.file.name}`)
             uploadBytes(imageRef, img.file)
-        })
-        listAll(ref(storage, `posts/${id}`))
-            .then( (res) => {
-                console.log(id)
-                console.log(res)
-                var media = []
-                res.items.forEach( (itemRef) => {
-                    getDownloadURL(ref(storage,itemRef.toString()))
-                        .then( (url) => { 
-                            console.log(url);
+                .then( (snapshot) => {
+                    getDownloadURL(ref(storage, `${snapshot.metadata.fullPath}`))
+                        .then( (url) => {
                             media.push(url)
-                            set(ref2(db, 'posts/' + id), {
-                                    userId: '123',
-                                    postId: id,
-                                    createAt: new Date().getTime(),
-                                    caption:captionRef.current.value,
-                                    media:media,
-                                    likes: 0,
-                                    comment: 0,
-                                    tagPeople: 0,
-                                    hideLike: hideLike,
-                                    blockComment: blockComment
-                            })    
-                        } )
-                } )
-            } )
+                            set(ref2(db,'posts/test/' + id), {
+                                userId: '123',
+                                postId: id,
+                                createAt: new Date().getTime(),
+                                caption: captionRef.current.value,
+                                media: media,
+                                likes: 0,
+                                comment: 0,
+                                tagPeople: 0,
+                                hideLike: hideLike,
+                                blockComment: blockComment
+                            })
+                        })
+                })
+        })
     }
 
     const handleChevronLeft = () => {
