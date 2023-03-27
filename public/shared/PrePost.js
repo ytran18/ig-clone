@@ -31,15 +31,15 @@ function PrePost( {handlePrePost} ) {
                 .then( (snapshot) => {
                     getDownloadURL(ref(storage, `${snapshot.metadata.fullPath}`))
                         .then( (url) => {
-                            media.push(url)
+                            media.push({type:img.file.type ,url:url})
                             set(ref2(db,'posts/test/' + id), {
                                 userId: '123',
                                 postId: id,
                                 createAt: new Date().getTime(),
                                 caption: captionRef.current.value,
                                 media: media,
-                                likes: 0,
-                                comment: 0,
+                                likes: ['123','234','456'],
+                                comment: [{userId:'123', comment:'hay qua di'}],
                                 tagPeople: 0,
                                 hideLike: hideLike,
                                 blockComment: blockComment
@@ -47,6 +47,7 @@ function PrePost( {handlePrePost} ) {
                         })
                 })
         })
+        handlePrePost()
     }
 
     const handleChevronLeft = () => {

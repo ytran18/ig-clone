@@ -27,34 +27,6 @@ function CreatePost( {handleCreatePost} ) {
     const handleSelectedFile = () => {
         setSelectedFile([])
     }
-    
-    // const handleChange = (e) => {
-    //     const file = e.target.files[0]
-    //     const imageRef = ref(storage, `posts/test/${file.name}`)
-    //     uploadBytes(imageRef, file)
-    //         .then( (snapshot) => {
-    //             getDownloadURL(imageRef)
-    //                 .then((url) => {
-    //                     set(ref2(db, "posts/" + "test"), {
-    //                         postId: 123,
-    //                         owner: 123,
-    //                         create_at: new Date().getTime(),
-    //                         assets: url,
-    //                         likes: 0,
-    //                         comment: 0,
-    //                         status: 'test',
-    //                     })
-    //                 })
-    //                 .catch( (error) => {
-    //                     console.log(error.message)
-    //                 })
-    //             console.log('Uploaded a blob or file!');
-    //             handleCreatePost()
-    //         })
-    //         .catch( (error) => {
-    //             console.log(error.message)
-    //         })
-    // }
 
     return(
         <div 
