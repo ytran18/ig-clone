@@ -15,7 +15,7 @@ import { ref as ref2, set } from "firebase/database"
 
 const uuid = require("uuid")
 
-function PrePost( {handlePrePost} ) {
+function PrePost( {handlePrePost, handleCreatePost} ) {
     const imgs = usePostPackageHook()
     const [currentIndex, setCurrentIndex] = useState(0)
     const [hideLike, setHideLike] = useState(false)
@@ -47,7 +47,7 @@ function PrePost( {handlePrePost} ) {
                         })
                 })
         })
-        handlePrePost()
+        handleCreatePost()
     }
 
     const handleChevronLeft = () => {
@@ -68,7 +68,15 @@ function PrePost( {handlePrePost} ) {
             <div className="h-[90%] w-full flex">
                 <div className="w-[50%] bg-black rounded-bl-2xl">
                     <div className="w-full h-full flex items-center justify-center relative">
-                        <img className="w-full max-h-full select-none" src={imgs[currentIndex].url} />
+                        { 
+                            imgs[currentIndex].file.type.includes('image') ?
+                            (
+                                <img className="w-full max-h-full select-none" src={imgs[currentIndex].url} />
+                            ) :
+                            (
+                                <video className=" w-full max-h-full select-none" src={imgs[currentIndex].url} autoPlay/>
+                            )
+                        }
                         <div className={`cursor-pointer absolute left-0 top-[50%] text-white ${currentIndex == 0 ? "hidden" : "block"}`} onClick={handleChevronLeft}> {ChevronLeft} </div>
                         <div className={`cursor-pointer absolute right-0 top-[50%] text-white ${currentIndex == imgs.length - 1 ? "hidden" : "block" }`} onClick={handleChevronRight}> {ChevronRight} </div>
                     </div>
@@ -82,7 +90,6 @@ function PrePost( {handlePrePost} ) {
                     </div>
                     <div className="h-[50%] w-full p-4">
                         <textarea ref={captionRef}  className="w-full h-full outline-none text-[14px] resize-none" placeholder="Write a caption...">
-
                         </textarea>
                     </div>
                     <div className="h-[40%] border-t-[1px] p-4">

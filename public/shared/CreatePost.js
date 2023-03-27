@@ -81,6 +81,7 @@ function CreatePost( {handleCreatePost} ) {
                         selectedFile = {selectedFile}
                         handleChange = {handleChange}
                         handleDiscardPost = {handleDiscardPost}
+                        handleCreatePost = {handleCreatePost}
                     />
                 )
             }

@@ -8,7 +8,7 @@ import PrePost from "./PrePost"
 //icon
 import { ArrowLeft, ChevronLeft, ChevronRight, Plus } from "../icons/icons" 
 
-function SliderPicture( {selectedFile, handleChange, handleDiscardPost} ) {
+function SliderPicture( {selectedFile, handleChange, handleDiscardPost, handleCreatePost} ) {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [prePost, setPrePost] = useState(false)
 
@@ -34,7 +34,10 @@ function SliderPicture( {selectedFile, handleChange, handleDiscardPost} ) {
     return(
         <div className="w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <div className={prePost ? " w-full h-full flex items-center justify-center" : "hidden"}>
-                <PrePost handlePrePost = {handlePrePost}/>
+                <PrePost 
+                    handlePrePost = {handlePrePost} 
+                    handleCreatePost = {handleCreatePost}
+                />
             </div>
             <div 
                 className={`w-[400px] h-[440px] bg-white rounded-xl  ${prePost ? "hidden" : "block"}`}
@@ -54,10 +57,22 @@ function SliderPicture( {selectedFile, handleChange, handleDiscardPost} ) {
                         </div>
                     </div>
                     <div className="h-[90%] relative flex items-center justify-center bg-black">
-                        <img
-                            className=" w-full max-h-full select-none"
-                            src={selectedFile[currentIndex].url}
-                        />
+                        {
+                            selectedFile[currentIndex].file.type.includes('image') ? 
+                            (
+                                <img
+                                    className=" w-full max-h-full select-none"
+                                    src={selectedFile[currentIndex].url}
+                                />
+                            ):
+                            (
+                                <video 
+                                    className=" w-full max-h-full select-none"
+                                    src={selectedFile[currentIndex].url}
+                                    autoPlay
+                                />
+                            )
+                        }
                         <div 
                             className={`absolute left-3 top-[50%] text-white font-extrabold cursor-pointer ${currentIndex == 0 ? "hidden" : "block"}`}
                             onClick={handleChevronLeft}
