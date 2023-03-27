@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-function PostAssets ()
+function PostAssets ({ media })
 {
     const assets = [
         {
@@ -16,6 +16,11 @@ function PostAssets ()
             url: "https://firebasestorage.googleapis.com/v0/b/ig-clone-6d3e1.appspot.com/o/videos%2Fpexels-vlada-karpovich-8045821.mp4?alt=media&token=5b91590a-291b-4bdc-95c3-aacca7d0238c"
         }
     ]
+
+    useEffect(() =>
+    {
+        console.log(media);
+    },[])
 
     const [currImageIndex, setCurrImageIndex] = useState(0)
 
