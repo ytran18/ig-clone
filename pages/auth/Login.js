@@ -1,22 +1,38 @@
+//firebase
 import { auth, db } from '../../src/firebase'
-import Image from 'next/image'
-import Link from 'next/link'
 import {signInWithPopup, GoogleAuthProvider, } from "firebase/auth"
 import {onValue, ref, set } from "firebase/database"
+
+//tag
+import Image from 'next/image'
+import Link from 'next/link'
+
+//hook
 import {useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useDispatch } from 'react-redux'
+import { userPackage } from '../../public/redux/actions'
+import { useUserPackageHook } from "../../public/redux/hooks"
+
+//img
 import GoogleIcon from '../../public/icons/7123025_logo_google_g_icon.svg'
+
+//component
 import PopUp from '../../public/shared/PopUp'
 
 const uuid = require("uuid")
 
 function Login() {
-    const [datas , setDatas] = useState([])
+    const [userDatas , setUserDatas] = useState([])
     const [isSuccess, setIsSuccess] = useState(false)
     const [isPopUp, setIsPopUp] = useState(false)
     const [statement, setStatement] = useState('Vui lòng kiểm tra lại email, password')
+    const router = useRouter()
     const provider = new GoogleAuthProvider()
+    const dispatch = useDispatch()
     const emailRef = useRef()
     const passRef = useRef()
+    const id = useUserPackageHook()
 
     useEffect( () => {
         onValue(ref(db, '/users'), (snapshot) => {
@@ -24,19 +40,33 @@ function Login() {
             snapshot.forEach( (childSnapshot) =>{
                 data1.push(childSnapshot.val())
             } )
-            setDatas(data1)
+            setUserDatas(data1)
         } )
     }, [])
+
+    const isUser = (email) => {
+        let isUer = false
+        for(let i = 0; i < userDatas.length; i++){
+            if(userDatas[i].email == email){
+                isUer = true
+                dispatch(userPackage(userDatas[i].userId))
+                break;
+            }
+        }
+        return isUer
+    }
 
     const handlePopUp = () => {
         setIsPopUp(!isPopUp)
     }
 
     const handleLogIn = () => {
-        datas.forEach( (data) => {
-            if(data.email == emailRef.current.value && data.password == passRef.current.value){
+        userDatas.forEach( (userData) => {
+            if(userData.email == emailRef.current.value && userData.password == passRef.current.value){
                 setIsSuccess(true)
                 setStatement('Đăng nhập thành công')
+                dispatch(userPackage(userData.userId))
+                router.push(`/user/${userData.userId}`)
             }
         } )
         setIsPopUp(!isPopUp)
@@ -47,17 +77,21 @@ function Login() {
     const handleLogInGoogle = () => {
         signInWithPopup(auth,provider)
             .then( (result) => {
-                const id = uuid.v4()
-                set( ref(db, 'users/' + id ), {
-                    avatar: result.user.photoURL,
-                    create_at: new Date().getTime(),
-                    email: result.user.email,
-                    name: result.user.displayName,
-                    userId: id
-                })
-            } )
-            .catch( (error) => {
-                console.log(error.message)
+                if(isUser(result.user.email)){
+                    router.push(`/user/${id}`)
+                }
+                else{
+                    const id = uuid.v4()
+                    dispatch(userPackage(id))
+                    set(ref(db, 'users/' + id ), {
+                        avatar: result.user.photoURL,
+                        create_at: new Date().getTime(),
+                        email: result.user.email,
+                        name: result.user.displayName,
+                        userId: id
+                    })
+                    router.push(`/user/${id}`)
+                }
             } )
     }
 
