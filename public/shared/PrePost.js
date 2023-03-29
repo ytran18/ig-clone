@@ -1,27 +1,28 @@
-import { usePostPackageHook } from "../redux/hooks"
+//hooks
+import { usePostPackageHook, useUserPackageHook } from "../redux/hooks"
+import { useEffect, useRef, useState } from "react"
 
-//img
+// icons/images
 import DefaultProfile from "../icons/defaultProfile.jpg"
 import Image from "next/image"
-import { useRef, useState } from "react"
-
-//icon
 import { ArrowLeft, ChevronLeft, ChevronRight } from "../icons/icons" 
 
 //firebase
 import { storage, db } from "../../src/firebase"
-import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { ref as ref2, set } from "firebase/database"
 
 const uuid = require("uuid")
 
-function PrePost( {handlePrePost, handleCreatePost} ) {
+function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData} ) {
     const imgs = usePostPackageHook()
+    const userId = useUserPackageHook()
     const [currentIndex, setCurrentIndex] = useState(0)
     const [hideLike, setHideLike] = useState(false)
     const [blockComment, setBlockComment] = useState(false)
     const captionRef = useRef()
-    
+    console.log(selectedFile)
+
     const handleShare = () => {
         const id = uuid.v4()
         var media = []
@@ -32,8 +33,8 @@ function PrePost( {handlePrePost, handleCreatePost} ) {
                     getDownloadURL(ref(storage, `${snapshot.metadata.fullPath}`))
                         .then( (url) => {
                             media.push({type:img.file.type ,url:url})
-                            set(ref2(db,'posts/test/' + id), {
-                                userId: '123',
+                            set(ref2(db,`posts/${userId}/` + id), {
+                                userId: userId,
                                 postId: id,
                                 createAt: new Date().getTime(),
                                 caption: captionRef.current.value,
@@ -68,25 +69,26 @@ function PrePost( {handlePrePost, handleCreatePost} ) {
             <div className="h-[90%] w-full flex">
                 <div className="w-[50%] bg-black rounded-bl-2xl">
                     <div className="w-full h-full flex items-center justify-center relative">
-                        { 
-                            imgs[currentIndex].file.type.includes('image') ?
+                        {
+                            selectedFile[currentIndex].file.type.includes('image') ?
                             (
-                                <img className="w-full max-h-full select-none" src={imgs[currentIndex].url} />
+                                <img className="w-full max-h-full select-none" src={selectedFile[currentIndex].url} />
                             ) :
                             (
-                                <video className=" w-full max-h-full select-none" src={imgs[currentIndex].url} autoPlay/>
+                                <video className=" w-full max-h-full select-none" src={selectedFile[currentIndex].url} autoPlay/>
                             )
                         }
                         <div className={`cursor-pointer absolute left-0 top-[50%] text-white ${currentIndex == 0 ? "hidden" : "block"}`} onClick={handleChevronLeft}> {ChevronLeft} </div>
-                        <div className={`cursor-pointer absolute right-0 top-[50%] text-white ${currentIndex == imgs.length - 1 ? "hidden" : "block" }`} onClick={handleChevronRight}> {ChevronRight} </div>
+                        <div className={`cursor-pointer absolute right-0 top-[50%] text-white ${currentIndex == selectedFile.length - 1 ? "hidden" : "block" }`} onClick={handleChevronRight}> {ChevronRight} </div>
                     </div>
                 </div>
                 <div className="w-[50%]">
                     <div className="h-[10%] flex items-center mb-4 p-4"> 
                         <div className="w-[32px] h-[32px]">
-                            <Image className="w-full h-full rounded-full" src={DefaultProfile}/>
+                            {/* <Image className="w-full h-full rounded-full" src={DefaultProfile}/> */}
+                            <img className="w-full h-full rounded-full" src={userData.avatar}/>
                         </div>
-                        <div className="mx-[10px]">Hung</div>
+                        <div className="mx-[10px]">{userData.name}</div>
                     </div>
                     <div className="h-[50%] w-full p-4">
                         <textarea ref={captionRef}  className="w-full h-full outline-none text-[14px] resize-none" placeholder="Write a caption...">

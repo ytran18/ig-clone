@@ -181,7 +181,7 @@ function AccountPage() {
                     </div>
                     <div className="mx-[30px] mt-[30px]">
                         <div className={tab == 1 ?"block" : "hidden"}>
-                            <Posts/>
+                            <Posts userData = { userData }/>
                         </div>
                         <div className={tab == 2 ?"block" : "hidden"}>
                             <Saved/>

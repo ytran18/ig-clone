@@ -8,7 +8,7 @@ import Messi from "../icons/messi.jpg"
 import CreatePost from "./CreatePost"
 import Loading from "./Loading"
 
-function Posts() {
+function Posts({ userData }) {
     const [createPost, setCreatePost] = useState(false)
     const [posts, setPosts] = useState([])
 
@@ -32,6 +32,7 @@ function Posts() {
             <div className={createPost ? "block" : "hidden"}>
                 <CreatePost
                     handleCreatePost = {handleCreatePost} 
+                    userData = { userData }
                 />
             </div>
 

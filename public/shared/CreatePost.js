@@ -1,12 +1,16 @@
+// icons/images
 import {MediaIcon} from "../icons/icons"
-import { storage,db } from "../../src/firebase"
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
-import { set, ref as ref2} from "firebase/database"
+
+// hook
 import { useState } from "react"
+import { useDispatch } from "react-redux"
+import { postPackage } from "../redux/actions"
+
+//component
 import SliderPicture from "./SliderPicture"
 import DiscardPost from "./DiscardPost"
 
-function CreatePost( {handleCreatePost} ) {
+function CreatePost( {handleCreatePost, userData} ) {
 
     const [selectedFile, setSelectedFile] = useState([])
 
@@ -78,6 +82,7 @@ function CreatePost( {handleCreatePost} ) {
                 ): 
                 (
                     <SliderPicture 
+                        userData = { userData }
                         selectedFile = {selectedFile}
                         handleChange = {handleChange}
                         handleDiscardPost = {handleDiscardPost}
