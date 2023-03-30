@@ -3,7 +3,7 @@ import { SuccessIcon, FailIcon, CloseIcon } from "../icons/icons"
 function PopUp ({ statement, isSuccess, closePopUp })
 {
     return (
-        <div className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgb(89,89,89)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl">
+        <div className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgb(89,89,89)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl z-10">
             <div className={`relative select-none w-[300px] h-[120px] bg-[rgb(255,255,255)] rounded-[25px] flex justify-center items-center border-[2px] ${isSuccess ? "border-[rgb(6,176,80)]" : "border-[rgb(255,0,0)]"}`}>
                 {
                     isSuccess ? 
