@@ -65,8 +65,8 @@ function Login() {
             if(userData.email == emailRef.current.value && userData.password == passRef.current.value){
                 setIsSuccess(true)
                 setStatement('Đăng nhập thành công')
-                dispatch(userPackage(userData.userId))
-                router.push(`/user/${userData.userId}`)
+                dispatch(userPackage(userData.name))
+                router.push(`/user/${userData.name}`)
             }
         } )
         setIsPopUp(!isPopUp)
@@ -78,7 +78,7 @@ function Login() {
         signInWithPopup(auth,provider)
             .then( (result) => {
                 if(isUser(result.user.email)){
-                    router.push(`/user/${id}`)
+                    router.push(`/user/${result.user.displayName}`)
                 }
                 else{
                     const id = uuid.v4()
@@ -90,7 +90,7 @@ function Login() {
                         name: result.user.displayName,
                         userId: id
                     })
-                    router.push(`/user/${id}`)
+                    router.push(`/user/${result.user.displayName}`)
                 }
             } )
     }
