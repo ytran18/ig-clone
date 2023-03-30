@@ -26,27 +26,27 @@ function AccountPage() {
     const [followingPopUp, setFollowingPopUp] = useState(false)
     const [followersPopUp, setFollowersPopUp] = useState(false)
     const [avatar, setAvatar] = useState()
-    const [userData, setUserData] = useState()
+    // const [userData, setUserData] = useState()
     const [tab, setTab] = useState(1)
 
-    const id = useUserPackageHook()
+    const userData = useUserPackageHook()
 
-    console.log(id)
+    console.log(userData)
 
-    useEffect( () => {
-        const userDataRef = ref2(db, 'users/' + id )
-        onValue(userDataRef, async (snapshot) => {
-            const data = snapshot.val()
-            setUserData(data);
-        })
-    }, [])
+    // useEffect( () => {
+    //     const userDataRef = ref2(db, 'users/' + id )
+    //     onValue(userDataRef, async (snapshot) => {
+    //         const data = snapshot.val()
+    //         setUserData(data);
+    //     })
+    // }, [])
 
-    useEffect( () => {
-        const userDataRef = ref2(db, 'users/' + id + '/avatar' )
-        onValue(userDataRef, (snapshot) => {
-            setAvatar(snapshot.val());
-        })
-    }, [])
+    // useEffect( () => {
+    //     const userDataRef = ref2(db, 'users/' + id + '/avatar' )
+    //     onValue(userDataRef, (snapshot) => {
+    //         setAvatar(snapshot.val());
+    //     })
+    // }, [])
 
 
     console.log("user: ",userData)
@@ -72,7 +72,7 @@ function AccountPage() {
             .then( (snapshot) => {
                 getDownloadURL(imageRef)
                     .then((url) => {
-                        update(ref2(db, "users/" + id), {
+                        update(ref2(db, "users/" + userData.useriId), {
                             avatar: url
                         })
                     })

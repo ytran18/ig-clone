@@ -32,7 +32,6 @@ function Login() {
     const dispatch = useDispatch()
     const emailRef = useRef()
     const passRef = useRef()
-    const id = useUserPackageHook()
 
     useEffect( () => {
         onValue(ref(db, '/users'), (snapshot) => {
@@ -49,7 +48,7 @@ function Login() {
         for(let i = 0; i < userDatas.length; i++){
             if(userDatas[i].email == email){
                 isUer = true
-                dispatch(userPackage(userDatas[i].userId))
+                dispatch(userPackage(userDatas[i]))
                 break;
             }
         }
@@ -65,8 +64,8 @@ function Login() {
             if(userData.email == emailRef.current.value && userData.password == passRef.current.value){
                 setIsSuccess(true)
                 setStatement('Đăng nhập thành công')
-                dispatch(userPackage(userData.name))
-                router.push(`/user/${userData.name}`)
+                dispatch(userPackage(userData))
+                router.push(`/`)
             }
         } )
         setIsPopUp(!isPopUp)
@@ -77,20 +76,25 @@ function Login() {
     const handleLogInGoogle = () => {
         signInWithPopup(auth,provider)
             .then( (result) => {
+                const endIndex = result.user.email.indexOf('@')
                 if(isUser(result.user.email)){
-                    router.push(`/user/${result.user.displayName}`)
+                    router.push(`/`)
                 }
                 else{
                     const id = uuid.v4()
-                    dispatch(userPackage(id))
-                    set(ref(db, 'users/' + id ), {
+                    const userData = {
                         avatar: result.user.photoURL,
                         create_at: new Date().getTime(),
                         email: result.user.email,
                         name: result.user.displayName,
-                        userId: id
+                        userId: id,
+                        username: result.user.email.slice(0,endIndex)
+                    }
+                    dispatch(userPackage(userData))
+                    set(ref(db, 'users/' + id ), {
+                        ...userData
                     })
-                    router.push(`/user/${result.user.displayName}`)
+                    router.push(`/`)
                 }
             } )
     }

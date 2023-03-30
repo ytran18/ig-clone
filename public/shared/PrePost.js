@@ -14,14 +14,14 @@ import { ref as ref2, set } from "firebase/database"
 
 const uuid = require("uuid")
 
-function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData} ) {
+function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData, handleSelectedFile} ) {
     const imgs = usePostPackageHook()
-    const userId = useUserPackageHook()
     const [currentIndex, setCurrentIndex] = useState(0)
     const [hideLike, setHideLike] = useState(false)
     const [blockComment, setBlockComment] = useState(false)
-    const captionRef = useRef()
+    const [caption, setCaption] = useState("")
     console.log(selectedFile)
+    console.log('userData.userId: '+ userData.userId)
 
     const handleShare = () => {
         const id = uuid.v4()
@@ -33,11 +33,11 @@ function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData} ) {
                     getDownloadURL(ref(storage, `${snapshot.metadata.fullPath}`))
                         .then( (url) => {
                             media.push({type:img.file.type ,url:url})
-                            set(ref2(db,`posts/${userId}/` + id), {
-                                userId: userId,
+                            set(ref2(db,`posts/${userData.userId}/` + id), {
+                                userId: userData.userId,
                                 postId: id,
                                 createAt: new Date().getTime(),
-                                caption: captionRef.current.value,
+                                caption: caption,
                                 media: media,
                                 likes: ['123','234','456'],
                                 comment: [{userId:'123', comment:'hay qua di'}],
@@ -49,6 +49,7 @@ function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData} ) {
                 })
         })
         handleCreatePost()
+        handleSelectedFile()
     }
 
     const handleChevronLeft = () => {
@@ -91,7 +92,7 @@ function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData} ) {
                         <div className="mx-[10px]">{userData.name}</div>
                     </div>
                     <div className="h-[50%] w-full p-4">
-                        <textarea ref={captionRef}  className="w-full h-full outline-none text-[14px] resize-none" placeholder="Write a caption...">
+                        <textarea onChange={(e) => setCaption(e.target.value)} value = { caption } className="w-full h-full outline-none text-[14px] resize-none" placeholder="Write a caption...">
                         </textarea>
                     </div>
                     <div className="h-[40%] border-t-[1px] p-4">

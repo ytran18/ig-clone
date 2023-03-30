@@ -8,7 +8,7 @@ import PrePost from "./PrePost"
 //icon
 import { ArrowLeft, ChevronLeft, ChevronRight, Plus } from "../icons/icons" 
 
-function SliderPicture( {selectedFile, handleChange, handleDiscardPost, handleCreatePost, userData} ) {
+function SliderPicture( {selectedFile, handleChange, handleDiscardPost, handleCreatePost, userData,handleSelectedFile} ) {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [prePost, setPrePost] = useState(false)
 
@@ -39,6 +39,7 @@ function SliderPicture( {selectedFile, handleChange, handleDiscardPost, handleCr
                     selectedFile = {selectedFile}
                     handlePrePost = {handlePrePost} 
                     handleCreatePost = {handleCreatePost}
+                    handleSelectedFile = {handleSelectedFile}
                 />
             </div>
             <div 
