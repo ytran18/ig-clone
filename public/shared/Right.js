@@ -33,12 +33,7 @@ function Right ()
             document.removeEventListener("click", handleClickOutSide)
         }
     },[])
-
-    useEffect(() =>
-    {
-        console.log(isSwitch);
-    },[isSwitch])
-
+    
     return (
         <>
             <div className="w-[319px] flex flex-col px-5">

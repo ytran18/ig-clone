@@ -3,7 +3,7 @@ import PostArea from "../public/shared/PostArea";
 import Right from "../public/shared/Right";
 import Sidebar from "../public/shared/Sidebar";
 import Story from "../public/shared/Story";
-import Loading from "../public/shared/Loading";
+import Loading from "../public/shared/LoadingIg";
 
 // firebase
 import { ref, query, onValue } from "firebase/database"
@@ -16,7 +16,7 @@ export default function Home() {
     const [posts, setPosts] = useState([]) // state to store posts get from firebase realtime database
 
     // query to get post from firebase realtime database
-    const getPost = query(ref(db,"posts/test"))
+    const getPost = query(ref(db,"posts/"))
 
     // get all posts from firebase realtime database
     useEffect(() =>

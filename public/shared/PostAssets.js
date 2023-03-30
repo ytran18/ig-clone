@@ -6,16 +6,18 @@ function PostAssets ({ media })
 
     const previousImage = () => {
         setCurrImageIndex((currImageIndex + media.length - 1) % media.length);
-      };
+    };
     
       const nextImage = () => {
         setCurrImageIndex((currImageIndex + 1) % media.length);
-      };
+    };
+    
+    console.log(media);
 
     return (
         <div className="w-full z-0 relative flex justify-center bg-black">
             {
-                media[currImageIndex]?.type === "image/png" ?
+                media[currImageIndex]?.type == "image/png" ?
                 (
                     <img alt="img" className="w-full max-h-[585px] bg-cover bg-center" src={media[currImageIndex]?.url}/>
                 )
