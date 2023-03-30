@@ -87,6 +87,7 @@ function CreatePost( {handleCreatePost, userData} ) {
                         handleChange = {handleChange}
                         handleDiscardPost = {handleDiscardPost}
                         handleCreatePost = {handleCreatePost}
+                        handleSelectedFile = {handleSelectedFile}
                     />
                 )
             }
