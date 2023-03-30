@@ -99,7 +99,13 @@ function SignUp ()
                     username:username,
                     password: password,
                     avatar: "",
-                    create_at: new Date().getTime()
+                    create_at: new Date().getTime(),
+                    posts: [],
+                    follow: [],
+                    follower: [],
+                    saved: [],
+                    tagged: [],
+                    stories: [],
                 }
                 set(ref(db, `users/${id}/`), newUser)
                     .then(() => { 
