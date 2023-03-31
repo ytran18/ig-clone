@@ -12,8 +12,6 @@ function PostAssets ({ media })
         setCurrImageIndex((currImageIndex + 1) % media.length);
     };
     
-    console.log(media);
-
     return (
         <div className="w-full z-0 relative flex justify-center bg-black">
             {
