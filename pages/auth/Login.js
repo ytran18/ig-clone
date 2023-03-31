@@ -151,7 +151,7 @@ function Login() {
             </div>
 
             <div className="sm:w-[350px] sm:h-[45px] h-[45px] sm:border-[1px] mt-[10px] p-[10px] flex items-center justify-center w-screen">
-                <div className="mr-[10px] sm:mr-[5px] text-[20px] font-semibold"> Don't have an account?</div>
+                <div className="mr-[10px] sm:mr-[5px] text-[20px] font-semibold">{`Don't have an account?`}</div>
                 <Link className="text-[#0095f6] text-[20px]" href="/auth/sign-up"> Sign up </Link>
             </div>
         </div>
