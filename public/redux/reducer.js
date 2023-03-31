@@ -1,4 +1,4 @@
-import { USER_PACKAGE, POST_ASSETS } from "./constants"
+import { USER_PACKAGE, POST_ASSETS, CLEAR } from "./constants"
 
 const userState = {
     user: {},
@@ -15,6 +15,11 @@ export const userReducer = (state = userState, action) =>
         case USER_PACKAGE:{
             return {...state, user: action.payload}
         }
+        case CLEAR:{
+            return {
+                user: {}
+            }
+        }
         default:
             return state
     }
@@ -26,6 +31,11 @@ export const postReducer = (state = postState, action) =>
     {
         case POST_ASSETS:{
             return {...state, assets: action.payload}
+        }
+        case CLEAR:{
+            return {
+                assets: []
+            }
         }
         default:
             return state
