@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+
 import Head from "next/head";
 import PostArea from "../public/shared/PostArea";
 import Right from "../public/shared/Right";
@@ -10,7 +12,20 @@ import { ref, query, onValue } from "firebase/database"
 import { db } from "../src/firebase"
 import { useEffect, useState } from "react";
 
+// redux
+import { useUserPackageHook } from "../public/redux/hooks"
+
 export default function Home() {
+
+    // user
+    const user = useUserPackageHook()
+    // router
+    const router = useRouter()
+
+    useEffect(() =>
+    {
+        if(user?.userId == null) router.push("/auth/Login")
+    },[user])
 
     // state
     const [posts, setPosts] = useState([]) // state to store posts get from firebase realtime database

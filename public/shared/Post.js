@@ -1,5 +1,3 @@
-import { useEffect } from "react"
-
 import PostAssets from "./PostAssets"
 import PostFooter from "./PostFooter"
 import PostHeader from "./PostHeader"
@@ -10,11 +8,20 @@ function Post ({ post })
 
     return (
         <>
-            <div className="w-screen md:w-[470px] lg:w-[470px] border-b-[1px] p-1">
-                <PostHeader />
-                <PostAssets media={postObject?.[0]?.media}/>
-                <PostFooter />
-            </div>
+        {
+            postObject.map((item, index) =>
+            {
+                return (
+                    <div key={index}>
+                        <div className="w-screen md:w-[470px] lg:w-[470px] border-b-[1px] p-1">
+                            <PostHeader user={item?.userId} createAt={item?.createAt}/>
+                            <PostAssets media={item?.media}/>
+                            <PostFooter caption={item?.caption} amountOfLove={item?.likes} owner={item?.userId} amountOfComment={item?.comment} postId={item?.postId}/>
+                        </div>
+                    </div>
+                )
+            })
+        }
         </>
     )
 }

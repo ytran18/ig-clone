@@ -1,41 +1,66 @@
-import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
-import AVT from "../../public/img/default-avatar.png"
+
+// firebase
+import { db } from "../../src/firebase"
+import { ref, onValue, query } from "firebase/database"
+
 import { MoreDotIcon } from "../icons/icons"
 import OverLayBlock from "./OverLayBlock"
 import PostOptions from "./PostOptions"
 import PopUp from "./PopUp"
 
-function PostHeader ()
+function PostHeader ({ user, createAt })
 {
-
     const [showOptions, setShowOptions] = useState(false)
     const [showPopUp, setShowPopUp] = useState(false)
     const [statement, setStatement] = useState("")
     const [isSuccess, setIsSuccess] = useState(false)
+    const [userPost, setUserPost] = useState({})
+    const [timeOfPost, setTimeOfPost] = useState("")
 
     const optionsRef = useRef(null)
+
+    const getUser = query(ref(db,`users/${user}`))
+
+    useEffect(() =>
+    {
+        onValue(getUser, (snapshot) =>
+        {
+            const value = snapshot.val()
+            if (value != null) { setUserPost(value); }
+        })
+    },[])
+    // get difference time between 2 unix time
+    const getHoursBetween = (time1, time2) =>
+    {
+        const diffInMs = Math.abs(time2 - time1)
+        let diff = Math.floor(diffInMs / (1000 * 60 * 60))
+        if (diff < 1) return (`${Math.floor(diffInMs / 60000)} m`)
+        else return (`${diff} h`)
+    }
+
+    useEffect(() =>
+    {
+            const newDate = new Date().getTime()
+            setTimeOfPost(getHoursBetween(createAt, newDate))
+    },[])
+
+    useEffect(() =>
+    {
+        console.log(timeOfPost);
+    },[timeOfPost])
 
     useEffect(() =>
     {
         function handleClickOutSide(e) {
-            if(optionsRef.current && optionsRef.current.contains(e.target))
-            {
-                setShowOptions(false)
-            }
+            if(optionsRef.current && optionsRef.current.contains(e.target)) { setShowOptions(false) }
         }
 
         document.addEventListener("click", handleClickOutSide)
-        return () =>
-        {
-            document.removeEventListener("click", handleClickOutSide)
-        }
+        return () => { document.removeEventListener("click", handleClickOutSide) }
     },[])
 
-    const handleClosePopUp = () =>
-    {
-        setShowPopUp(false)
-    }
+    const handleClosePopUp = () => { setShowPopUp(false) }
 
     const handleCopyLink = (value) =>
     {
@@ -43,10 +68,7 @@ function PostHeader ()
         setShowPopUp(true)
         setIsSuccess(true)
         setStatement("Link copied !!!")
-        setTimeout(() =>
-        {
-            setShowPopUp(false)
-        },2000)
+        setTimeout(() => { setShowPopUp(false) },2000)
     }
 
     const handleUnfollow = (value) =>
@@ -55,10 +77,7 @@ function PostHeader ()
         setShowPopUp(true)
         setIsSuccess(true)
         setStatement("Successfull unfollow !!!")
-        setTimeout(() =>
-        {
-            setShowPopUp(false)
-        },2000)
+        setTimeout(() => { setShowPopUp(false) },2000)
     }
 
     return (
@@ -66,10 +85,10 @@ function PostHeader ()
             <div className="w-full h-[56px] items-center flex justify-between">
                 <div className="">
                     <div className="flex items-center">
-                        <Image alt="avt" src={AVT} className="w-[32px] h-[32px] cursor-pointer"/>
-                        <div className="font-[600] hover:text-[rgb(147,147,147)] cursor-pointer px-[10px]">skuukzky</div>
+                        <img alt="avt" src={userPost?.avatar} className="w-[32px] h-[32px] cursor-pointer rounded-full"/>
+                        <div className="font-[600] hover:text-[rgb(147,147,147)] cursor-pointer px-[10px]">{userPost?.username}</div>
                         <span className="text-[rgb(142,142,142)] pr-[10px]">•</span>
-                        <div className="text-[rgb(142,142,142)] tracking-widest">1h</div>
+                        <div className="text-[rgb(142,142,142)] tracking-widest">{timeOfPost}</div>
                     </div>
                 </div>
                 <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)] cursor-pointer" onClick={() => setShowOptions(!showOptions)}>
@@ -82,17 +101,13 @@ function PostHeader ()
                     <div ref={optionsRef}>
                         <OverLayBlock><PostOptions unFollow={handleUnfollow} copyLink={handleCopyLink} close={() => setShowOptions(false)}/></OverLayBlock> 
                     </div>
-                )
-                :
-                (<></>)
+                ) : (<></>)
             }
             {
                 showPopUp ? 
                 (
                     <div><PopUp statement={statement} isSuccess={isSuccess} closePopUp={handleClosePopUp}/></div>
-                )
-                :
-                (<></>)
+                ) : (<></>)
             }
         </>
     )

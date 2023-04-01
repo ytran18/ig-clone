@@ -1,14 +1,76 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+import { get, onValue, push, query, ref, set, update } from "firebase/database"
+import { db } from "../../src/firebase"
 
 import OverLayBlock from "./OverLayBlock"
 import PostPopUp from "./PostPopUp"
 
-function PostFooter ()
+import { useUserPackageHook } from "../redux/hooks"
+
+function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId })
 {
     const [love, setLove] = useState(false)
     const [save, setSave] = useState(false)
     const [comment, setComment] = useState(false)
     const [share, setShare] = useState(false)
+    const [userPost, setUserPost] = useState({})
+
+    const user = useUserPackageHook()
+
+    const getUser = query(ref(db,`users/${owner}`))
+    const getLoveStatus = query(ref(db, `posts/${owner}/${postId}/likes`))
+
+    useEffect(() =>
+    {
+        onValue(getUser, (snapshot) =>
+        {
+            const value = snapshot.val()
+            if (value != null) { setUserPost(value); }
+        })
+    },[])
+    
+    // get love status
+    useEffect(() =>
+    {
+        onValue(getLoveStatus, (snapshot) =>
+        {
+            const value = snapshot.val()
+            console.log(value);
+            if (value != null)
+            {
+                value?.map((item, index) =>
+                {
+                    if (item === user?.userId)
+                    {
+                        setLove(true)
+                    }
+                    else setLove(false)
+                })
+            }
+        })
+    },[])
+
+    const handleLove = () =>
+    {
+        setLove(!love)
+        const getLove = query(ref(db, `posts/${userPost?.userId}/${postId}/`))
+        get(getLove)
+            .then((snapshot) =>
+            {
+                if(snapshot?.val()?.likes)
+                {
+                    const before = snapshot?.val()?.likes
+                    before?.push(user?.userId)
+                    const lovePath = query(ref(db, `posts/${userPost?.userId}/${postId}/likes`))
+                    set(lovePath, before)
+                }
+                else {
+                    const lovePath = query(ref(db, `posts/${userPost?.userId}/${postId}/likes`))
+                    set(lovePath, [user?.userId])
+                }
+            })
+    }
 
     const handleClose = () =>
     {
@@ -20,7 +82,7 @@ function PostFooter ()
             <div className="w-full flex flex-col justify-center">
                 <div className="flex w-full justify-between items-center h-[46px]">
                     <div className="flex cursor-pointer">
-                        <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)]" onClick={() => setLove(!love)}>
+                        <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)]" onClick={handleLove}>
                             {
                                 love ?
                                 (
@@ -62,9 +124,9 @@ function PostFooter ()
                         }
                     </div>
                 </div>
-                <div className="h-[18px] text-[14px] font-[700] mb-[8px]">7,801,402 likes</div>
-                <div className="h-[18px] text-[14px] font-[700] mb-[8px]">warriors<span className="text-[rgb(100,100,100)] font-[400] px-1">Final from ATL.</span></div>
-                <div className="text-[rgb(179,179,179)] text-[14px] cursor-pointer h-[18px] mb-[8px]">View all 333 comments</div>
+                <div className="h-[18px] text-[14px] font-[700] mb-[8px]">{`${amountOfLove?.length || 0} likes`}</div>
+                <div className="h-[18px] text-[14px] font-[700] mb-[8px]">{`${userPost?.username}`}<span className="text-[rgb(100,100,100)] font-[400] px-1">{caption}</span></div>
+                <div className="text-[rgb(179,179,179)] text-[14px] cursor-pointer h-[18px] mb-[8px]">{`View all ${amountOfComment?.length} comments`}</div>
                 <div className="h-[18px] mb-[30px]">
                         <input className="text-[14px] placeholder:text-[rgb(179,179,179)] placeholder:text-[14px] w-full outline-none" placeholder="Add a comment..."/>
                 </div>
