@@ -32,7 +32,11 @@ function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData, hand
                 .then( (snapshot) => {
                     getDownloadURL(ref(storage, `${snapshot.metadata.fullPath}`))
                         .then( (url) => {
-                            media.push({type:img.file.type ,url:url})
+                            if(img.file.type.includes('image')){
+                                media.push({type:'img' ,url:url})
+                            }else{
+                                media.push({type:'video' ,url:url})
+                            }
                             set(ref2(db,`posts/${userData.userId}/` + id), {
                                 userId: userData.userId,
                                 postId: id,
