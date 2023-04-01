@@ -2,6 +2,7 @@
 import Image from "next/image"
 import { useEffect, useState, useLayoutEffect } from "react"
 import { useUserPackageHook } from "../../public/redux/hooks"
+import { useRouter } from "next/router"
 
 //icon/image
 import { EditIcon, PostsIcon, SavedIcon, TaggedIcon } from "../../public/icons/icons"
@@ -26,12 +27,16 @@ function AccountPage() {
     const [followingPopUp, setFollowingPopUp] = useState(false)
     const [followersPopUp, setFollowersPopUp] = useState(false)
     const [avatar, setAvatar] = useState()
-    // const [userData, setUserData] = useState()
     const [tab, setTab] = useState(1)
+    const router = useRouter()
 
     const userData = useUserPackageHook()
 
     console.log(userData)
+
+    useEffect( () => {
+        if(userData.userId == null) router.push("/auth/Login") 
+    } )
 
     // useEffect( () => {
     //     const userDataRef = ref2(db, 'users/' + id )
