@@ -1,4 +1,5 @@
-import { useState } from "react"
+import Image from "next/image";
+import { useEffect, useState } from "react"
 
 function PostAssets ({ media })
 {
@@ -15,14 +16,14 @@ function PostAssets ({ media })
     return (
         <div className="w-full z-0 relative flex justify-center bg-black">
             {
-                media[currImageIndex]?.type == "image/png" ?
+                media?.[currImageIndex]?.type == "img" ?
                 (
-                    <img alt="img" className="w-full max-h-[585px] bg-cover bg-center" src={media[currImageIndex]?.url}/>
+                    <img alt="img" className="max-w-full max-h-[585px] bg-cover bg-center" src={media[currImageIndex]?.url}/>
                 )
                 :
                 (
                     <video className="w-[full] max-h-[585px] bg-cover bg-center" loop autoPlay>
-                        <source src={media[currImageIndex]?.url}/>
+                        <source src={media?.[currImageIndex]?.url} />
                     </video>
                 )
             }
