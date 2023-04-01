@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
+import { useRouter } from "next/router"
+
 import AVT from "../img/default-avatar.png"
 import SuggestionsFollow from "./SuggestionsFollow"
 import SwitchAccountPopUp from "./SwichAccountPopUp"
 import OverLayBlock from "./OverLayBlock"
+
+// redux
+import { useUserPackageHook } from "../redux/hooks"
 
 import AVT01 from "../data-test/assets/img/Hobi-2.jpeg"
 import AVT02 from "../data-test/assets/img/Jin-4.jpeg"
@@ -13,6 +18,10 @@ import AVT05 from "../data-test/assets/img/NamJoon-2.jpeg"
 
 function Right ()
 {
+    // user
+    const user = useUserPackageHook()
+    // router
+    const router = useRouter()
 
     const [isSwitch, setIsSwitch] = useState(false)
 
@@ -33,16 +42,21 @@ function Right ()
             document.removeEventListener("click", handleClickOutSide)
         }
     },[])
+
+    const handleAccountPage = () =>
+    {
+        router.push(`/user/${user?.username}`)
+    }
     
     return (
         <>
             <div className="w-[319px] flex flex-col px-5">
                 <div className="flex justify-between items-center h-[117px]">
                     <div className="flex items-center w-[80%]">
-                        <div className="w-[56px] h-[56px]"><Image alt="avt" src={AVT} className="w-full h-full"/></div>
+                        <div className="w-[56px] h-[56px]" onClick={handleAccountPage}><img alt="avt" src={user?.avatar || AVT} className="w-full h-full rounded-full cursor-pointer"/></div>
                         <div className="mx-4 text-[14px]">
-                            <div className="font-[600]">jineu13</div>
-                            <div className="text-[rgb(172,172,172)]">Jin___Eu</div>
+                            <div className="font-[600]">{user?.username}</div>
+                            <div className="text-[rgb(172,172,172)]">{user?.name}</div>
                         </div>
                     </div>
                     <div className="text-[14px] w-[20%] text-[rgb(78,157,247)] font-[500] cursor-pointer" onClick={() => setIsSwitch(!isSwitch)}>Switch</div>
