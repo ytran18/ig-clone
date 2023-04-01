@@ -43,9 +43,9 @@ function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData, hand
                                 createAt: new Date().getTime(),
                                 caption: caption,
                                 media: media,
-                                likes: ['123','234','456'],
-                                comment: [{userId:'123', comment:'hay qua di'}],
-                                tagPeople: 0,
+                                likes: [null],
+                                comment: [null],
+                                tagPeople: [null],
                                 hideLike: hideLike,
                                 blockComment: blockComment
                             })
