@@ -1,27 +1,38 @@
-import Image from "next/image"
-import { useEffect, useState, useLayoutEffect } from "react"
-import { CommentIcon, LoveIcon } from "../icons/icons"
+//hooks
+import { useEffect, useState } from "react"
+import { useUserPackageHook } from "../redux/hooks"
+
+//firebase
 import { db } from "../../src/firebase"
 import {onValue, ref, set } from "firebase/database"
+
+// icons/image
+import { CommentIcon, LoveIcon } from "../icons/icons"
+import Image from "next/image"
 import Camera  from "../icons/camera.png"
-import Messi from "../icons/messi.jpg"
 import CreatePost from "./CreatePost"
 import Loading from "./Loading"
 
 function Posts({ userData }) {
     const [createPost, setCreatePost] = useState(false)
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState()
 
-    // useLayoutEffect( () => {
-    //     onValue(ref(db, '/posts'), (snapshot) => {
-    //         var posts1 = []
-    //         snapshot.forEach( (childSnapshot) => {
-    //             posts1.push(childSnapshot.val())
-    //         });
-    //         setPosts(posts1)
-    //         console.log(posts)
-    //     });
-    // }, [])
+    useEffect( () => {
+        onValue(ref(db, `/posts/${userData.userId}/`), (snapshot) => {
+            var posts1 = []
+            snapshot.forEach( (childSnapshot) => {
+                posts1.push(childSnapshot.val())
+            });
+            setPosts(posts1)
+            // snapshot.forEach( (childSnapshot) => {
+            //     console.log(childSnapshot.val());
+            // });
+        });
+    }, [])
+
+    console.log(posts)
+    if(posts != undefined ) 
+        console.log(posts[2].comment);
 
     const handleCreatePost = () => {
         setCreatePost(!createPost)
@@ -66,20 +77,20 @@ function Posts({ userData }) {
                                 {
                                     posts.map( (post) => {
                                         return(
-                                            <div className=" relative group mt-[10px]">
+                                            <div className="cursor-pointer select-none relative group mt-[10px] bg-slate-900 h-[300px] w-[300px] flex items-center justify-center">
                                                 <img
-                                                        className="h-[300px] w-[300px]"
-                                                        src={post.assets}  
+                                                        className="max-h-[300px] max-w-[300px]"
+                                                        src={post.media[0].url}  
                                                         alt = "y ngu"
                                                 />
                                                 <div className=" absolute group-hover:flex justify-evenly items-center inset-0 hidden bg-[rgba(35,35,35,0.16)]">
                                                     <div className="flex items-center text-white">
                                                         {CommentIcon} 
-                                                        <div className=" font-bold text-white">{post.comment}</div>
+                                                        <div className=" font-bold text-white">{post.comment == undefined ? "0" : `${post.comment.length}`}</div>
                                                     </div>
                                                     <div className="flex items-center text-white">
                                                         {LoveIcon}
-                                                        <div className=" font-bold text-white">{post.likes}</div>
+                                                        <div className=" font-bold text-white">{post.likes.length}</div>
                                                     </div>
                                                 </div>
                                             </div>

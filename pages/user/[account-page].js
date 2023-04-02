@@ -26,7 +26,6 @@ function AccountPage() {
     const [isEdit, setIsEdit] = useState(false)
     const [followingPopUp, setFollowingPopUp] = useState(false)
     const [followersPopUp, setFollowersPopUp] = useState(false)
-    const [avatar, setAvatar] = useState()
     const [tab, setTab] = useState(1)
     const router = useRouter()
 
@@ -38,26 +37,8 @@ function AccountPage() {
         if(userData.userId == null) router.push("/auth/Login") 
     } )
 
-    // useEffect( () => {
-    //     const userDataRef = ref2(db, 'users/' + id )
-    //     onValue(userDataRef, async (snapshot) => {
-    //         const data = snapshot.val()
-    //         setUserData(data);
-    //     })
-    // }, [])
-
-    // useEffect( () => {
-    //     const userDataRef = ref2(db, 'users/' + id + '/avatar' )
-    //     onValue(userDataRef, (snapshot) => {
-    //         setAvatar(snapshot.val());
-    //     })
-    // }, [])
-
-
     console.log("user: ",userData)
-
-    console.log("avatar:",avatar)
-
+    
     const handleEditPopUp = () => {
         setIsEdit(!isEdit)
     }
