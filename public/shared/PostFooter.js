@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { get, onValue, push, query, ref, set, update } from "firebase/database"
+import { get, onValue, push, query, ref, set } from "firebase/database"
 import { db } from "../../src/firebase"
 
 import OverLayBlock from "./OverLayBlock"
@@ -16,11 +16,13 @@ function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId })
     const [share, setShare] = useState(false)
     const [userPost, setUserPost] = useState({})
 
-    const user = useUserPackageHook()
+    const user = useUserPackageHook() // get user sign in in this session
 
+    // query
     const getUser = query(ref(db,`users/${owner}`))
     const getLoveStatus = query(ref(db, `posts/${owner}/${postId}/likes`))
-
+    
+    // get post'user infor of this post 
     useEffect(() =>
     {
         onValue(getUser, (snapshot) =>
@@ -36,34 +38,42 @@ function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId })
         onValue(getLoveStatus, (snapshot) =>
         {
             const value = snapshot.val()
-            console.log(value);
             if (value != null)
             {
                 value?.map((item, index) =>
                 {
-                    if (item === user?.userId)
-                    {
-                        setLove(true)
-                    }
+                    if (item === user?.userId) { setLove(true) }
                     else setLove(false)
                 })
             }
         })
     },[])
 
+    // handle love actions
     const handleLove = () =>
     {
         setLove(!love)
-        const getLove = query(ref(db, `posts/${userPost?.userId}/${postId}/`))
+        const getLove = query(ref(db, `posts/${owner}/${postId}/`))
         get(getLove)
             .then((snapshot) =>
             {
                 if(snapshot?.val()?.likes)
                 {
-                    const before = snapshot?.val()?.likes
-                    before?.push(user?.userId)
-                    const lovePath = query(ref(db, `posts/${userPost?.userId}/${postId}/likes`))
-                    set(lovePath, before)
+                    snapshot?.val()?.likes?.map((item, index) =>
+                    {
+                        if(item == user?.userId)
+                        {
+                            const newArr = snapshot?.val()?.likes?.filter((data) => data !== user?.userId)
+                            const lovePath = query(ref(db, `posts/${userPost?.userId}/${postId}/likes`))
+                            set(lovePath, newArr)
+                        }
+                        else {
+                            const before = snapshot?.val()?.likes
+                            before?.push(user?.userId)
+                            const lovePath = query(ref(db, `posts/${userPost?.userId}/${postId}/likes`))
+                            set(lovePath, before)
+                        }
+                    })
                 }
                 else {
                     const lovePath = query(ref(db, `posts/${userPost?.userId}/${postId}/likes`))
@@ -72,10 +82,7 @@ function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId })
             })
     }
 
-    const handleClose = () =>
-    {
-        setComment(false)
-    }
+    const handleClose = () => { setComment(false) } // close pop up function
 
     return (
         <>
