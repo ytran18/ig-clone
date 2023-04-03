@@ -10,13 +10,8 @@ import OverLayBlock from "./OverLayBlock"
 // redux
 import { useUserPackageHook } from "../redux/hooks"
 
-import AVT01 from "../data-test/assets/img/Hobi-2.jpeg"
-import AVT02 from "../data-test/assets/img/Jin-4.jpeg"
-import AVT03 from "../data-test/assets/img/JK-2.jpeg"
-import AVT04 from "../data-test/assets/img/Suga_4.jpeg"
-import AVT05 from "../data-test/assets/img/NamJoon-2.jpeg"
 
-function Right ()
+function Right ({ users })
 {
     // user
     const user = useUserPackageHook()
@@ -66,11 +61,14 @@ function Right ()
                     <div className="w-[20%]">See all</div>
                 </div>
                 <div className="w-full">
-                    <SuggestionsFollow AVT={AVT01} name="urmyhope" />
-                    <SuggestionsFollow AVT={AVT02} name="Jin" />
-                    <SuggestionsFollow AVT={AVT03} name="J.K" />
-                    <SuggestionsFollow AVT={AVT04} name="agustd" />
-                    <SuggestionsFollow AVT={AVT05} name="rkive" />
+                    {
+                        users?.map((item, index) =>
+                        {
+                            return (
+                                <div key={index}> <SuggestionsFollow AVT={item?.avatar} name={item?.name} username={item?.username}/> </div>
+                            )
+                        })
+                    }
                 </div>
             </div>
 
