@@ -27,6 +27,7 @@ function AccountPage() {
     const [followingPopUp, setFollowingPopUp] = useState(false)
     const [followersPopUp, setFollowersPopUp] = useState(false)
     const [tab, setTab] = useState(1)
+    const [posts, setPosts] = useState()
     const router = useRouter()
 
     const userData = useUserPackageHook()
@@ -36,6 +37,16 @@ function AccountPage() {
     useEffect( () => {
         if(userData.userId == null) router.push("/auth/Login") 
     } )
+
+    useEffect( () => {
+        onValue(ref2(db, `/posts/${userData.userId}/`), (snapshot) => {
+            var posts1 = []
+            snapshot.forEach( (childSnapshot) => {
+                posts1.push(childSnapshot.val())
+            });
+            setPosts(posts1)
+        });
+    }, [])
 
     console.log("user: ",userData)
     
@@ -116,7 +127,7 @@ function AccountPage() {
                                 </div>
                             </div>
                             <div className="flex">
-                                <p className="mr-[40px]">0 posts</p>
+                                <p className="mr-[40px]">{posts?.length} posts</p>
 
                                 <p 
                                     className="mr-[40px] cursor-pointer"
@@ -167,7 +178,7 @@ function AccountPage() {
                     </div>
                     <div className="mx-[30px] mt-[30px]">
                         <div className={tab == 1 ?"block" : "hidden"}>
-                            <Posts userData = { userData }/>
+                            <Posts userData = { userData } posts ={ posts }/>
                         </div>
                         <div className={tab == 2 ?"block" : "hidden"}>
                             <Saved/>

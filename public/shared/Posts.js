@@ -13,26 +13,10 @@ import Camera  from "../icons/camera.png"
 import CreatePost from "./CreatePost"
 import Loading from "./Loading"
 
-function Posts({ userData }) {
+function Posts({ userData, posts }) {
     const [createPost, setCreatePost] = useState(false)
-    const [posts, setPosts] = useState()
-
-    useEffect( () => {
-        onValue(ref(db, `/posts/${userData.userId}/`), (snapshot) => {
-            var posts1 = []
-            snapshot.forEach( (childSnapshot) => {
-                posts1.push(childSnapshot.val())
-            });
-            setPosts(posts1)
-            // snapshot.forEach( (childSnapshot) => {
-            //     console.log(childSnapshot.val());
-            // });
-        });
-    }, [])
 
     console.log(posts)
-    if(posts != undefined ) 
-        console.log(posts[2].comment);
 
     const handleCreatePost = () => {
         setCreatePost(!createPost)
@@ -90,7 +74,7 @@ function Posts({ userData }) {
                                                     </div>
                                                     <div className="flex items-center text-white">
                                                         {LoveIcon}
-                                                        <div className=" font-bold text-white">{post.likes.length}</div>
+                                                        <div className=" font-bold text-white">{post.likes == undefined ? "0" : `${post.comment.length}`}</div>
                                                     </div>
                                                 </div>
                                             </div>
