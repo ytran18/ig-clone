@@ -8,7 +8,7 @@ import Story from "../public/shared/Story";
 import Loading from "../public/shared/LoadingIg";
 
 // firebase
-import { ref, query, onValue } from "firebase/database"
+import { ref, query, onValue, limitToFirst } from "firebase/database"
 import { db } from "../src/firebase"
 import { useEffect, useState } from "react";
 
@@ -29,9 +29,12 @@ export default function Home() {
 
     // state
     const [posts, setPosts] = useState([]) // state to store posts get from firebase realtime database
+    const [users, setUsers] = useState([]) // state to store users get from firebase realtime database
 
     // query to get post from firebase realtime database
     const getPost = query(ref(db,"posts/"))
+    // query to get some users from firebase realtime database
+    const getUsers = query(ref(db, "users/"), limitToFirst(5))
 
     // get all posts from firebase realtime database
     useEffect(() =>
@@ -43,6 +46,19 @@ export default function Home() {
             {
                 let postObject = Object.values(value)
                 setPosts(postObject)
+            }
+        })
+    },[])
+    // get 5 users from firebase realtime database
+    useEffect(() =>
+    {
+        onValue(getUsers, (snapshot) =>
+        {
+            const value = snapshot.val()
+            if (value != null)
+            {
+                let usersObject = Object.values(value)
+                setUsers(usersObject)
             }
         })
     },[])
@@ -78,7 +94,7 @@ export default function Home() {
                             </div>
                         </div>
                         <div className="hidden lg:flex justify-center">
-                            <Right />
+                            <Right users={users}/>
                         </div>
                     </div>
                 </>
