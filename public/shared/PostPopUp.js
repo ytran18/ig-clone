@@ -1,27 +1,60 @@
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 import IMG from "../data-test/assets/img/BangTan-3.jpeg"
-import COMT1 from "../data-test/assets/img/Hobi-2.jpeg"
 import COMT2 from "../data-test/assets/img/Jimin.jpeg"
 import COMT3 from "../data-test/assets/img/Jin-4.jpeg"
 import COMT4 from "../data-test/assets/img/JK-2.jpeg"
 import COMT5 from "../data-test/assets/img/NamJoon-2.jpeg"
 import COMT6 from "../data-test/assets/img/Suga_4.jpeg"
 import COMT7 from "../data-test/assets/img/TaeHyung-2.jpeg"
-import AVT from "../data-test/assets/img/Jimin.jpeg"
 import { CloseIcon, MoreDotIcon } from "../icons/icons"
 import Comment from "./Comment"
 
-function PostPopUp ({close})
+// firebase
+import { onValue, query, ref } from "firebase/database"
+import { db } from "../../src/firebase"
+
+function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt })
 {
 
-    const [love, setLove] = useState(false)
+    const [love, setLove] = useState(loveStatus)
     const [save, setSave] = useState(false)
     const [share, setShare] = useState(false)
     const [comment, setComment] = useState(false)
     const [commentText, setCommentText] = useState("")
+    const [userPost, setUserPost] = useState([])
+    const [timeOfPost, setTimeOfPost] = useState("")
 
     const commentRef = useRef(null)
+
+    // query
+    const getUser = query(ref(db,`users/${owner}`))
+
+    // get post'user infor of this post 
+    useEffect(() =>
+    {
+        onValue(getUser, (snapshot) =>
+        {
+            const value = snapshot.val()
+            if (value != null) { setUserPost(value); }
+        })
+    },[])
+
+    // get difference time between 2 unix time
+    const getHoursBetween = (time1, time2) =>
+    {
+        const diffInMs = Math.abs(time2 - time1)
+        let diff = Math.floor(diffInMs / (1000 * 60 * 60))
+        if (diff < 1) return (`${Math.floor(diffInMs / 60000)} m`)
+        else if (diff > 24) return (`${Math.floor(diff / 24)} d`)
+        else return (`${diff} h`)
+    }
+
+    useEffect(() =>
+    {
+            const newDate = new Date().getTime()
+            setTimeOfPost(getHoursBetween(createAt, newDate))
+    },[])
 
     const handleFocus = () =>
     {   
@@ -46,22 +79,22 @@ function PostPopUp ({close})
 
     return (
         <>
-            <div className="h-[747px] max-h-[747px] flex relative">
-                <div className="w-[747px] h-full bg-black flex justify-center items-center">
-                    <Image alt="img" src={IMG} className="max-w-[747px] max-h-full" />
+            <div className="h-[90%] w-[90%] max-h-[90%] flex relative">
+                <div className="w-[60%] h-full bg-black flex justify-center items-center">
+                    <Image alt="img" src={IMG} className="max-w-full max-h-full" />
                 </div>
-                <div className="w-[500px] h-full bg-white flex flex-col">
+                <div className="w-[40%] h-full bg-white flex flex-col">
                     {/* user info */}
                     <div className="h-[60px] flex justify-between items-center px-4 border-b-[1px] border-b-[rgb(240,240,240)]">
                         <div className="flex items-end h-full">
-                            <div className="h-full flex items-center"><Image alt="avt" src={AVT} className="w-[32px] h-[32px] rounded-full"/></div>
-                            <div className="mx-2 font-[600] h-full flex items-center text-[14px] hover:text-[rgb(142,142,142)] cursor-pointer">kwakdongyeon0</div>
+                            <div className="h-full flex items-center"><Image alt="avt" src={userPost?.avatar} width={32} height={32} className="w-[32px] h-[32px] rounded-full"/></div>
+                            <div className="mx-2 font-[600] h-full flex items-center text-[14px] hover:text-[rgb(142,142,142)] cursor-pointer">{userPost?.username}</div>
                         </div>
                         <div className="hover:text-[rgb(142,142,142)] cursor-pointer">{MoreDotIcon}</div>
                     </div>
                     {/* comments */}
                     <div className="h-[518px] border-b-[1px] border-b-[rgb(240,240,240)] overflow-x-auto scrollbar-hide px-4 py-2">
-                        <Comment name={"boyoung0212_official"} comment={"싹둑💇‍♀️"} avt={COMT1} isOwner time={"20h"}/>
+                        <Comment name={userPost?.username} comment={caption} avt={userPost?.avatar} isOwner time={timeOfPost}/>
                         <Comment name={"agustd"} comment={"오늘도 💪🏻"} avt={COMT2} time={"20h"} like={"22"}/>
                         <Comment name={"uaremyhope"} comment={"지민 (Jimin) 'FACE' Release"} avt={COMT3} time={"20h"} like={"21"}/>
                         <Comment name={"j.m"} comment={"JP’s handles last night were CRAZY 🤯 "} avt={COMT4} time={"20h"} like={"24"}/>
@@ -120,7 +153,7 @@ function PostPopUp ({close})
                             }
                             </div>
                         </div>
-                        <div className="text-[14px] font-[600] cursor-pointer">197,741 likes</div>
+                        <div className="text-[14px] font-[600] cursor-pointer">{`${amountOfLove.length} likes`}</div>
                     </div>
                     {/* comment input */}
                     <div className="h-[55px] w-full flex px-4">

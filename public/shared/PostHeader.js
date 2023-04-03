@@ -36,6 +36,7 @@ function PostHeader ({ user, createAt })
         const diffInMs = Math.abs(time2 - time1)
         let diff = Math.floor(diffInMs / (1000 * 60 * 60))
         if (diff < 1) return (`${Math.floor(diffInMs / 60000)} m`)
+        else if (diff > 24) return (`${Math.floor(diff / 24)} d`)
         else return (`${diff} h`)
     }
 
@@ -44,11 +45,6 @@ function PostHeader ({ user, createAt })
             const newDate = new Date().getTime()
             setTimeOfPost(getHoursBetween(createAt, newDate))
     },[])
-
-    useEffect(() =>
-    {
-        console.log(timeOfPost);
-    },[timeOfPost])
 
     useEffect(() =>
     {
@@ -88,7 +84,7 @@ function PostHeader ({ user, createAt })
                         <img alt="avt" src={userPost?.avatar} className="w-[32px] h-[32px] cursor-pointer rounded-full"/>
                         <div className="font-[600] hover:text-[rgb(147,147,147)] cursor-pointer px-[10px]">{userPost?.username}</div>
                         <span className="text-[rgb(142,142,142)] pr-[10px]">•</span>
-                        <div className="text-[rgb(142,142,142)] tracking-widest">{timeOfPost}</div>
+                        <div className="text-[rgb(142,142,142)] tracking-wide">{timeOfPost}</div>
                     </div>
                 </div>
                 <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)] cursor-pointer" onClick={() => setShowOptions(!showOptions)}>

@@ -8,7 +8,7 @@ function Comment ({ name, comment, avt, isOwner, time, like })
             isOwner ? 
             (
                 <div className="h-[43px] w-full flex items-center mb-4">
-                    <div className=""><Image alt="avt" src={avt} className="w-[32px] h-[32px] rounded-full cursor-pointer"/></div>
+                    <div className=""><Image alt="avt" src={avt} width={32} height={32} className="w-[32px] h-[32px] rounded-full cursor-pointer"/></div>
                     <div className="flex flex-col">
                         <div className="flex">
                             <div className="text-[14px] font-[600] px-2 cursor-pointer hover:text-[rgb(146,146,146)]">{name}</div>
