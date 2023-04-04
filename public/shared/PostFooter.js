@@ -8,7 +8,7 @@ import PostPopUp from "./PostPopUp"
 
 import { useUserPackageHook } from "../redux/hooks"
 
-function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId, createAt })
+function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId, createAt, media })
 {
     const [love, setLove] = useState(false)
     const [save, setSave] = useState(false)
@@ -140,7 +140,7 @@ function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId, cr
             </div>
             {
                 comment ?
-                ( <OverLayBlock><PostPopUp owner={owner} amountOfLove={amountOfLove} caption={caption} createAt={createAt} close={handleClose} loveStatus={love}/></OverLayBlock> )
+                ( <OverLayBlock><PostPopUp owner={owner} media={media} amountOfLove={amountOfLove} caption={caption} createAt={createAt} close={handleClose} loveStatus={love}/></OverLayBlock> )
                 :
                 (<></>)
             }
