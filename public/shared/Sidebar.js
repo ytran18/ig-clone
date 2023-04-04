@@ -5,12 +5,19 @@ import More from "./More"
 import Search from "./Search"
 import { IgSidebar, IgIcon, HomeIcon, SearchIcon, Explore, ReelIcon, MessagesIcon, NotificationIcon, MoreIcon, CreateIcon, SearchSelectIcon, HomeSelectIcon, MoreSelectIcon, ReelSelectIcon, CreateSelectIcon, ExploreSelectIcon, MessagesSelectIcon, NotificationSelectIcon } from "../icons/icons"
 
+// redux
+import { useUserPackageHook } from "../redux/hooks"
+import Image from "next/image"
+
 function Sidebar ()
 {
     const [state, setState] = useState(0)
     const [select, setSelect] = useState(0)
     const [showMore, setShowMore] = useState(false)
     const [showSearch, setShowSearch] = useState(false)
+
+    // user
+    const user = useUserPackageHook()
 
     // hanlde click outside to close more options pop up
     const morePopUpRef = useRef(null)
@@ -83,6 +90,10 @@ function Sidebar ()
                                 <div className={`lg:pl-2 md:justify-center md:items-center ${select === 6 ? "hidden" : "flex"}`}>{CreateIcon}</div>
                                 <div className={`lg:pl-2 md:justify-center md:items-center ${select === 6 ? "flex" : "hidden"}`}>{CreateSelectIcon}</div>
                                 <div className={`font-[500] ml-5 md:hidden lg:justify-center lg: items-center ${state === 1 ? "lg:hidden" : `${state === 2 ? "lg:hidden" : "lg:flex"}`}`}>Create</div>
+                            </Link>
+                            <Link className="flex lg:mx-5 lg:h-[56px] md:h-[48px] lg:justify-start md:justify-center items-center hover:bg-[rgb(250,250,250)] rounded-[25px]" href={`/user/${user?.username}`}>
+                                <div className="lg:pl-2 md:justify-center md:items-center"> <Image alt="avt" src={user?.avatar} className="w-[24px] h-[24px] rounded-full" width={24} height={24}/> </div>
+                                <div className={`font-[500] ml-5 md:hidden lg:justify-center lg: items-center ${state === 1 ? "lg:hidden" : `${state === 2 ? "lg:hidden" : "lg:flex"}`}`}>Profile</div>
                             </Link>
                         </div>
                     </div>
