@@ -8,6 +8,7 @@ import { IgSidebar, IgIcon, HomeIcon, SearchIcon, Explore, ReelIcon, MessagesIco
 // redux
 import { useUserPackageHook } from "../redux/hooks"
 import Image from "next/image"
+import CreatePost from "./CreatePost"
 
 function Sidebar ()
 {
@@ -15,6 +16,7 @@ function Sidebar ()
     const [select, setSelect] = useState(0)
     const [showMore, setShowMore] = useState(false)
     const [showSearch, setShowSearch] = useState(false)
+    const [createPost, setCreatePost] = useState(false)
 
     // user
     const user = useUserPackageHook()
@@ -44,6 +46,11 @@ function Sidebar ()
             document.removeEventListener("click", handleClickOutSide)
         }
     },[])
+
+    const handleCreatePost = () =>
+    {
+        setState(0); setSelect(6); setCreatePost(!createPost)
+    }
 
     return (
             <div className="flex scrollbar-hide h-screen" style={{overflowY:"hidden"}}>
@@ -86,7 +93,7 @@ function Sidebar ()
                                 <div className={`lg:pl-2 md:justify-center md:items-center ${select === 5 ? "flex" : "hidden"}`}>{NotificationSelectIcon}</div>
                                 <div className={`font-[500] ml-5 md:hidden lg:justify-center lg: items-center ${state === 1 ? "lg:hidden" : `${state === 2 ? "lg:hidden" : "lg:flex"}`}`}>Notifications</div>
                             </Link>
-                            <Link className="flex lg:mx-5 lg:h-[56px] md:h-[48px] lg:justify-start md:justify-center items-center hover:bg-[rgb(250,250,250)] rounded-[25px]" href="/" onClick={() => {setState(0); setSelect(6)}}>
+                            <Link className="flex lg:mx-5 lg:h-[56px] md:h-[48px] lg:justify-start md:justify-center items-center hover:bg-[rgb(250,250,250)] rounded-[25px]" href="/" onClick={handleCreatePost}>
                                 <div className={`lg:pl-2 md:justify-center md:items-center ${select === 6 ? "hidden" : "flex"}`}>{CreateIcon}</div>
                                 <div className={`lg:pl-2 md:justify-center md:items-center ${select === 6 ? "flex" : "hidden"}`}>{CreateSelectIcon}</div>
                                 <div className={`font-[500] ml-5 md:hidden lg:justify-center lg: items-center ${state === 1 ? "lg:hidden" : `${state === 2 ? "lg:hidden" : "lg:flex"}`}`}>Create</div>
@@ -119,6 +126,13 @@ function Sidebar ()
                     )
                     :
                     (<></>)
+                }
+                {
+                    createPost ? (
+                        <div className="z-10">
+                            <CreatePost handleCreatePost={handleCreatePost} userData={user} />
+                        </div>) 
+                    : (<></>)
                 }
             </div>
             
