@@ -1,20 +1,19 @@
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
-import IMG from "../data-test/assets/img/BangTan-3.jpeg"
 import COMT2 from "../data-test/assets/img/Jimin.jpeg"
 import COMT3 from "../data-test/assets/img/Jin-4.jpeg"
 import COMT4 from "../data-test/assets/img/JK-2.jpeg"
 import COMT5 from "../data-test/assets/img/NamJoon-2.jpeg"
 import COMT6 from "../data-test/assets/img/Suga_4.jpeg"
 import COMT7 from "../data-test/assets/img/TaeHyung-2.jpeg"
-import { CloseIcon, MoreDotIcon } from "../icons/icons"
+import { ChevronLeft, ChevronRight, CloseIcon, CommentPost, Dot, LovePost, MoreDotIcon, NotLovePost, NotSavedPost, SavedPost, SharePost } from "../icons/icons"
 import Comment from "./Comment"
 
 // firebase
 import { onValue, query, ref } from "firebase/database"
 import { db } from "../../src/firebase"
 
-function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt })
+function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt, media })
 {
 
     const [love, setLove] = useState(loveStatus)
@@ -24,6 +23,9 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt 
     const [commentText, setCommentText] = useState("")
     const [userPost, setUserPost] = useState([])
     const [timeOfPost, setTimeOfPost] = useState("")
+    const [currImageIndex, setCurrImageIndex] = useState(0)
+    const [width, setWidth] = useState([])
+    const [height, setHeight] = useState([])
 
     const commentRef = useRef(null)
 
@@ -56,18 +58,13 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt 
             setTimeOfPost(getHoursBetween(createAt, newDate))
     },[])
 
-    const handleFocus = () =>
-    {   
-        setComment(true)
-        commentRef.current.focus()
-    }
+    const handleFocus = () => { setComment(true); commentRef.current.focus() } // focus input
 
     const handleChangeComment = (e) =>
     {
         setCommentText(e.target.value)
 
-        if(commentText.length > 0 )
-        {
+        if(commentText.length > 0 ) {
             const changeText = document.getElementById("post-text")
             changeText.style.color = "rgb(0,149,246)"
         }
@@ -77,11 +74,69 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt 
         }
     }
 
+    const previousImage = () => {
+        if (currImageIndex !== 0) { setCurrImageIndex(prev => prev - 1); }
+    }
+
+    const nextImage = () => {
+        if (currImageIndex < media?.length - 1) { setCurrImageIndex(prev => prev + 1); }
+    }
+    
+    const handleImageOnload = (e) => {
+        setWidth(prev => [...prev, e.target.naturalWidth]) 
+        setHeight(prev => [...prev, e.target.naturalHeight])
+    }
+
+    useEffect(() =>
+    {
+        media.map((item ,index) =>
+        {
+            if(index == currImageIndex)
+            {
+                const dot = document.getElementById(index)
+                dot.classList.remove("text-[rgb(138,131,111)]")
+                dot.classList.add("text-[rgb(255,255,255)]")
+            }
+            else {
+                const disable = document.getElementById(index)
+                disable.classList.remove("text-[rgb(255,255,255)]")
+                disable.classList.add("text-[rgb(138,131,111)]")
+            }
+        })
+    },[currImageIndex])
+
     return (
         <>
             <div className="h-[90%] w-[90%] max-h-[90%] flex relative">
-                <div className="w-[60%] h-full bg-black flex justify-center items-center">
-                    <Image alt="img" src={IMG} className="max-w-full max-h-full" />
+                <div className="relative w-[60%] h-full bg-black flex justify-center items-center">
+                {
+                    media[currImageIndex]?.type == "img" ?
+                    (
+                        <Image onLoad={handleImageOnload} alt="img" className="w-full h-full bg-center object-cover" width={500} height={300} src={media[currImageIndex]?.url}/>
+                    )
+                    :
+                    (
+                        <video className="w-[full] max-h-[585px] bg-cover bg-center" loop autoPlay>
+                            <source src={media?.[currImageIndex]?.url} />
+                        </video>
+                    )
+                }
+                    <div className={`absolute top-[50%] w-full h-full left-0 right-0 px-4 py-2 text-transparent flex text-white ${currImageIndex > 0 ? "justify-between" : "justify-end"}`}>
+                        <div onClick={previousImage} className={`text-black items-center justify-center cursor-pointer bg-[rgb(181,181,181)] rounded-full w-[30px] h-[30px] ${currImageIndex == 0 ? "hidden" : "flex"}`}> {ChevronLeft} </div>
+                        <div onClick={nextImage} className={`text-black items-center justify-center bg-[rgb(181,181,181)] w-[30px] h-[30px] rounded-full cursor-pointer ${currImageIndex == media?.length - 1 ? "hidden" : "flex"}`}> {ChevronRight} </div>
+                    </div>
+                    <div className={`absolute bottom-0 ${media?.length - 1 === 0 ? "hidden" : "flex"}`}>
+                        {
+                            media.map((item, index) =>
+                            {
+                                return (
+                                    <div key={index}>
+                                        <div id={index} className="text-[rgb(138,131,111)] -mx-[10px]"> {Dot} </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
                 <div className="w-[40%] h-full bg-white flex flex-col">
                     {/* user info */}
@@ -110,48 +165,12 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt 
                     <div className="h-[114px] border-b-[1px] border-b-[rgb(240,240,240)] px-4">
                         <div className="flex justify-between h-[55px]">
                             <div className="flex cursor-pointer items-center">
-                                <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)]" onClick={() => setLove(!love)}>
-                                {
-                                    love ?
-                                    (
-                                        <svg aria-label="Unlike" class="x1lliihq x1n2onr6" color="rgb(255, 48, 64)" fill="rgb(255, 48, 64)" height="24" role="img" viewBox="0 0 48 48" width="24">
-                                            <title>Unlike</title><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path>
-                                        </svg>
-                                    )
-                                    :
-                                    (
-                                        <svg aria-label="Like" class="x1lliihq x1n2onr6" color="currentColor" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24">
-                                            <title>Like</title><path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938m0-2a6.04 6.04 0 0 0-4.797 2.127 6.052 6.052 0 0 0-4.787-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z"></path>
-                                        </svg>
-                                    )
-                                }
-                                </div>
-                                <div className="text-[rgb(38,38,38)] px-2  hover:text-[rgb(142,142,142)]" onClick={handleFocus}>
-                                    <svg aria-label="Comment" class="x1lliihq x1n2onr6" color="currentColor" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24">
-                                        <title>Comment</title><path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
-                                    </svg>
-                                </div>
-                                <div className="text-[rgb(38,38,38)]  hover:text-[rgb(142,142,142)]" onClick={() => setShare(true)}>
-                                    <svg aria-label="Share Post" class="x1lliihq x1n2onr6" color="currentColor" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24">
-                                        <title>Share Post</title><line fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" x1="22" x2="9.218" y1="3" y2="10.083"></line><polygon fill="none" points="11.698 20.334 22 3.001 2 3.001 9.218 10.084 11.698 20.334" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></polygon>
-                                    </svg>
-                                </div>
+                                <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)]" onClick={() => setLove(!love)}> { love ? ( LovePost ) : ( NotLovePost ) } </div>
+                                <div className="text-[rgb(38,38,38)] px-2  hover:text-[rgb(142,142,142)]" onClick={handleFocus}> {CommentPost} </div>
+                                <div className="text-[rgb(38,38,38)]  hover:text-[rgb(142,142,142)]" onClick={() => setShare(true)}> {SharePost} </div>
                             </div>
 
-                            <div className="text-[rgb(38,38,38)] cursor-pointer flex items-center  hover:text-[rgb(142,142,142)]" onClick={() => setSave(!save)}>
-                            {
-                                save ?
-                                (
-                                    <svg aria-label="Remove" class="x1lliihq x1n2onr6" color="rgb(38, 38, 38)" fill="rgb(38, 38, 38)" height="24" role="img" viewBox="0 0 24 24" width="24"><title>Remove</title><path d="M20 22a.999.999 0 0 1-.687-.273L12 14.815l-7.313 6.912A1 1 0 0 1 3 21V3a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1Z"></path></svg>
-                                )
-                                :
-                                (
-                                    <svg aria-label="Save" class="x1lliihq x1n2onr6" color="currentColor" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24">
-                                        <title>Save</title><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon>
-                                    </svg>
-                                )
-                            }
-                            </div>
+                            <div className="text-[rgb(38,38,38)] cursor-pointer flex items-center  hover:text-[rgb(142,142,142)]" onClick={() => setSave(!save)}> { save ? ( SavedPost ) : ( NotSavedPost ) } </div>
                         </div>
                         <div className="text-[14px] font-[600] cursor-pointer">{`${amountOfLove.length} likes`}</div>
                     </div>
