@@ -8,7 +8,7 @@ import { useRouter } from "next/router"
 import { EditIcon, PostsIcon, SavedIcon, TaggedIcon } from "../../public/icons/icons"
 
 //firebase
-import { set, ref as ref2, update, onValue} from "firebase/database"
+import { ref as ref2, update, onValue} from "firebase/database"
 import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
 import { storage,db } from "../../src/firebase"
 
@@ -22,34 +22,90 @@ import FollowingPopUp from "../../public/shared/FollowingPopUp"
 import FollowersPopUp from "../../public/shared/FollowersPopUp"
 import Loading from "../../public/shared/Loading"
 
+
 function AccountPage() {
     const [isEdit, setIsEdit] = useState(false)
     const [followingPopUp, setFollowingPopUp] = useState(false)
     const [followersPopUp, setFollowersPopUp] = useState(false)
     const [tab, setTab] = useState(1)
     const [posts, setPosts] = useState()
+    const [otherUser, setOtherUser] = useState()
     const router = useRouter()
-
+    const {username} = router.query
     const userData = useUserPackageHook()
-
-    console.log(userData)
+    const [avatar, setAvartar] = useState(userData.avatar)
 
     useEffect( () => {
         if(userData.userId == null) router.push("/auth/Login") 
-    } )
+    })
 
     useEffect( () => {
-        onValue(ref2(db, `/posts/${userData.userId}/`), (snapshot) => {
-            var posts1 = []
-            snapshot.forEach( (childSnapshot) => {
-                posts1.push(childSnapshot.val())
+        if(!isUser(username)){
+            const user = getUser()
+            for(let i = 0; i <= user.length - 1; i++){
+                if(user[i].username == username){
+                    setOtherUser(user[i])
+                    onValue(ref2(db, `/posts/${ user[i].userId}/`), (snapshot) => {
+                        var posts1 = []
+                        snapshot.forEach( (childSnapshot) => {
+                            posts1.push(childSnapshot.val())
+                        });
+                        setPosts(posts1)
+                    });
+                    break
+                }
+            }
+        }
+        else{
+            onValue(ref2(db, `/posts/${userData.userId}/`), (snapshot) => {
+                var posts1 = []
+                snapshot.forEach( (childSnapshot) => {
+                    posts1.push(childSnapshot.val())
+                });
+                setPosts(posts1)
             });
-            setPosts(posts1)
-        });
-    }, [])
+        }
+    },[])
 
-    console.log("user: ",userData)
-    
+    useEffect( () => {
+        onValue(ref2(db,'users/' + userData.userId + '/avatar'), (snapshot) => {
+            setAvartar(snapshot.val())
+        })
+    },[])
+
+    //check if it is user or other user
+    const isUser = (username) => {
+        var isUser = true
+        if(userData.username !== username){
+            isUser = false
+        }
+
+        return isUser
+    }
+
+    //get user for checking
+    const getUser = () => {
+        let data1 = []
+        onValue(ref2(db, '/users'), (snapshot) => {
+            snapshot.forEach( (childSnapshot) =>{
+                data1.push(childSnapshot.val())
+            } )
+        } )
+        return data1
+    }
+
+    //get number of posts's user
+    const numOfPost = () => {
+        let total = 0
+        for(let i = 0; i <= posts?.length - 1; i++){
+            total = total + posts[i]?.media?.length
+        }
+        return total
+    }
+    console.log(numOfPost())
+
+    console.log("User: ",getUser());
+     
     const handleEditPopUp = () => {
         setIsEdit(!isEdit)
     }
@@ -62,14 +118,14 @@ function AccountPage() {
         setFollowersPopUp(!followersPopUp)
     }
 
-    const handleChange = (e) => {
+    const handleChangeAvartar = (e) => {
         const file = e.target.files[0]
         const imageRef = ref(storage, `images/${file.name}`)
         uploadBytes(imageRef, file)
             .then( (snapshot) => {
                 getDownloadURL(imageRef)
                     .then((url) => {
-                        update(ref2(db, "users/" + userData.useriId), {
+                        update(ref2(db, "users/" + userData.userId), {
                             avatar: url
                         })
                     })
@@ -105,20 +161,23 @@ function AccountPage() {
                         <label htmlFor="uploadAvatar" className=" w-[290px] h-[150px] px-[20px] flex justify-center cursor-pointer">
                             <img
                                 className="w-[150px] h-[150px] text-center rounded-full"
-                                src={userData.avatar} 
+                                
+                                src={ isUser(username) ? avatar : otherUser?.avatar } 
                             />
                         </label>
-                        <input 
-                            type="file" id="uploadAvatar" className="hidden"
-                            onChange={handleChange}
-                        />
-
+                        { isUser(username) && <input type="file" id="uploadAvatar" className="hidden" onChange={handleChangeAvartar}/>}
+                        
                         <div>
                             <div className="flex items-center mb-[30px]">
-                                <p className="text-[20px] mr-[20px]"> {userData.name} </p>
-                                <div className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px]">
-                                    Edit Profile 
-                                </div>
+                                <p className="text-[20px] mr-[20px]"> { isUser(username) ? userData.name : otherUser?.name} </p>
+                                { isUser(username) ?
+                                    (<div className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px]">
+                                        Edit Profile 
+                                    </div>) :
+                                    (<div className=" bg-sky-400 mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px]">
+                                        Follow
+                                    </div>)
+                                }
                                 <div 
                                     className="cursor-pointer"
                                     onClick={handleEditPopUp}
@@ -127,7 +186,7 @@ function AccountPage() {
                                 </div>
                             </div>
                             <div className="flex">
-                                <p className="mr-[40px]">{posts?.length} posts</p>
+                                <p className="mr-[40px]">{numOfPost()} posts</p>
 
                                 <p 
                                     className="mr-[40px] cursor-pointer"
@@ -178,7 +237,7 @@ function AccountPage() {
                     </div>
                     <div className="mx-[30px] mt-[30px]">
                         <div className={tab == 1 ?"block" : "hidden"}>
-                            <Posts userData = { userData } posts ={ posts }/>
+                            { isUser(username) ? <Posts userData = { userData } posts ={ posts }/> : <Posts userData = { otherUser } posts ={ posts }/>}
                         </div>
                         <div className={tab == 2 ?"block" : "hidden"}>
                             <Saved/>
