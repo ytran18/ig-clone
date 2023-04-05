@@ -172,7 +172,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
 
                             <div className="text-[rgb(38,38,38)] cursor-pointer flex items-center  hover:text-[rgb(142,142,142)]" onClick={() => setSave(!save)}> { save ? ( SavedPost ) : ( NotSavedPost ) } </div>
                         </div>
-                        <div className="text-[14px] font-[600] cursor-pointer">{`${amountOfLove.length} likes`}</div>
+                        <div className="text-[14px] font-[600] cursor-pointer">{`${amountOfLove || 0} likes`}</div>
                     </div>
                     {/* comment input */}
                     <div className="h-[55px] w-full flex px-4">
