@@ -1,11 +1,13 @@
 import Image from "next/image"
-import { useEffect, useMemo, useState } from "react"
-import { ChevronLeft, ChevronRight, Dot } from "../icons/icons"
+import { useEffect, useMemo, useState, useRef, useCallback } from "react"
+
+import { ChevronLeft, ChevronRight, Dot, MuteAudio, OnAudio } from "../icons/icons"
 
 function PostAssets ({ media })
 {
     const length = media?.length - 1
     const [currImageIndex, setCurrImageIndex] = useState(0)
+    const videoRef = useRef(null)
 
     const previousImage = () => { if (currImageIndex !== 0) { setCurrImageIndex(prev => prev - 1);} }
     const nextImage = () => { if (currImageIndex < length) { setCurrImageIndex(prev => prev + 1);} }
@@ -28,6 +30,13 @@ function PostAssets ({ media })
         })
     },[currImageIndex])
 
+    const handleAudio = () =>
+    {
+        console.log("re-render");
+        const audio = document.getElementById("video")
+        audio.muted = !audio.muted
+    }
+
     // render UI
     const renderMedia = useMemo(() =>
     {
@@ -38,14 +47,17 @@ function PostAssets ({ media })
                 ( <Image key={currImageIndex} alt="img" className="max-w-full max-h-[585px] bg-cover bg-center" width={500} height={300} src={media[currImageIndex]?.url}/> )
                 :
                 (
-                    <video key={currImageIndex} className="w-[full] max-h-[585px] bg-cover bg-center" autoPlay muted>
-                        <source src={media[currImageIndex]?.url} />
-                    </video>
+                    <div className="relative w-full max-h-[585px] flex justify-center" key={currImageIndex}>
+                        <video ref={videoRef} id="video" className="w-[full] max-h-[585px] bg-cover bg-center" autoPlay muted>
+                            <source src={media[currImageIndex]?.url} />
+                        </video>
+                        <div className="absolute bottom-4 right-4 cursor-pointer" onClick={handleAudio}> {videoRef.current?.muted ? MuteAudio : OnAudio} </div>
+                    </div>
                 )
             }
             </>
         )
-    },[currImageIndex, media])
+    },[currImageIndex, media, handleAudio])
 
     const renderNavigate = useMemo(() =>
     {
