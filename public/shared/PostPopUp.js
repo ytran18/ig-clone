@@ -129,9 +129,9 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
     {
         return (
             <>
-                <div className={`absolute top-[50%] w-full h-full left-0 right-0 px-4 py-2 text-transparent flex text-white ${currImageIndex > 0 ? "justify-between" : "justify-end"}`}>
-                    <div onClick={previousImage} className={`text-black items-center justify-center cursor-pointer bg-[rgb(181,181,181)] rounded-full w-[30px] h-[30px] ${currImageIndex == 0 ? "hidden" : "flex"}`}> {ChevronLeft} </div>
-                    <div onClick={nextImage} className={`text-black items-center justify-center bg-[rgb(181,181,181)] w-[30px] h-[30px] rounded-full cursor-pointer ${currImageIndex == media?.length - 1 ? "hidden" : "flex"}`}> {ChevronRight} </div>
+                <div className={`absolute top-[50%] left-0 right-0 px-4 py-2 text-transparent flex text-white ${currImageIndex > 0 ? "justify-between" : "justify-end"}`}>
+                    <div onClick={previousImage} className={`text-black items-center justify-center cursor-pointer bg-[rgb(181,181,181)] rounded-full w-[25px] h-[25px] ${currImageIndex == 0 ? "hidden" : "flex"}`}> {ChevronLeft} </div>
+                    <div onClick={nextImage} className={`text-black items-center justify-center bg-[rgb(181,181,181)] w-[25px] h-[25px] rounded-full cursor-pointer ${currImageIndex == media?.length - 1 ? "hidden" : "flex"}`}> {ChevronRight} </div>
                 </div>
             </>
         )
@@ -176,7 +176,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
     {
         return (
             <>
-                <div className="h-[518px] border-b-[1px] border-b-[rgb(240,240,240)] overflow-x-auto scrollbar-hide px-4 py-2">
+                <div className="h-[518px] hidden md:block border-b-[1px] border-b-[rgb(240,240,240)] overflow-x-auto scrollbar-hide px-4 py-2">
                     <Comment name={userPost?.username} comment={caption} avt={userPost?.avatar} isOwner time={timeOfPost}/>
                     <Comment name={"agustd"} comment={"오늘도 💪🏻"} avt={COMT2} time={"20h"} like={"22"}/>
                     <Comment name={"uaremyhope"} comment={"지민 (Jimin) 'FACE' Release"} avt={COMT3} time={"20h"} like={"21"}/>
@@ -197,7 +197,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
     {
         return (
             <>
-                <div className="h-[114px] border-b-[1px] border-b-[rgb(240,240,240)] px-4">
+                <div className="border-b-[1px] border-b-[rgb(240,240,240)] px-4">
                     <div className="flex justify-between h-[55px]">
                         <div className="flex cursor-pointer items-center">
                             <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)]" onClick={() => setLove(!love)}> { love ? ( LovePost ) : ( NotLovePost ) } </div>
@@ -230,23 +230,29 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         return ( <div className="text-white absolute top-0 right-0 p-4 cursor-pointer" onClick={close}>{CloseIcon}</div> )
     },[close])
 
+    useEffect(() =>
+    {
+        console.log(comment);
+    },[comment])
+
     return (
         <>
-            <div className="h-[90%] w-[90%] max-h-[90%] flex relative">
-                <div className="relative w-[60%] h-full bg-black flex justify-center items-center">
+            <div className="h-[80%] w-[70%] md:h-[90%] md:w-[90%] md:max-h-[90%] flex justify-center items-center flex-col md:flex-row relative">
+                <div className="md:hidden w-full md:w-[40%] h-[10%] bg-white flex flex-col">{renderPostOwnerInfo}</div>
+                <div className="relative w-full h-[75%] md:h-full bg-black flex justify-center items-center">
                     {renderMedia}
                     {renderNavigate}
                     {renderDot}
                 </div>
-                <div className="w-[40%] h-full bg-white flex flex-col">
+                <div className="w-full md:w-[40%] h-full bg-white flex flex-col">
                     {/* user info */}
-                    {renderPostOwnerInfo}
+                    <div className="hidden md:flex"> {renderPostOwnerInfo} </div>
                     {/* comments */}
                     {renderComment}
                     {/* likes, share */}
                     {renderLikeShare}
                     {/* comment input */}
-                    {renderInput}
+                    <div className={`${comment ? "flex" : "hidden"}`}> {renderInput} </div>
                 </div>
             </div>
             {renderClose}
