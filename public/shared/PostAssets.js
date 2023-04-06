@@ -30,12 +30,11 @@ function PostAssets ({ media })
         })
     },[currImageIndex])
 
-    const handleAudio = () =>
+    const handleAudio = useCallback(() =>
     {
-        console.log("re-render");
         const audio = document.getElementById("video")
         audio.muted = !audio.muted
-    }
+    },[])
 
     // render UI
     const renderMedia = useMemo(() =>

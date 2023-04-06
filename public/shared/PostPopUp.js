@@ -1,5 +1,10 @@
 import Image from "next/image"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+
+// firebase
+import { get, onValue, query, ref, set } from "firebase/database"
+import { db } from "../../src/firebase"
+
 import COMT2 from "../data-test/assets/img/Jimin.jpeg"
 import COMT3 from "../data-test/assets/img/Jin-4.jpeg"
 import COMT4 from "../data-test/assets/img/JK-2.jpeg"
@@ -9,12 +14,13 @@ import COMT7 from "../data-test/assets/img/TaeHyung-2.jpeg"
 import { ChevronLeft, ChevronRight, CloseIcon, CommentPost, Dot, LovePost, MoreDotIcon, MuteAudio, NotLovePost, NotSavedPost, OnAudio, SavedPost, SharePost } from "../icons/icons"
 import Comment from "./Comment"
 
-// firebase
-import { onValue, query, ref } from "firebase/database"
-import { db } from "../../src/firebase"
+// redux
+import { useUserPackageHook } from "../redux/hooks"
 
-function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt, media })
+function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt, media, postId })
 {
+    // user
+    const user = useUserPackageHook()
 
     const [love, setLove] = useState(loveStatus)
     const [save, setSave] = useState(false)
@@ -58,7 +64,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
 
     const handleFocus = () => { setComment(true); commentRef.current.focus() } // focus input
 
-    const handleChangeComment = (e) =>
+    const handleChangeComment = useCallback((e) =>
     {
         setCommentText(e.target.value)
         if(commentText.length > 0 ) {
@@ -69,7 +75,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
             const changeText = document.getElementById("post-text")
             changeText.style.color = "rgb(186,223,255)"
         }
-    }
+    })
 
     const previousImage = () => {
         if (currImageIndex !== 0) { setCurrImageIndex(prev => prev - 1); }
@@ -97,11 +103,41 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         })
     },[currImageIndex])
 
-    const handleAudio = () =>
+    const handleAudio = useCallback(() =>
     {
-        console.log("re-render");
         const audio = document.getElementById("video")
         audio.muted = !audio.muted
+    })
+
+    const handleLove = () =>
+    {
+        setLove(!love)
+        const getLove = query(ref(db, `posts/${owner}/${postId}/`))
+        get(getLove).then((snapshot) =>
+        {
+            if(snapshot?.val()?.likes)
+            {
+                snapshot?.val()?.likes?.some((item) =>
+                {
+                    if(item == user?.userId) {
+                        const newArr = snapshot?.val()?.likes?.filter((data) => data !== user?.userId)
+                        const lovePath = query(ref(db, `posts/${owner}/${postId}/likes`))
+                        set(lovePath, newArr)
+                        return true
+                    }
+                    else {
+                        const before = snapshot?.val()?.likes
+                        before?.push(user?.userId)
+                        const lovePath = query(ref(db, `posts/${owner}/${postId}/likes`))
+                        set(lovePath, before)
+                    }
+                })
+            }
+            else {
+                const lovePath = query(ref(db, `posts/${owner}/${postId}/likes`))
+                set(lovePath, [user?.userId])
+            }
+        })
     }
 
     const renderMedia = useMemo(() =>
@@ -200,7 +236,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                 <div className="border-b-[1px] border-b-[rgb(240,240,240)] px-4">
                     <div className="flex justify-between h-[55px]">
                         <div className="flex cursor-pointer items-center">
-                            <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)]" onClick={() => setLove(!love)}> { love ? ( LovePost ) : ( NotLovePost ) } </div>
+                            <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)]" onClick={handleLove}> { love ? ( LovePost ) : ( NotLovePost ) } </div>
                             <div className="text-[rgb(38,38,38)] px-2  hover:text-[rgb(142,142,142)]" onClick={handleFocus}> {CommentPost} </div>
                             <div className="text-[rgb(38,38,38)]  hover:text-[rgb(142,142,142)]" onClick={() => setShare(true)}> {SharePost} </div>
                         </div>
@@ -244,7 +280,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                     {renderNavigate}
                     {renderDot}
                 </div>
-                <div className="w-full md:w-[40%] h-full bg-white flex flex-col">
+                <div className="w-full md:w-[500px] h-full bg-white flex flex-col">
                     {/* user info */}
                     <div className="hidden md:flex"> {renderPostOwnerInfo} </div>
                     {/* comments */}
@@ -252,7 +288,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                     {/* likes, share */}
                     {renderLikeShare}
                     {/* comment input */}
-                    <div className={`${comment ? "flex" : "hidden"}`}> {renderInput} </div>
+                    {renderInput}
                 </div>
             </div>
             {renderClose}

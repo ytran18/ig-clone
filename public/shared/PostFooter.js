@@ -148,7 +148,7 @@ function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId, cr
             </div>
             {
                 comment ?
-                ( <OverLayBlock><PostPopUp owner={owner} media={media} amountOfLove={amountOfLove?.length || 0} caption={caption} createAt={createAt} close={handleClose} loveStatus={love}/></OverLayBlock> )
+                ( <OverLayBlock><PostPopUp postId={postId} owner={owner} media={media} amountOfLove={amountOfLove?.length || 0} caption={caption} createAt={createAt} close={handleClose} loveStatus={love}/></OverLayBlock> )
                 :
                 (<></>)
             }
