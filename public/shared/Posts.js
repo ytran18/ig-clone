@@ -2,10 +2,6 @@
 import { useEffect, useState } from "react"
 import { useUserPackageHook } from "../redux/hooks"
 
-//firebase
-import { db } from "../../src/firebase"
-import {onValue, ref, set } from "firebase/database"
-
 // icons/image
 import { CommentIcon, LoveIcon, DocumentDuplicate } from "../icons/icons"
 import Image from "next/image"
@@ -76,7 +72,7 @@ function Posts({ userData, posts }) {
                                                 { post.media[0].type == "img" ? 
                                                     (<img className="max-h-[300px] max-w-[300px]" src={post.media[0].url} alt = "post"/>) : 
 
-                                                    (<video className="max-h-[300px] max-w-[300px]" src={post.media[0].url} alt = "post" autoPlay/>)
+                                                    (<video className="max-h-[300px] max-w-[300px]" src={post.media[0].url} alt = "post" autoPlay muted/>)
                                                 } 
 
                                                 <div className=" absolute group-hover:flex justify-evenly items-center inset-0 hidden bg-[rgba(35,35,35,0.16)]">

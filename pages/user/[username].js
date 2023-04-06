@@ -174,7 +174,7 @@ function AccountPage() {
                                     (<div className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px]">
                                         Edit Profile 
                                     </div>) :
-                                    (<div className=" bg-sky-400 mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px]">
+                                    (<div className=" bg-sky-400 mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
                                         Follow
                                     </div>)
                                 }
@@ -240,7 +240,7 @@ function AccountPage() {
                             { isUser(username) ? <Posts userData = { userData } posts ={ posts }/> : <Posts userData = { otherUser } posts ={ posts }/>}
                         </div>
                         <div className={tab == 2 ?"block" : "hidden"}>
-                            <Saved/>
+                            { isUser(username) ? <Saved saved = { userData?.saved } userData = { userData } /> : <Saved saved = { otherUser?.saved } userData = { otherUser }/> }
                         </div>
                         <div className={tab == 3 ?"block" : "hidden"}>
                             <Tagged/>

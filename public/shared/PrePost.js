@@ -44,7 +44,7 @@ function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData, hand
                                 caption: caption,
                                 media: media,
                                 likes: [null],
-                                comment: [null],
+                                comment: [{caption: caption, userId: userData.userId, username: userData.username}],
                                 tagPeople: [null],
                                 hideLike: hideLike,
                                 blockComment: blockComment
