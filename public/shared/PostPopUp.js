@@ -5,17 +5,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { get, onValue, query, ref, set } from "firebase/database"
 import { db } from "../../src/firebase"
 
-import COMT2 from "../data-test/assets/img/Jimin.jpeg"
-import COMT3 from "../data-test/assets/img/Jin-4.jpeg"
-import COMT4 from "../data-test/assets/img/JK-2.jpeg"
-import COMT5 from "../data-test/assets/img/NamJoon-2.jpeg"
-import COMT6 from "../data-test/assets/img/Suga_4.jpeg"
-import COMT7 from "../data-test/assets/img/TaeHyung-2.jpeg"
 import { ChevronLeft, ChevronRight, CloseIcon, CommentPost, Dot, LovePost, MoreDotIcon, MuteAudio, NotLovePost, NotSavedPost, OnAudio, SavedPost, SharePost } from "../icons/icons"
 import Comment from "./Comment"
 
 // redux
 import { useUserPackageHook } from "../redux/hooks"
+
+const uuid = require("uuid")
 
 function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt, media, postId })
 {
@@ -30,12 +26,17 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
     const [userPost, setUserPost] = useState([])
     const [timeOfPost, setTimeOfPost] = useState("")
     const [currImageIndex, setCurrImageIndex] = useState(0)
-
+    const [captionArr, setCaptionArr] = useState([])
+    const [isReply, setIsReply] = useState(false)
+    const [replyInfo, setReplyInfo] = useState({})
+    const [reply, setRelpy] = useState([])
+    
     const commentRef = useRef(null)
     const videoRef = useRef(null)
-
+    
     // query
     const getUser = query(ref(db,`users/${owner}`))
+    const getComments = query(ref(db, `comments/${postId}/`))
 
     // get post'user infor of this post 
     useEffect(() =>
@@ -43,6 +44,17 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         onValue(getUser, (snapshot) => {
             const value = snapshot.val()
             if (value != null) { setUserPost(value); }
+        })
+    },[])
+
+    // get comments from database
+    useEffect(() =>
+    {
+        onValue(getComments, (snapshot) =>
+        {
+            const value = snapshot.val()
+            const valueObject = Object.values(value)
+            if (value != null) { setCaptionArr(valueObject) }
         })
     },[])
 
@@ -63,19 +75,6 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
     },[])
 
     const handleFocus = () => { setComment(true); commentRef.current.focus() } // focus input
-
-    const handleChangeComment = useCallback((e) =>
-    {
-        setCommentText(e.target.value)
-        if(commentText.length > 0 ) {
-            const changeText = document.getElementById("post-text")
-            changeText.style.color = "rgb(0,149,246)"
-        }
-        else if(commentText.length === 0){
-            const changeText = document.getElementById("post-text")
-            changeText.style.color = "rgb(186,223,255)"
-        }
-    })
 
     const previousImage = () => {
         if (currImageIndex !== 0) { setCurrImageIndex(prev => prev - 1); }
@@ -139,6 +138,67 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
             }
         })
     }
+
+    const handleInput = (e) =>
+    {
+        setCommentText(e.target.value)
+        if(commentText === "@") setIsReply(false)
+    }
+
+    const handleReply = (value) => 
+    {
+        setReplyInfo(value)
+        setIsReply(true)
+        setCommentText(`@${value?.name} `)
+        commentRef.current.focus()
+    }
+
+    const handleComment = () =>
+    {
+        const commentId = uuid.v4()
+        const replyId = uuid.v4()
+        const setComments = ref(db, `comments/${postId}/${commentId}`)
+        const setReplyComments = ref(db, `reply/${postId}/${replyId}`)
+        const newComment = {
+            postId: postId,
+            commentId: commentId,
+            isOwner: false,
+            caption: commentText,
+            userIdOfCommenter: user?.userId,
+            nameOfCommenter: user?.username,
+            avtOfCommenter: user?.avatar,
+            time: new Date().getTime(),
+            like: [],
+            isReply: isReply,
+        }
+        const newReply = {
+            postId: postId,
+            commentId: commentId,
+            isOwner: false,
+            caption: commentText,
+            userIdOfCommenter: user?.userId,
+            nameOfCommenter: user?.username,
+            avtOfCommenter: user?.avatar,
+            time: new Date().getTime(),
+            like: [],
+            isReply: isReply,
+            reply: replyInfo?.commentId
+        }
+        if (isReply)
+        {
+            set(setReplyComments, newReply)   
+        }
+        else {
+            set(setComments, newComment)
+        }
+        setCommentText("")
+        setIsReply(false)
+    }
+
+    useEffect(() =>
+    {
+        console.log(reply);
+    },[reply])
 
     const renderMedia = useMemo(() =>
     {
@@ -210,24 +270,25 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
 
     const renderComment = useMemo(() =>
     {
+        const newTime = new Date().getTime()
         return (
             <>
                 <div className="h-[518px] hidden md:block border-b-[1px] border-b-[rgb(240,240,240)] overflow-x-auto scrollbar-hide px-4 py-2">
                     <Comment name={userPost?.username} comment={caption} avt={userPost?.avatar} isOwner time={timeOfPost}/>
-                    <Comment name={"agustd"} comment={"오늘도 💪🏻"} avt={COMT2} time={"20h"} like={"22"}/>
-                    <Comment name={"uaremyhope"} comment={"지민 (Jimin) 'FACE' Release"} avt={COMT3} time={"20h"} like={"21"}/>
-                    <Comment name={"j.m"} comment={"JP’s handles last night were CRAZY 🤯 "} avt={COMT4} time={"20h"} like={"24"}/>
-                    <Comment name={"rkive"} comment={"RM 1st Album #Indigo"} avt={COMT5} time={"20h"} like={"27"}/>
-                    <Comment name={"jin"} comment={"어서와"} avt={COMT6} time={"20h"} like={"30"}/>
-                    <Comment name={"thv"} comment={"From Veaufiful days"} avt={COMT7} time={"20h"} like={"20"}/>
-                    <Comment name={"agustd"} comment={"오늘도 💪🏻"} avt={COMT2} time={"20h"} like={"22"}/>
-                    <Comment name={"j.m"} comment={"JP’s handles last night were CRAZY 🤯 "} avt={COMT4} time={"20h"} like={"24"}/>
-                    <Comment name={"thv"} comment={"From Veaufiful days"} avt={COMT7} time={"20h"} like={"20"}/>
-                    <Comment name={"rkive"} comment={"RM 1st Album #Indigo"} avt={COMT5} time={"20h"} like={"27"}/>
+                    {
+                        captionArr?.map((item, index) =>
+                        {
+                            return (
+                                <div key={index} className="">
+                                    <Comment postId={postId} commentId={item?.commentId} id={item?.userIdOfCommenter} name={item?.nameOfCommenter} comment={item?.caption} avt={item?.avtOfCommenter} time={getHoursBetween(item?.time,newTime)} like={item?.like?.length || 0} setIsReply={handleReply}/>
+                                </div>
+                            )
+                        })
+                    }
                 </div>
             </>
         )
-    },[caption, timeOfPost, userPost])
+    },[caption, timeOfPost, userPost, captionArr])
 
     const renderLikeShare = useMemo(() =>
     {
@@ -254,22 +315,17 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         return (
             <>
                 <div className="h-[55px] w-full flex px-4">
-                    <input value={commentText} ref={commentRef} onChange={handleChangeComment} className="w-[80%] h-full outline-none text-[14px] placeholder:text-[14px]" placeholder="Add a comments..."/>
-                    <div id="post-text" className="select-none flex justify-end font-[600] w-[20%] items-center text-[rgb(0,149,246)]">Post</div>
+                    <input value={commentText} ref={commentRef} onChange={handleInput} className="w-[80%] h-full outline-none text-[14px] placeholder:text-[14px]" placeholder="Add a comments..."/>
+                    <div className={`select-none flex cursor-pointer justify-end font-[600] w-[20%] items-center ${commentText.length !== "" ? "text-[rgb(0,149,246)]" : "text-[rgb(179,219,255)]"}`} onClick={handleComment}>Post</div>
                 </div>
             </>
         )
-    },[commentText, handleChangeComment])
+    },[commentText])
 
     const renderClose = useMemo(() =>
     {
         return ( <div className="text-white absolute top-0 right-0 p-4 cursor-pointer" onClick={close}>{CloseIcon}</div> )
     },[close])
-
-    useEffect(() =>
-    {
-        console.log(comment);
-    },[comment])
 
     return (
         <>
@@ -280,7 +336,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                     {renderNavigate}
                     {renderDot}
                 </div>
-                <div className="w-full md:w-[500px] h-full bg-white flex flex-col">
+                <div className="w-full md:w-[650px] h-full bg-white flex flex-col">
                     {/* user info */}
                     <div className="hidden md:flex"> {renderPostOwnerInfo} </div>
                     {/* comments */}
