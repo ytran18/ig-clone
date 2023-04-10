@@ -9,13 +9,17 @@ import PostPopUp from "./PostPopUp"
 import { useUserPackageHook } from "../redux/hooks"
 import { CommentPost, LovePost, NotLovePost, NotSavedPost, SavedPost, SharePost } from "../icons/icons"
 
-function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId, createAt, media })
+const uuid = require("uuid")
+
+function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
 {
     const [love, setLove] = useState(false)
     const [save, setSave] = useState(false)
     const [comment, setComment] = useState(false)
     const [share, setShare] = useState(false)
     const [userPost, setUserPost] = useState({})
+    const [captionText, setCaptionText] = useState("")
+    const [amountOfComment, setAmmountOfComment] = useState(0)
 
     const user = useUserPackageHook() // get user sign in in this session
 
@@ -23,6 +27,8 @@ function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId, cr
     const getUser = query(ref(db,`users/${owner}`))
     const getTagged = query(ref(db, `users/${user?.userId}`))
     const getLoveStatus = query(ref(db, `posts/${owner}/${postId}/likes`))
+    const getComments = query(ref(db, `comments/${postId}`))
+    const getReplys = query(ref(db, `reply/${postId}`))
     
     // get post'user infor of this post 
     useEffect(() =>
@@ -47,6 +53,32 @@ function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId, cr
                     if (item === user?.userId) { setLove(true) }
                     else setLove(false)
                 })
+            }
+        })
+    },[])
+
+    // get amount of comments 
+    useEffect(() =>
+    {
+        onValue(getComments, (snapshot) =>
+        {
+            const value = snapshot.val()
+            if(value != null) {
+                const valueObject = Object.values(value)
+                setAmmountOfComment(valueObject.length)
+            }
+        })
+    },[])
+
+    //  get reply number of this post
+    useEffect(() =>
+    {
+        onValue(getReplys, (snapshot) =>
+        {
+            const value = snapshot.val()
+            if (value != null) { 
+                const valueObject = Object.values(value)
+                setAmmountOfComment(prev => prev + valueObject.length) 
             }
         })
     },[])
@@ -120,6 +152,28 @@ function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId, cr
             })
     }
 
+    const handleComment = (e) => { setCaptionText(e.target.value) }
+
+    const handlePostComment = () =>
+    {
+        const commentId = uuid.v4()
+        const setComments = ref(db, `comments/${postId}/${commentId}`)
+        const newComment = {
+            postId: postId,
+            commentId: commentId,
+            isOwner: false,
+            caption: captionText,
+            userIdOfCommenter: user?.userId,
+            nameOfCommenter: user?.username,
+            avtOfCommenter: user?.avatar,
+            time: new Date().getTime(),
+            like: [],
+            isReply: false,
+        }
+        set(setComments, newComment)
+        setCaptionText("")
+    }
+
     return (
         <>
             <div className="w-full flex flex-col justify-center">
@@ -141,9 +195,10 @@ function PostFooter ({ caption, amountOfLove, owner, amountOfComment, postId, cr
                 </div>
                 <div className="h-[18px] text-[14px] font-[700] mb-[8px]">{`${amountOfLove?.length || 0} likes`}</div>
                 <div className="h-[18px] text-[14px] font-[700] mb-[8px]">{`${userPost?.username}`}<span className="text-[rgb(100,100,100)] font-[400] px-1">{caption}</span></div>
-                <div className="text-[rgb(179,179,179)] text-[14px] cursor-pointer h-[18px] mb-[8px]">{`View all ${amountOfComment?.length} comments`}</div>
-                <div className="h-[18px] mb-[30px]">
-                        <input className="text-[14px] placeholder:text-[rgb(179,179,179)] placeholder:text-[14px] w-full outline-none" placeholder="Add a comment..."/>
+                <div className="text-[rgb(179,179,179)] text-[14px] cursor-pointer h-[18px] mb-[8px]" onClick={() => setComment(true)}>{`View all ${amountOfComment || 0} comments`}</div>
+                <div className="h-[18px] mb-[30px] flex items-center">
+                        <input value={captionText} className="text-[14px] placeholder:text-[rgb(179,179,179)] placeholder:text-[14px] w-full outline-none" placeholder="Add a comment..." onChange={handleComment}/>
+                        <div className={`text-[14px] text-[rgb(0,149,246)] cursor-pointer font-[600] ${captionText !== "" ? "block" : "hidden"}`} onClick={handlePostComment}>Post</div>
                 </div>
             </div>
             {
