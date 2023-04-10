@@ -19,7 +19,7 @@ function Saved({ saved, userData }) {
         setPostPopUp(!postPopUp)
     }
 
-    // const [savedPost, setSavedPost] = useState()
+    // const [post, setPost] = useState()
 
     // useEffect( () => {
     //     for(let i = 0; i <saved?.length; i++){
@@ -37,7 +37,7 @@ function Saved({ saved, userData }) {
     //     }
     // } ,[])
 
-    // console.log("saved post: ", savedPost)
+    // console.log("saved post: ", post)
 
     const getPost = () => {
         let posts = []
@@ -58,6 +58,10 @@ function Saved({ saved, userData }) {
     const savedPost = getPost()
 
     console.log("saved posts: ", savedPost[0]?.media[0]?.type);
+
+    savedPost.map((saved) => {
+        console.log(saved.caption);
+    })
 
 
     return(
@@ -95,7 +99,7 @@ function Saved({ saved, userData }) {
                                             saved?.media.length > 1 && (<div className=" absolute top-2 right-2 text-white">{DocumentDuplicate}</div>)
                                         }
                                         <div className={postPopUp ? "fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgba(19,18,18,0.71)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl" : "hidden"}>
-                                            <PostPopUp caption={saved.caption} createAt={saved.createAt} amountOfLove={saved.likes} owner={userData.userId} />
+                                            <PostPopUp caption={saved.caption} createAt={saved.createAt} amountOfLove={saved.likes} owner={saved.userId} />
                                         </div>
                                     </div>
                                 )
