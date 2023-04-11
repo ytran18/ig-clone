@@ -8,6 +8,7 @@ import { MoreDotIcon } from "../icons/icons"
 import OverLayBlock from "./OverLayBlock"
 import PostOptions from "./PostOptions"
 import PopUp from "./PopUp"
+import { getHoursBetween } from "../utils/functions"
 
 function PostHeader ({ user, createAt })
 {
@@ -30,15 +31,6 @@ function PostHeader ({ user, createAt })
             if (value != null) { setUserPost(value); }
         })
     },[])
-    // get difference time between 2 unix time
-    const getHoursBetween = (time1, time2) =>
-    {
-        const diffInMs = Math.abs(time2 - time1)
-        let diff = Math.floor(diffInMs / (1000 * 60 * 60))
-        if (diff < 1) return (`${Math.floor(diffInMs / 60000)} m`)
-        else if (diff > 24) return (`${Math.floor(diff / 24)} d`)
-        else return (`${diff} h`)
-    }
 
     useEffect(() =>
     {
