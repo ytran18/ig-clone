@@ -7,6 +7,7 @@ import { db } from "../../src/firebase"
 
 import { ChevronLeft, ChevronRight, CloseIcon, CommentPost, Dot, LovePost, MoreDotIcon, MuteAudio, NotLovePost, NotSavedPost, OnAudio, SavedPost, SharePost } from "../icons/icons"
 import Comment from "./Comment"
+import { getHoursBetween, compare } from "../utils/functions"
 
 // redux
 import { useUserPackageHook } from "../redux/hooks"
@@ -53,36 +54,29 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         onValue(getComments, (snapshot) =>
         {
             const value = snapshot.val()
-            const valueObject = Object.values(value)
-            if (value != null) { setCaptionArr(valueObject) }
+            if (value != null) { 
+                const valueObject = Object.values(value)
+                valueObject.sort(compare)
+                setCaptionArr(valueObject) 
+            }
         })
     },[])
-
-    // get difference time between 2 unix time
-    const getHoursBetween = (time1, time2) =>
-    {
-        const diffInMs = Math.abs(time2 - time1)
-        let diff = Math.floor(diffInMs / (1000 * 60 * 60))
-        if (diff < 1) return (`${Math.floor(diffInMs / 60000)} m`)
-        else if (diff > 24) return (`${Math.floor(diff / 24)} d`)
-        else return (`${diff} h`)
-    }
 
     useEffect(() =>
     {
             const newDate = new Date().getTime()
             setTimeOfPost(getHoursBetween(createAt, newDate))
-    },[])
+    },[createAt])
 
     const handleFocus = () => { setComment(true); commentRef.current.focus() } // focus input
 
-    const previousImage = () => {
+    const previousImage = useCallback(() => {
         if (currImageIndex !== 0) { setCurrImageIndex(prev => prev - 1); }
-    }
+    })
 
-    const nextImage = () => {
+    const nextImage = useCallback(() => {
         if (currImageIndex < media?.length - 1) { setCurrImageIndex(prev => prev + 1); }
-    }
+    })
     
     useEffect(() =>
     {
@@ -100,7 +94,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                 disable.classList.add("text-[rgb(138,131,111)]")
             }
         })
-    },[currImageIndex])
+    },[currImageIndex, media])
 
     const handleAudio = useCallback(() =>
     {
@@ -108,7 +102,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         audio.muted = !audio.muted
     })
 
-    const handleLove = () =>
+    const handleLove = useCallback(() =>
     {
         setLove(!love)
         const getLove = query(ref(db, `posts/${owner}/${postId}/`))
@@ -137,13 +131,13 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                 set(lovePath, [user?.userId])
             }
         })
-    }
+    })
 
-    const handleInput = (e) =>
+    const handleInput = useCallback((e) =>
     {
         setCommentText(e.target.value)
         if(commentText === "@") setIsReply(false)
-    }
+    })
 
     const handleReply = (value) => 
     {
@@ -153,7 +147,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         commentRef.current.focus()
     }
 
-    const handleComment = () =>
+    const handleComment = useCallback(() =>
     {
         const commentId = uuid.v4()
         const replyId = uuid.v4()
@@ -173,7 +167,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         }
         const newReply = {
             postId: postId,
-            commentId: commentId,
+            commentId: replyId,
             isOwner: false,
             caption: commentText,
             userIdOfCommenter: user?.userId,
@@ -193,7 +187,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         }
         setCommentText("")
         setIsReply(false)
-    }
+    })
 
     useEffect(() =>
     {
@@ -231,7 +225,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                 </div>
             </>
         )
-    },[currImageIndex, nextImage, previousImage])
+    },[currImageIndex, nextImage, previousImage, media])
 
     const renderDot = useMemo(() =>
     {
@@ -251,7 +245,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                 </div>
             </>
         )
-    },[])
+    },[media])
 
     const renderPostOwnerInfo = useMemo(() =>
     {
@@ -288,7 +282,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                 </div>
             </>
         )
-    },[caption, timeOfPost, userPost, captionArr])
+    },[caption, timeOfPost, userPost, captionArr, postId])
 
     const renderLikeShare = useMemo(() =>
     {
@@ -308,7 +302,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                 </div>
             </>
         )
-    },[amountOfLove, love, save])
+    },[amountOfLove, love, save, handleLove])
 
     const renderInput = useMemo(() =>
     {
@@ -320,7 +314,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                 </div>
             </>
         )
-    },[commentText])
+    },[commentText, handleComment, handleInput])
 
     const renderClose = useMemo(() =>
     {
@@ -336,7 +330,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
                     {renderNavigate}
                     {renderDot}
                 </div>
-                <div className="w-full md:w-[650px] h-full bg-white flex flex-col">
+                <div className="w-full md:w-[680px] h-full bg-white flex flex-col">
                     {/* user info */}
                     <div className="hidden md:flex"> {renderPostOwnerInfo} </div>
                     {/* comments */}
