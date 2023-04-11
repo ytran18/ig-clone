@@ -51,7 +51,6 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
                 value?.map((item, index) =>
                 {
                     if (item === user?.userId) { setLove(true) }
-                    else setLove(false)
                 })
             }
         })
