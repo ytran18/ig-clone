@@ -12,7 +12,7 @@ import Loading from "./Loading"
 //component
 import PostPopUp from "../shared/PostPopUp"
 
-function Posts({ userData, posts }) {
+function Posts({ userData, posts, isUser }) {
     const [createPost, setCreatePost] = useState(false)
     const [postPopUp, setPostPopUp] = useState(false)
 
@@ -47,20 +47,29 @@ function Posts({ userData, posts }) {
                     <div>
                         {posts.length == 0 ?
                             (
-                                <div className="flex flex-col items-center justify-center">
-                                    <Image className="w-[50px] h-[50px] mb-[20px]" src={Camera} />
+                                isUser(userData?.username) ? 
+                                (
+                                    <div className="flex flex-col items-center justify-center">
+                                        <Image className="w-[50px] h-[50px] mb-[20px]" src={Camera} />
 
-                                    <div className="text-[32px] font-extrabold mb-[20px]">Share Photos</div>
+                                        <div className="text-[32px] font-extrabold mb-[20px]">Share Photos</div>
 
-                                    <div className="mb-[10px]">When you share photos, they will appear on your profile.</div>
+                                        <div className="mb-[10px]">When you share photos, they will appear on your profile.</div>
 
-                                    <div 
-                                        className="text-[#2997f6] cursor-pointer hover:text-black"
-                                        onClick={handleCreatePost}
-                                    >
-                                        Share your first photo
+                                        <div 
+                                            className="text-[#2997f6] cursor-pointer hover:text-black"
+                                            onClick={handleCreatePost}
+                                        >
+                                            Share your first photo
+                                        </div>
                                     </div>
-                                </div>
+                                ): 
+                                (
+                                    <div className="flex flex-col items-center justify-center">
+                                        <Image className="w-[50px] h-[50px] mb-[20px]" src={Camera} />
+                                        <div className="text-[32px] font-semibold">User doesn't up any posts</div>
+                                    </div>
+                                )
                             ) :
                             (
                                 <div className="flex flex-wrap">
