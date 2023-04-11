@@ -22,6 +22,7 @@ import FollowingPopUp from "../../public/shared/FollowingPopUp"
 import FollowersPopUp from "../../public/shared/FollowersPopUp"
 import Loading from "../../public/shared/Loading"
 import Reels from "../../public/shared/Reel"
+import Unfollow from "../../public/shared/Unfollow"
 
 
 function AccountPage() {
@@ -35,6 +36,8 @@ function AccountPage() {
     const {username} = router.query
     const userData = useUserPackageHook()
     const [avatar, setAvartar] = useState(userData.avatar)
+    const [following, setFollowing] = useState(false)
+    const [unfollow, setUnfollow] =  useState(false)
 
     useEffect( () => {
         if(userData.userId == null) router.push("/auth/Login") 
@@ -45,7 +48,6 @@ function AccountPage() {
             const user = getUser()
             for(let i = 0; i <= user.length - 1; i++){
                 if(user[i].username == username){
-                    setOtherUser(user[i])
                     onValue(ref2(db, `/posts/${ user[i].userId}/`), (snapshot) => {
                         var posts1 = []
                         snapshot.forEach( (childSnapshot) => {
@@ -53,6 +55,7 @@ function AccountPage() {
                         });
                         setPosts(posts1)
                     });
+                    setOtherUser(user[i])
                     break
                 }
             }
@@ -73,6 +76,12 @@ function AccountPage() {
             setAvartar(snapshot.val())
         })
     },[])
+
+    useEffect(() => {
+        if(isFollowing(otherUser)){
+            setFollowing(true)
+        }
+    })
 
     //check if it is user or other user
     const isUser = (username) => {
@@ -132,9 +141,15 @@ function AccountPage() {
     console.log("User: ",getUser());
 
     const handleFollow = () => {
+        const following = getFollowing()
         update(ref2(db, 'users/' + userData.userId),{
-            following: [otherUser?.userId]
+            following: [...following, otherUser?.userId]
         })
+        setFollowing(true)
+    }
+
+    const handleUnfollowPopUp = () => {
+        setUnfollow(!unfollow)
     }
      
     const handleEditPopUp = () => {
@@ -180,6 +195,9 @@ function AccountPage() {
                 <div className = {isEdit ? "block" : "hidden"}>
                     <EditPopUp handleClose = { handleEditPopUp }/>
                 </div>
+                <div className={unfollow ? "block": "hidden"}>
+                    <Unfollow handleUnfollowPopUp = {handleUnfollowPopUp} setFollowing = {setFollowing} getFollowing = {getFollowing} userData = {userData} otherUser = {otherUser}/>
+                </div>
                 <div className={ followingPopUp ? "block" : "hidden" } >
                     <FollowingPopUp handleClose = {handleFollowingPopUp}/>
                 </div>
@@ -202,12 +220,12 @@ function AccountPage() {
                             <div className="flex items-center mb-[30px]">
                                 <p className="text-[20px] mr-[20px]"> { isUser(username) ? userData.name : otherUser?.name} </p>
                                 { isUser(username) ?
-                                    (<div className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px]">
+                                    (<div className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
                                         Edit Profile 
                                     </div>) :
-                                    ( isFollowing(otherUser) ? 
+                                    ( following ? 
                                         (
-                                            <div className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px]">
+                                            <div onClick={handleUnfollowPopUp} className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
                                                 Following
                                             </div>
                                         ) :
@@ -293,7 +311,7 @@ function AccountPage() {
                     </div>
                     <div className="mx-[30px] mt-[30px]">
                         <div className={tab == 1 ?"block" : "hidden"}>
-                            { isUser(username) ? <Posts userData = { userData } posts ={ posts }/> : <Posts userData = { otherUser } posts ={ posts }/>}
+                            { isUser(username) ? <Posts userData = { userData } posts ={ posts } isUser = {isUser} /> : <Posts userData = { otherUser } posts ={ posts } isUser = {isUser} />}
                         </div>
                         <div className={tab == 2 ?"block" : "hidden"}>
                             { isUser(username) ? <Saved saved = { userData?.saved } userData = { userData } /> : <Reels saved = { otherUser?.saved } userData = { otherUser }/> }
