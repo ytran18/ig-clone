@@ -34,6 +34,7 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
     const getLoveStatus = query(ref(db, `posts/${owner}/${postId}/likes`))
     const getComments = query(ref(db, `comments/${postId}`))
     const getReplys = query(ref(db, `reply/${postId}`))
+    const getSavedStatus = query(ref(db, `users/${user?.userId}/saved`))
     
     // get post'user infor of this post 
     useEffect(() =>
@@ -56,6 +57,22 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
                 value?.map((item, index) =>
                 {
                     if (item === user?.userId) { setLove(true) }
+                })
+            }
+        })
+    },[])
+
+    // get saved status
+    useEffect(() =>
+    {
+        onValue(getSavedStatus, (snapshot) =>
+        {
+            const value = snapshot.val()
+            if (value != null)
+            {
+                value?.map((item, index) =>
+                {   
+                    if (item === postId) {setSave(true)}
                 })
             }
         })
