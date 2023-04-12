@@ -5,7 +5,7 @@ import { useUserPackageHook } from "../../public/redux/hooks"
 import { useRouter } from "next/router"
 
 //icon/image
-import { EditIcon, PostsIcon, SavedIcon, TaggedIcon } from "../../public/icons/icons"
+import { EditIcon, PostsIcon, SavedIcon, TaggedIcon, MoreDotIcon } from "../../public/icons/icons"
 
 //firebase
 import { ref as ref2, update, onValue, set} from "firebase/database"
@@ -236,12 +236,25 @@ function AccountPage() {
                                         )
                                     )
                                 }
-                                <div 
-                                    className="cursor-pointer"
-                                    onClick={handleEditPopUp}
-                                >
-                                    {EditIcon}
-                                </div>
+                                {
+                                    isUser(username) ? 
+                                    ( 
+                                        <div 
+                                            className="cursor-pointer"
+                                            onClick={handleEditPopUp}
+                                        >
+                                            {EditIcon}
+                                        </div>
+                                    ) : 
+                                    ( 
+                                        <div 
+                                            className="cursor-pointer"
+                                            onClick={handleEditPopUp}
+                                        >
+                                            {MoreDotIcon}
+                                        </div>
+                                    )
+                                }
                             </div>
                             <div className="flex">
                                 <p className="mr-[40px]">{numOfPost()} posts</p>
