@@ -9,7 +9,7 @@ const postState = {
 }
 
 const replyState = {
-    reply: []
+    reply: {}
 }
 
 export const userReducer = (state = userState, action) =>
@@ -55,7 +55,7 @@ export const replyReducer = (state = replyState, action) =>
         }
         case CLEAR:{
             return {
-                reply: []
+                reply: {}
             }
         }
         default: 
