@@ -46,7 +46,7 @@ export const postReducer = (state = postState, action) =>
     }
 }
 
-export const replyReducer = (state = replyState, action) =>
+export const commentReducer = (state = replyState, action) =>
 {
     switch (action.type)
     {
