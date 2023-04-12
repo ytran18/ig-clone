@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { get, onValue, query, ref, set } from "firebase/database"
 import { db } from "../../src/firebase"
@@ -88,7 +88,7 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
     },[])
 
     // handle love actions
-    const handleLove = () =>
+    const handleLove = useCallback(() =>
     {
         setLove(!love)
         const getLove = query(ref(db, `posts/${owner}/${postId}/`))
@@ -119,7 +119,7 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
                     set(lovePath, [user?.userId])
                 }
             })
-    }
+    },[])
 
     // close pop up function
     const handleClose = () => {
@@ -128,7 +128,7 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
     } 
 
     // handle save action
-    const handleSave = () =>
+    const handleSave = useCallback(() =>
     {
         setSave(!save)
         get(getTagged)
@@ -158,11 +158,11 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
                     set(taggedPath, [postId])
                 }
             })
-    }
+    },[])
 
     const handleComment = (e) => { setCaptionText(e.target.value) }
 
-    const handlePostComment = () =>
+    const handlePostComment = useCallback(() =>
     {
         const commentId = uuid.v4()
         const setComments = ref(db, `comments/${postId}/${commentId}`)
@@ -180,34 +180,64 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
         }
         set(setComments, newComment)
         setCaptionText("")
-    }
+    },[])
+
+    const renderLikeShare = useMemo(() =>
+    {
+        return (
+            <div className="flex w-full justify-between items-center h-[46px]">
+                <div className="flex cursor-pointer">
+                    <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)]" onClick={handleLove}>
+                        { love ? ( LovePost ) : ( NotLovePost ) }
+                    </div>
+                    <div className="text-[rgb(38,38,38)] px-2  hover:text-[rgb(142,142,142)]" onClick={() => setComment(true)}>
+                        {CommentPost}
+                    </div>
+                    <div className="text-[rgb(38,38,38)]  hover:text-[rgb(142,142,142)]" onClick={() => setShare(true)}>
+                        {SharePost}
+                    </div>
+                </div>
+                <div className="text-[rgb(38,38,38)] cursor-pointer  hover:text-[rgb(142,142,142)]" onClick={handleSave}>
+                    { save ? ( SavedPost ) : ( NotSavedPost ) }
+                </div>
+            </div>
+        )
+    },[handleLove, handleSave, love, save])
+
+    const renderPostInfo = useMemo(() =>
+    {
+        return (
+            <>
+                <div className="h-[18px] text-[14px] font-[700] mb-[8px]">{`${amountOfLove?.length || 0} likes`}</div>
+                <div className="h-[18px] text-[14px] font-[700] mb-[8px]">{`${userPost?.username}`}<span className="text-[rgb(100,100,100)] font-[400] px-1">{caption}</span></div>
+            </>
+        )
+    },[amountOfLove, caption, userPost])
+
+    const renderViewComment = useMemo(() =>
+    {
+        return (
+            <div className="text-[rgb(179,179,179)] text-[14px] cursor-pointer h-[18px] mb-[8px]" onClick={() => setComment(true)}>{`View all ${(amountOfComment + amountOfReply) || 0} comments`}</div>
+        )
+    },[amountOfComment, amountOfReply])
+
+    const renderInput = useMemo(() =>
+    {
+        return (
+            <div className="h-[18px] mb-[30px] flex items-center">
+                    <input value={captionText} className="text-[14px] placeholder:text-[rgb(179,179,179)] placeholder:text-[14px] w-full outline-none" placeholder="Add a comment..." onChange={handleComment}/>
+                    <div className={`text-[14px] text-[rgb(0,149,246)] cursor-pointer font-[600] ${captionText !== "" ? "block" : "hidden"}`} onClick={handlePostComment}>Post</div>
+            </div>
+        )
+    },[captionText, handlePostComment])
 
     return (
         <>
             <div className="w-full flex flex-col justify-center">
-                <div className="flex w-full justify-between items-center h-[46px]">
-                    <div className="flex cursor-pointer">
-                        <div className="text-[rgb(38,38,38)] hover:text-[rgb(142,142,142)]" onClick={handleLove}>
-                            { love ? ( LovePost ) : ( NotLovePost ) }
-                        </div>
-                        <div className="text-[rgb(38,38,38)] px-2  hover:text-[rgb(142,142,142)]" onClick={() => setComment(true)}>
-                            {CommentPost}
-                        </div>
-                        <div className="text-[rgb(38,38,38)]  hover:text-[rgb(142,142,142)]" onClick={() => setShare(true)}>
-                            {SharePost}
-                        </div>
-                    </div>
-                    <div className="text-[rgb(38,38,38)] cursor-pointer  hover:text-[rgb(142,142,142)]" onClick={handleSave}>
-                        { save ? ( SavedPost ) : ( NotSavedPost ) }
-                    </div>
-                </div>
-                <div className="h-[18px] text-[14px] font-[700] mb-[8px]">{`${amountOfLove?.length || 0} likes`}</div>
-                <div className="h-[18px] text-[14px] font-[700] mb-[8px]">{`${userPost?.username}`}<span className="text-[rgb(100,100,100)] font-[400] px-1">{caption}</span></div>
-                <div className="text-[rgb(179,179,179)] text-[14px] cursor-pointer h-[18px] mb-[8px]" onClick={() => setComment(true)}>{`View all ${(amountOfComment + amountOfReply) || 0} comments`}</div>
-                <div className="h-[18px] mb-[30px] flex items-center">
-                        <input value={captionText} className="text-[14px] placeholder:text-[rgb(179,179,179)] placeholder:text-[14px] w-full outline-none" placeholder="Add a comment..." onChange={handleComment}/>
-                        <div className={`text-[14px] text-[rgb(0,149,246)] cursor-pointer font-[600] ${captionText !== "" ? "block" : "hidden"}`} onClick={handlePostComment}>Post</div>
-                </div>
+                {renderLikeShare}
+                {renderPostInfo}
+                {renderViewComment}
+                {renderInput}
             </div>
             {
                 comment ?

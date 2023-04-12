@@ -163,7 +163,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         {
             setReplyInfo(replyState)
             setIsReply(true)
-            setCommentText(`@${replyState?.name}`)
+            setCommentText(`@${replyState?.name} `)
             commentRef.current.focus()
         }
         else {
