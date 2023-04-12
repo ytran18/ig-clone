@@ -7,6 +7,9 @@ import OverLayBlock from "./OverLayBlock"
 import PostPopUp from "./PostPopUp"
 
 import { useUserPackageHook } from "../redux/hooks"
+import { clearReply } from "../redux/actions"
+import { useDispatch } from "react-redux"
+
 import { CommentPost, LovePost, NotLovePost, NotSavedPost, SavedPost, SharePost } from "../icons/icons"
 
 const uuid = require("uuid")
@@ -20,8 +23,10 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
     const [userPost, setUserPost] = useState({})
     const [captionText, setCaptionText] = useState("")
     const [amountOfComment, setAmmountOfComment] = useState(0)
+    const [amountOfReply, setAmountOfReply] = useState(0)
 
     const user = useUserPackageHook() // get user sign in in this session
+    const dispatch = useDispatch()
 
     // query
     const getUser = query(ref(db,`users/${owner}`))
@@ -77,7 +82,7 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
             const value = snapshot.val()
             if (value != null) { 
                 const valueObject = Object.values(value)
-                setAmmountOfComment(prev => prev + valueObject.length) 
+                setAmountOfReply(valueObject.length)
             }
         })
     },[])
@@ -116,7 +121,11 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
             })
     }
 
-    const handleClose = () => { setComment(false) } // close pop up function
+    // close pop up function
+    const handleClose = () => {
+        dispatch(clearReply())
+        setComment(false) 
+    } 
 
     // handle save action
     const handleSave = () =>
@@ -194,7 +203,7 @@ function PostFooter ({ caption, amountOfLove, owner, postId, createAt, media })
                 </div>
                 <div className="h-[18px] text-[14px] font-[700] mb-[8px]">{`${amountOfLove?.length || 0} likes`}</div>
                 <div className="h-[18px] text-[14px] font-[700] mb-[8px]">{`${userPost?.username}`}<span className="text-[rgb(100,100,100)] font-[400] px-1">{caption}</span></div>
-                <div className="text-[rgb(179,179,179)] text-[14px] cursor-pointer h-[18px] mb-[8px]" onClick={() => setComment(true)}>{`View all ${amountOfComment || 0} comments`}</div>
+                <div className="text-[rgb(179,179,179)] text-[14px] cursor-pointer h-[18px] mb-[8px]" onClick={() => setComment(true)}>{`View all ${(amountOfComment + amountOfReply) || 0} comments`}</div>
                 <div className="h-[18px] mb-[30px] flex items-center">
                         <input value={captionText} className="text-[14px] placeholder:text-[rgb(179,179,179)] placeholder:text-[14px] w-full outline-none" placeholder="Add a comment..." onChange={handleComment}/>
                         <div className={`text-[14px] text-[rgb(0,149,246)] cursor-pointer font-[600] ${captionText !== "" ? "block" : "hidden"}`} onClick={handlePostComment}>Post</div>
