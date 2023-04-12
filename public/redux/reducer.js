@@ -1,4 +1,4 @@
-import { USER_PACKAGE, POST_ASSETS, CLEAR } from "./constants"
+import { USER_PACKAGE, POST_ASSETS, CLEAR, REPLY_COMMENT } from "./constants"
 
 const userState = {
     user: {},
@@ -6,6 +6,10 @@ const userState = {
 
 const postState = {
     assets: [],
+}
+
+const replyState = {
+    reply: []
 }
 
 export const userReducer = (state = userState, action) =>
@@ -38,6 +42,23 @@ export const postReducer = (state = postState, action) =>
             }
         }
         default:
+            return state
+    }
+}
+
+export const replyReducer = (state = replyState, action) =>
+{
+    switch (action.type)
+    {
+        case REPLY_COMMENT:{
+            return { ...state, reply: action.payload }
+        }
+        case CLEAR:{
+            return {
+                reply: []
+            }
+        }
+        default: 
             return state
     }
 }
