@@ -10,7 +10,9 @@ import Comment from "./Comment"
 import { getHoursBetween, compare } from "../utils/functions"
 
 // redux
-import { useUserPackageHook } from "../redux/hooks"
+import { useUserPackageHook, useReplyCommentPakageHook } from "../redux/hooks"
+import { clearReply } from "../redux/actions"
+import { useDispatch } from "react-redux"
 
 const uuid = require("uuid")
 
@@ -18,6 +20,8 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
 {
     // user
     const user = useUserPackageHook()
+    const replyState = useReplyCommentPakageHook()
+    const dispatch = useDispatch()
 
     const [love, setLove] = useState(loveStatus)
     const [save, setSave] = useState(false)
@@ -136,7 +140,12 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
     const handleInput = useCallback((e) =>
     {
         setCommentText(e.target.value)
-        if(commentText === "@") setIsReply(false)
+        if(commentText === "@")
+        {
+            setIsReply(false)
+            dispatch(clearReply())
+            setCommentText("")
+        } 
     })
 
     const handleReply = (value) => 
@@ -146,6 +155,22 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         setCommentText(`@${value?.name} `)
         commentRef.current.focus()
     }
+
+    useEffect(() =>
+    {   
+        const replyObject = Object.values(replyState)
+        if (replyObject.length > 0)
+        {
+            setReplyInfo(replyState)
+            setIsReply(true)
+            setCommentText(`@${replyState?.name}`)
+            commentRef.current.focus()
+        }
+        else {
+            setCommentText("")
+            setIsReply(false)
+        }
+    },[replyState])
 
     const handleComment = useCallback(() =>
     {
@@ -188,11 +213,6 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         setCommentText("")
         setIsReply(false)
     })
-
-    useEffect(() =>
-    {
-        console.log(reply);
-    },[reply])
 
     const renderMedia = useMemo(() =>
     {
