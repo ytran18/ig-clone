@@ -14,7 +14,7 @@ function PostAssets ({ media })
     
     useEffect(() =>
     {
-        media.map((item ,index) =>
+        media?.map((item ,index) =>
         {
             if(index == currImageIndex)
             {
@@ -42,13 +42,13 @@ function PostAssets ({ media })
         return (
             <>
             {
-                media[currImageIndex]?.type == "img" ?
+                media?.[currImageIndex]?.type == "img" ?
                 ( <Image key={currImageIndex} alt="img" className="max-w-full max-h-[585px] bg-cover bg-center" width={500} height={300} src={media[currImageIndex]?.url}/> )
                 :
                 (
                     <div className="relative w-full max-h-[585px] flex justify-center" key={currImageIndex}>
                         <video ref={videoRef} id="video" className="w-[full] max-h-[585px] bg-cover bg-center" autoPlay muted>
-                            <source src={media[currImageIndex]?.url} />
+                            <source src={media?.[currImageIndex]?.url} />
                         </video>
                         <div className="absolute bottom-4 right-4 cursor-pointer" onClick={handleAudio}> {videoRef.current?.muted ? MuteAudio : OnAudio} </div>
                     </div>
@@ -76,7 +76,7 @@ function PostAssets ({ media })
             <>
                 <div className={`absolute bottom-0 ${length === 0 ? "hidden" : "flex"}`}>
                     {
-                        media.map((item, index) =>
+                        media?.map((item, index) =>
                         {
                             return (
                                 <div key={index}>
