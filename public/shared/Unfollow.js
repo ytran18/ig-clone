@@ -2,12 +2,17 @@
 import { db } from "../../src/firebase"
 import { ref, update } from "firebase/database"
 
-function Unfollow({ handleUnfollowPopUp, setFollowing, getFollowing, userData, otherUser }) {
+function Unfollow({ handleUnfollowPopUp, getFollower, setFollowing, getFollowing, userData, otherUser }) {
     const handleUnfollow = () => {
-        const following = getFollowing()
+        const following = getFollowing(userData?.userId)
+        const follower = getFollower(otherUser?.userId)
         const newFollowing = following.filter((follow) => follow !== otherUser?.userId)
+        const newFollower = follower.filter((fler) => fler !== userData?.userId)
         update(ref(db, 'users/' + userData?.userId),{
             following: newFollowing
+        })
+        update(ref(db, 'users/' + otherUser?.userId),{
+            follower: newFollower
         })
         handleUnfollowPopUp()
         setFollowing(false)
