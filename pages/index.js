@@ -35,7 +35,7 @@ export default function Home() {
     // query to get post from firebase realtime database
     const getPost = query(ref(db,"posts/"))
     // query to get some users from firebase realtime database
-    const getUsers = query(ref(db, "users/"), limitToFirst(5))
+    const getUsers = query(ref(db, "users/"), limitToFirst(6))
 
     // get all posts from firebase realtime database
     useEffect(() =>
@@ -59,7 +59,8 @@ export default function Home() {
             if (value != null)
             {
                 let usersObject = Object.values(value)
-                setUsers(usersObject)
+                const arr = usersObject?.filter((data) => data?.userId !== user?.userId )
+                setUsers(arr)
             }
         })
     },[])
