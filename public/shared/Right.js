@@ -48,7 +48,7 @@ function Right ({ users })
             <div className="w-[319px] flex flex-col px-5">
                 <div className="flex justify-between items-center h-[117px]">
                     <div className="flex items-center w-[80%]">
-                        <div className="w-[56px] h-[56px]" onClick={handleAccountPage}><img alt="avt" src={user?.avatar || AVT} className="w-full h-full rounded-full cursor-pointer"/></div>
+                        <div className="w-[56px] h-[56px]" onClick={handleAccountPage}><Image width={56} height={56} alt="avt" src={user?.avatar || AVT} className="w-full h-full rounded-full cursor-pointer"/></div>
                         <div className="mx-4 text-[14px]">
                             <div className="font-[600]">{user?.username}</div>
                             <div className="text-[rgb(172,172,172)]">{user?.name}</div>
@@ -65,7 +65,7 @@ function Right ({ users })
                         users?.map((item, index) =>
                         {
                             return (
-                                <div key={index}> <SuggestionsFollow AVT={item?.avatar} name={item?.name} username={item?.username}/> </div>
+                                <div key={index}> <SuggestionsFollow id={item?.userId} AVT={item?.avatar} name={item?.name} username={item?.username}/> </div>
                             )
                         })
                     }
