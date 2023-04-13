@@ -105,14 +105,25 @@ function AccountPage() {
     }
 
     //get following 
-    const getFollowing = () => {
+    const getFollowing = (userId) => {
         let following = []
-        onValue(ref2(db,'users/' + userData?.userId + '/following'), (snapshot) => {
+        onValue(ref2(db,'users/' + userId + '/following'), (snapshot) => {
             snapshot.forEach( (childSnapshot) => {
                 following.push(childSnapshot.val())
             })
         })
         return following
+    }
+
+    //get follower
+    const getFollower = (userId) => {
+        let follower = []
+        onValue(ref2(db, 'users/'+ userId + '/follower'), (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+                follower.push(childSnapshot.val())
+            })
+        })
+        return follower
     }
 
     //check following
@@ -126,8 +137,6 @@ function AccountPage() {
         return false;
     }
 
-    console.log(getFollowing());
-
     //get number of posts's user
     const numOfPost = () => {
         let total = 0
@@ -136,14 +145,15 @@ function AccountPage() {
         }
         return total
     }
-    console.log(numOfPost())
-
-    console.log("User: ",getUser());
 
     const handleFollow = () => {
-        const following = getFollowing()
+        const following = getFollowing(userData.userId)
+        const follower = getFollower(otherUser?.userId)
         update(ref2(db, 'users/' + userData.userId),{
             following: [...following, otherUser?.userId]
+        })
+        update(ref2(db, 'users/' + otherUser?.userId), {
+            follower: [...follower, userData.userId]
         })
         setFollowing(true)
     }
@@ -196,7 +206,7 @@ function AccountPage() {
                     <EditPopUp handleClose = { handleEditPopUp }/>
                 </div>
                 <div className={unfollow ? "block": "hidden"}>
-                    <Unfollow handleUnfollowPopUp = {handleUnfollowPopUp} setFollowing = {setFollowing} getFollowing = {getFollowing} userData = {userData} otherUser = {otherUser}/>
+                    <Unfollow handleUnfollowPopUp = {handleUnfollowPopUp} getFollower = {getFollower} setFollowing = {setFollowing} getFollowing = {getFollowing} userData = {userData} otherUser = {otherUser}/>
                 </div>
                 <div className={ followingPopUp ? "block" : "hidden" } >
                     <FollowingPopUp handleClose = {handleFollowingPopUp}/>
@@ -263,14 +273,14 @@ function AccountPage() {
                                     className="mr-[40px] cursor-pointer"
                                     onClick={handleFollowersPopUp}
                                 >   
-                                    0 followers
+                                    {isUser(username) ? getFollower(userData?.userId).length : getFollower(otherUser?.userId).length} followers
                                 </p>
 
                                 <p 
                                     className="mr-[40px] cursor-pointer"
                                     onClick={handleFollowingPopUp}
                                 >
-                                    168 following
+                                    {isUser(username) ? getFollowing(userData?.userId).length : getFollowing(otherUser?.userId).length} following
                                 </p>
                             </div>
                         </div>
