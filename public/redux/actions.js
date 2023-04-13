@@ -1,4 +1,4 @@
-import { USER_PACKAGE, POST_ASSETS, CLEAR, REPLY_COMMENT } from "./constants"
+import { USER_PACKAGE, POST_ASSETS, CLEAR, REPLY_COMMENT, CLEAR_REPLY } from "./constants"
 
 export const userPackage = (user) => ({
     type: USER_PACKAGE,
@@ -18,4 +18,8 @@ export const clear = () => ({
 export const replyComment = (reply) => ({
     type: REPLY_COMMENT,
     payload: reply,
+})
+
+export const clearReply = () => ({
+    type: CLEAR_REPLY
 })

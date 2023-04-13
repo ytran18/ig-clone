@@ -1,4 +1,4 @@
-import { USER_PACKAGE, POST_ASSETS, CLEAR, REPLY_COMMENT } from "./constants"
+import { USER_PACKAGE, POST_ASSETS, CLEAR, REPLY_COMMENT, CLEAR_REPLY } from "./constants"
 
 const userState = {
     user: {},
@@ -53,7 +53,7 @@ export const commentReducer = (state = replyState, action) =>
         case REPLY_COMMENT:{
             return { ...state, reply: action.payload }
         }
-        case CLEAR:{
+        case CLEAR_REPLY:{
             return {
                 reply: {}
             }

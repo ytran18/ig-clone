@@ -8,6 +8,8 @@ import { MiniHearth, MiniHearthRed } from "../icons/icons"
 import { getHoursBetween } from "../utils/functions"
 
 import { useUserPackageHook } from "../redux/hooks"
+import { useDispatch } from "react-redux"
+import { replyComment } from "../redux/actions"
 
 function ReplyComment ({ item, postId, commentId, replyId, setIsReply })
 {
@@ -15,6 +17,7 @@ function ReplyComment ({ item, postId, commentId, replyId, setIsReply })
 
     // user
     const user = useUserPackageHook()
+    const dispatch = useDispatch()
 
     // state
     const [replyLove, setReplyLove] = useState(false)
@@ -40,6 +43,17 @@ function ReplyComment ({ item, postId, commentId, replyId, setIsReply })
             }
         })
     },[])
+
+    const handleReply = () =>
+    {
+        const reply = {
+            isReply: true,
+            name: item?.nameOfCommenter,
+            id: item?.userIdOfCommenter,
+            commentId: commentId
+        }
+        dispatch(replyComment(reply))
+    }
 
     const handleReplyLove = (commentIds) =>
     {
@@ -86,7 +100,7 @@ function ReplyComment ({ item, postId, commentId, replyId, setIsReply })
                         <div className="text-[12px] flex text-[rgb(196,196,196)] cursor-pointer px-2">
                             <div className="">{getHoursBetween(item?.time, newDate)}</div>
                             <div className="mx-4 font-[600]">{`${item?.like?.length || 0} likes`}</div>
-                            <div className="font-[600]" onClick={() => setIsReply({isReply: true, name: item?.nameOfCommenter, id:item?.userIdOfCommenter, commentId:commentId})}>Reply</div>
+                            <div className="font-[600]" onClick={handleReply}>Reply</div>
                         </div>
                     </div>
                 </div>

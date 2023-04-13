@@ -16,7 +16,7 @@ function Post ({ post })
                         <div className="w-screen md:w-[470px] lg:w-[470px] border-b-[1px] p-1">
                             <PostHeader user={item?.userId} createAt={item?.createAt}/>
                             <PostAssets media={item?.media}/>
-                            <PostFooter caption={item?.caption} createAt={item?.createAt} amountOfLove={item?.likes} owner={item?.userId} amountOfComment={item?.comment} postId={item?.postId}/>
+                            <PostFooter caption={item?.caption} createAt={item?.createAt} amountOfLove={item?.likes} owner={item?.userId} postId={item?.postId} media={item?.media} />
                         </div>
                     </div>
                 )
