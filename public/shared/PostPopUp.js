@@ -84,7 +84,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
     
     useEffect(() =>
     {
-        media.map((item ,index) =>
+        media?.map((item ,index) =>
         {
             if(index == currImageIndex)
             {
@@ -219,13 +219,13 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
         return (
             <>
             {
-                media[currImageIndex]?.type == "img" ?
-                ( <Image key={currImageIndex} alt="img" className="w-full h-full object-cover bg-cover bg-center" width={500} height={300} src={media[currImageIndex]?.url}/> )
+                media?.[currImageIndex]?.type == "img" ?
+                ( <Image key={currImageIndex} alt="img" className="w-full h-full object-cover bg-cover bg-center" width={500} height={300} src={media?.[currImageIndex]?.url}/> )
                 :
                 (
                     <div className="max-w-full max-h-full object-cover flex justify-center" key={currImageIndex}>
                         <video ref={videoRef} id="video" className="max-w-full max-h-full relative" autoPlay muted>
-                            <source src={media[currImageIndex]?.url} />
+                            <source src={media?.[currImageIndex]?.url} />
                         </video>
                         <div className="absolute bottom-4 right-4 cursor-pointer" onClick={handleAudio}> {videoRef.current?.muted ? MuteAudio : OnAudio} </div>
                     </div>
@@ -253,7 +253,7 @@ function PostPopUp ({ close, caption, owner, amountOfLove, loveStatus, createAt,
             <>
                 <div className={`absolute bottom-0 ${media?.length - 1 === 0 ? "hidden" : "flex"}`}>
                     {
-                        media.map((item, index) =>
+                        media?.map((item, index) =>
                         {
                             return (
                                 <div key={index}>
