@@ -128,7 +128,7 @@ function AccountPage() {
 
     //check following
     const isFollowing = (ohter) => {
-        const following = getFollowing()
+        const following = getFollowing(userData?.userId)
         for(let i = 0; i < following.length; i++){
             if(following[i] == ohter?.userId){
                 return true;
@@ -212,7 +212,7 @@ function AccountPage() {
                     <FollowingPopUp handleClose = {handleFollowingPopUp}/>
                 </div>
                 <div className={ followersPopUp ? "block" : "hidden" }>
-                    <FollowersPopUp handleClose = {handleFollowersPopUp}/>
+                    <FollowersPopUp handleClose = {handleFollowersPopUp} isFollowing = {isFollowing} userData = {userData} getFollower = {getFollower} getFollowing = {getFollowing} />
                 </div>
 
                 <div className="flex flex-col pb-[10px] pt-[40px] ml-[245px] w-full">
@@ -240,9 +240,9 @@ function AccountPage() {
                                             </div>
                                         ) :
                                         (
-                                        <div onClick={handleFollow} className=" bg-sky-400 mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
-                                            Follow
-                                        </div>
+                                            <div onClick={handleFollow} className=" bg-sky-400 mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
+                                                Follow
+                                            </div>
                                         )
                                     )
                                 }
