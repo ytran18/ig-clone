@@ -14,19 +14,22 @@ import { onValue, ref, update } from "firebase/database"
 import FollowersContent from "./FollowersContent"
 
 
-function FollowersPopUp({handleClose, isFollowing, userData, getFollower, getFollowing }) {
-    const [follower, setFollower] = useState()
+function FollowersPopUp({handleClose, isFollowing, userData, getFollower, getFollowing, isUser }) {
+//     const [follower, setFollower] = useState()
 
-    useEffect(() => {
-        const follower1 = getFollower(userData?.userId)
-        let follower2 = []
-        follower1.forEach((fler) => {
-            const user = getUser(fler)
-            follower2.push(user)
-        })
-        setFollower(follower2)
-    }, [])
+//     useEffect(() => {
+//         const follower1 = getFollower(userData?.userId)
+//         let follower2 = []
+//         follower1.forEach((fler) => {
+//             const user = getUser(fler)
+//             follower2.push(user)
+//             console.log(user)
+//         })
+//         console.log("follower2: ", follower2)
+//         setFollower(follower2)
+//     },[])
 
+    
     const getUser = (userId) => {
         let user = null
         onValue(ref(db, 'users/' + userId), (snapshot) => {
@@ -34,9 +37,19 @@ function FollowersPopUp({handleClose, isFollowing, userData, getFollower, getFol
         })
         return user
     }
+    const followers = () => {
+        const follower1 = getFollower(userData?.userId)
+        let follower2 = []
+        follower1.forEach((fler) => {
+            const user = getUser(fler)
+            follower2.push(user)
+            console.log(user)
+        })
+        console.log("follower2: ", follower2)
+        return follower2
+    }
 
-    console.log("follower: ", follower)
-    console.log("userData: ", userData)
+    const follower = followers()
 
     return(
         <div className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgba(35,35,35,0.16)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl z-50">
@@ -84,7 +97,7 @@ function FollowersPopUp({handleClose, isFollowing, userData, getFollower, getFol
                             <div className="flex flex-col">
                                 {follower?.map((fler) => {
                                     return(
-                                        <FollowersContent handleClose = {handleClose} userData = {userData} follower = {fler} isFollowing = {isFollowing} getFollower = {getFollower} getFollowing = {getFollowing} />
+                                        <FollowersContent handleClose = {handleClose} follower = {fler} isFollowing = {isFollowing} getFollower = {getFollower} getFollowing = {getFollowing} isUser = {isUser}/>
                                     )
                                 })}
                             </div>
