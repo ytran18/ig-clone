@@ -6,8 +6,12 @@ import { useUserPackageHook } from "../redux/hooks"
 import {db} from "../../src/firebase"
 import {update, ref} from "firebase/database"
 
+//components
+import Unfollow from "./Unfollow"
+
 function FollowersContent({ follower, isFollowing, getFollowing, getFollower, isUser }){
     const [follow, setFollow] = useState(false)
+    const [unfollow, setUnfollow] = useState(false)
 
     const userData = useUserPackageHook()
 
@@ -16,6 +20,10 @@ function FollowersContent({ follower, isFollowing, getFollowing, getFollower, is
             setFollow(true)
         }
     })
+
+    const handleUnfollow = () => {
+        setUnfollow(!unfollow)
+    }
 
     const handleFollow = () => {
         const following = getFollowing(userData.userId)
@@ -31,6 +39,9 @@ function FollowersContent({ follower, isFollowing, getFollowing, getFollower, is
 
     return(
         <div className="w-full">
+            <div className={unfollow ? "block" : "hidden"}>
+                <Unfollow handleUnfollowPopUp = {handleUnfollow} getFollower = {getFollower} setFollowing = {setFollow} getFollowing = {getFollowing} userData = {userData} otherUser = {follower} />
+            </div>
             <div className="flex items-center justify-between mx-3 mb-[10px]">
                 <div className="flex items-center">
                     <img className="w-[40px] h-[40px] rounded-full cursor-pointer" src={follower?.avatar} />
@@ -42,12 +53,12 @@ function FollowersContent({ follower, isFollowing, getFollowing, getFollower, is
                 {
                     follow ? 
                     (
-                        <div className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">Following</div>
+                        <div onClick={handleUnfollow} className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">Following</div>
                     ) :
                     (
                         isUser(follower?.username) ? 
                         (<div className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">Edit Profile</div>) :
-                            (<div onClick={handleFollow} className=" bg-sky-400 mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">Follow</div>) 
+                        (<div onClick={handleFollow} className=" bg-sky-400 mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">Follow</div>) 
                     )
                 }
             </div>
