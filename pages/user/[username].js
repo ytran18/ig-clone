@@ -209,7 +209,7 @@ function AccountPage() {
                     <Unfollow handleUnfollowPopUp = {handleUnfollowPopUp} getFollower = {getFollower} setFollowing = {setFollowing} getFollowing = {getFollowing} userData = {userData} otherUser = {otherUser}/>
                 </div>
                 <div className={ followingPopUp ? "block" : "hidden" } >
-                    <FollowingPopUp handleClose = {handleFollowingPopUp} getFollowing = {getFollowing} userData = {isUser(username) ? userData : otherUser} isUser = {isUser}/>
+                    <FollowingPopUp handleClose = {handleFollowingPopUp} isFollowing = {isFollowing} getFollowing = {getFollowing} getFollower = {getFollower} userData = {isUser(username) ? userData : otherUser} isUser = {isUser}/>
                 </div>
                 <div className={ followersPopUp ? "block" : "hidden" }>
                     <FollowersPopUp handleClose = {handleFollowersPopUp} isFollowing = {isFollowing} userData = {isUser(username) ? userData : otherUser} isUser = {isUser} getFollower = {getFollower} getFollowing = {getFollowing} />
