@@ -12,7 +12,7 @@ import { db } from "../../src/firebase"
 import { onValue, ref, update } from "firebase/database"
 
 
-function FollowingPopUp( { handleClose, getFollowing, userData, isUser } ) {
+function FollowingPopUp( { handleClose,isFollowing, getFollowing, getFollower, userData, isUser } ) {
 
     // const [following, setFollowing] = useState()
 
@@ -32,6 +32,18 @@ function FollowingPopUp( { handleClose, getFollowing, userData, isUser } ) {
             user = snapshot.val()
         })
         return user
+    }
+
+    const handleFollow = (otherUser, setFollow) => {
+        const following = getFollowing(userData.userId)
+        const follower = getFollower(otherUser?.userId)
+        update(ref(db, 'users/' + userData.userId),{
+            following: [...following, otherUser?.userId]
+        })
+        update(ref(db, 'users/' + otherUser?.userId), {
+            follower: [...follower, userData.userId]
+        })
+        setFollow(true)
     }
 
     const followings = () => {
@@ -62,10 +74,10 @@ function FollowingPopUp( { handleClose, getFollowing, userData, isUser } ) {
                     </div>
                 </div>
 
-                <div className="h-[80%]">
+                <div className="h-[90%] overflow-y-scroll">
                     { following?.map((flwing) => {
                         return(
-                            <FollowingContent following = {flwing} isUser = {isUser} />
+                            <FollowingContent following = {flwing} handleFollow = {handleFollow} isFollowing = {isFollowing} isUser = {isUser} getFollower = {getFollower} getFollowing = {getFollowing} />
                         )
                     })}
                 </div>
