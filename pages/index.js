@@ -8,7 +8,7 @@ import Story from "../public/shared/Story";
 import Loading from "../public/shared/LoadingIg";
 
 // firebase
-import { ref, query, onValue, limitToFirst } from "firebase/database"
+import { ref, query, onValue } from "firebase/database"
 import { db } from "../src/firebase"
 import { useEffect, useState } from "react";
 
@@ -20,6 +20,12 @@ export default function Home() {
 
     // user
     const user = useUserPackageHook()
+
+    useEffect(() =>
+    {
+        console.log(user);
+    },[])
+    
     // router
     const router = useRouter()
 
@@ -35,7 +41,7 @@ export default function Home() {
     // query to get post from firebase realtime database
     const getPost = query(ref(db,"posts/"))
     // query to get some users from firebase realtime database
-    const getUsers = query(ref(db, "users/"), limitToFirst(6))
+    const getUsers = query(ref(db, "users/"))
 
     // get all posts from firebase realtime database
     useEffect(() =>
@@ -59,8 +65,24 @@ export default function Home() {
             if (value != null)
             {
                 let usersObject = Object.values(value)
-                const arr = usersObject?.filter((data) => data?.userId !== user?.userId )
-                setUsers(arr)
+                let newArr
+                usersObject?.map((item, index) =>
+                {
+                    if (item?.userId === user?.userId)
+                    {
+                        console.log(item?.userId)
+                        console.log(user?.userId)
+                        if (item?.following)
+                        {
+                            item?.following?.map((data, index) =>
+                            {
+                                newArr = usersObject?.filter((item2) => item2?.userId !== data)
+                            })
+                        }
+                    }
+                })
+                const arr = newArr?.filter((data) => data?.userId !== user?.userId )
+                setUsers(arr?.slice(0,5))
             }
         })
     },[])

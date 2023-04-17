@@ -64,7 +64,7 @@ function SuggestionsFollow ({ AVT, name, username, id })
 
     return (
         <>
-            <div className="w-full flex items-center text-[14px] mb-2">
+            <div className="w-full flex items-center text-[14px] mb-4 cursor-pointer">
                 <div className="w-[80%] flex items-center" onClick={handleClick}>
                     {
                         AVT !== "" ?
