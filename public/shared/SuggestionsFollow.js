@@ -35,14 +35,16 @@ function SuggestionsFollow ({ AVT, name, username, id })
             {
                 snapshot.val()?.following?.some((item) =>
                 {
-                    if (item === user?.userId)
+                    if (item === id)
                     {
+                        console.log("here");
                         setFollowState(2)
                         return true
                     }
                     else {
+                        console.log("here");
                         const before = snapshot.val()?.following
-                        before.push(user?.userId)
+                        before.push(id)
                         const followPath = query(ref(db, `users/${user?.userId}/following`))
                         setFollowState(1)
                         set(followPath, before)
@@ -51,7 +53,7 @@ function SuggestionsFollow ({ AVT, name, username, id })
             }
             else {
                 const followPath = query(ref(db, `users/${user?.userId}/following`))
-                set(followPath, [user?.userId])
+                set(followPath, [id])
             }
         })
     }
@@ -80,7 +82,7 @@ function SuggestionsFollow ({ AVT, name, username, id })
             </div>
             {
                 followState === 2 ? 
-                (<OverLayBlock> <Unfollow AVT={AVT} username={username} close={handleClose} followState={handleState} /> </OverLayBlock>)
+                (<OverLayBlock> <Unfollow id={id} AVT={AVT} username={username} close={handleClose} followState={handleState} /> </OverLayBlock>)
                 :
                 (<></>)
             }

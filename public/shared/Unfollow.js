@@ -5,7 +5,7 @@ import { get, set, query, ref } from "firebase/database"
 
 import { useUserPackageHook } from "../redux/hooks"
 
-function Unfollow ({ AVT, username, close, followState })
+function Unfollow ({ AVT, username, close, followState, id })
 {
     // user
     const user = useUserPackageHook()
@@ -17,7 +17,7 @@ function Unfollow ({ AVT, username, close, followState })
     {
         get(getFollow).then((snapshot) =>
         {
-            const newArr = snapshot.val()?.following?.filter((data) => data !== user?.userId)
+            const newArr = snapshot.val()?.following?.filter((data) => data !== id)
             const followPath = query(ref(db, `users/${user?.userId}/following`))
             set(followPath, newArr)
         })
