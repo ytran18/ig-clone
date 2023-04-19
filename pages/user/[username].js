@@ -200,7 +200,7 @@ function AccountPage() {
         {userData == undefined ?
             (<div className="flex items-center justify-center h-screen w-screen"> <Loading/> </div>) :
             (
-            <div className="flex">
+            <div className="w-full sm:flex">
                 <div className="fixed"> <Sidebar/> </div>
                 <div className = {isEdit ? "block" : "hidden"}>
                     <EditPopUp handleClose = { handleEditPopUp }/>
@@ -215,32 +215,53 @@ function AccountPage() {
                     <FollowersPopUp handleClose = {handleFollowersPopUp} isFollowing = {isFollowing} userData = {isUser(username) ? userData : otherUser} isUser = {isUser} getFollower = {getFollower} getFollowing = {getFollowing} />
                 </div>
 
-                <div className="flex flex-col pb-[10px] pt-[40px] ml-[245px] w-full">
-                    <div className="flex border-b-[1px] mx-[30px] pb-[10px]">
-                        <label htmlFor="uploadAvatar" className=" w-[290px] h-[150px] px-[20px] flex justify-center cursor-pointer">
+                <div className="flex flex-col pb-[10px] pt-[40px] sm:ml-[245px] md:max-lg:ml-[70px] w-full">
+                    <div className="flex border-b-[1px] sm:mx-[30px] pb-[10px] gap-3 sm:gap-0">
+                        <label htmlFor="uploadAvatar" className="w-[30%] sm:w-[290px] sm:h-[150px] sm:px-[20px] flex justify-center cursor-pointer">
                             <img
-                                className="w-[150px] h-[150px] text-center rounded-full"
+                                className="w-[80px] h-[80px] sm:w-[150px] sm:h-[150px] text-center rounded-full"
                                 
                                 src={ isUser(username) ? avatar : otherUser?.avatar } 
                             />
                         </label>
                         { isUser(username) && <input type="file" id="uploadAvatar" className="hidden" onChange={handleChangeAvartar}/>}
                         
-                        <div>
-                            <div className="flex items-center mb-[30px]">
-                                <p className="text-[20px] mr-[20px]"> { isUser(username) ? userData.name : otherUser?.name} </p>
+                        <div className="w-[70%]">
+                            <div className="sm:flex items-center mb-[30px]">
+                                <div className="flex items-center mb-3 sm:mb-0">
+                                    <p className="text-[20px] mr-[20px]"> { isUser(username) ? userData.name : otherUser?.name} </p>
+                                    {
+                                        isUser(username) ? 
+                                        ( 
+                                            <div 
+                                                className="block sm:hidden cursor-pointer"
+                                                onClick={handleEditPopUp}
+                                            >
+                                                {EditIcon}
+                                            </div>
+                                        ) : 
+                                        ( 
+                                            <div 
+                                                className="block sm:hidden cursor-pointer"
+                                                onClick={handleEditPopUp}
+                                            >
+                                                {MoreDotIcon}
+                                            </div>
+                                        )
+                                    }
+                                </div>
                                 { isUser(username) ?
-                                    (<div className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
+                                    (<div className="bg-[#efefef] mr-[10px] items-center justify-center flex rounded-lg sm:rounded py-[7px] sm:px-[16px] font-semibold text-[14px] cursor-pointer">
                                         Edit Profile 
                                     </div>) :
                                     ( following ? 
                                         (
-                                            <div onClick={handleUnfollowPopUp} className="bg-[#efefef] mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
+                                            <div onClick={handleUnfollowPopUp} className="bg-[#efefef] items-center justify-center flex mr-[10px] rounded-lg sm:rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
                                                 Following
                                             </div>
                                         ) :
                                         (
-                                            <div onClick={handleFollow} className=" bg-sky-400 mr-[10px] rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
+                                            <div onClick={handleFollow} className=" bg-sky-400 mr-[10px] items-center justify-center flex rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
                                                 Follow
                                             </div>
                                         )
@@ -250,7 +271,7 @@ function AccountPage() {
                                     isUser(username) ? 
                                     ( 
                                         <div 
-                                            className="cursor-pointer"
+                                            className="hidden sm:block cursor-pointer"
                                             onClick={handleEditPopUp}
                                         >
                                             {EditIcon}
@@ -258,7 +279,7 @@ function AccountPage() {
                                     ) : 
                                     ( 
                                         <div 
-                                            className="cursor-pointer"
+                                            className="hidden sm:block cursor-pointer"
                                             onClick={handleEditPopUp}
                                         >
                                             {MoreDotIcon}
@@ -266,7 +287,7 @@ function AccountPage() {
                                     )
                                 }
                             </div>
-                            <div className="flex">
+                            <div className="hidden sm:flex">
                                 <p className="mr-[40px]">{numOfPost()} posts</p>
 
                                 <p 
@@ -285,9 +306,29 @@ function AccountPage() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex justify-center text-[#8e8e8e] font-semibold">
+                    <div className="py-[5px] flex sm:hidden items-center justify-around">
+                        <div className=" text-center">
+                            <p className="sm:mr-[40px] font-semibold">{numOfPost()}</p>
+                            <p className="text-[#7373a0] text-[15px]">posts</p>
+                        </div>
+
+                        <div className="text-center">
+                            <p className="sm:mr-[40px] cursor-pointer font-semibold" onClick={handleFollowersPopUp}>   
+                                {isUser(username) ? getFollower(userData?.userId).length : getFollower(otherUser?.userId).length}
+                            </p>
+                            <p className="text-[#7373a0] text-[15px]">followers</p>
+                        </div>
+
+                        <div className=" text-center">
+                            <p className="sm:mr-[40px] cursor-pointer font-semibold" onClick={handleFollowingPopUp}>
+                                {isUser(username) ? getFollowing(userData?.userId).length : getFollowing(otherUser?.userId).length}
+                            </p>
+                            <p className="text-[#7373a0] text-[15px]">following</p>
+                        </div>
+                    </div>
+                    <div className="flex text-[#8e8e8e] justify-center font-semibold sm:border-t-0 border-t-[1px]">
                         <div 
-                            className={tab == 1 ? "flex items-center cursor-pointer w-[60px] h-[50px] mr-[50px] border-t-[1px] border-black text-black" : "flex items-center cursor-pointer w-[60px] h-[50px] mr-[50px]"}
+                            className={tab == 1 ? "flex items-center justify-center cursor-pointer w-[30%] sm:w-[60px] h-[50px] sm:mr-[50px] border-t-[1px] border-black text-black" : "flex items-center justify-center cursor-pointer w-[30%] sm:w-[60px] h-[50px] sm:mr-[50px]"}
                             onClick = {() => setTab(1)}
                         >
                             <div className="text-[15px]">
@@ -297,7 +338,7 @@ function AccountPage() {
                         </div>
 
                         <div 
-                            className={tab == 2 ? "flex items-center cursor-pointer w-[60px] h-[50px] mr-[50px] border-t-[1px] border-black text-black" : "flex items-center cursor-pointer w-[60px] h-[50px] mr-[50px]"}
+                            className={tab == 2 ? "flex items-center justify-center cursor-pointer w-[30%] sm:w-[60px] h-[50px] sm:mr-[50px] border-t-[1px] border-black text-black" : "flex items-center justify-center cursor-pointer w-[30%] sm:w-[60px] h-[50px] sm:mr-[50px]"}
                             onClick={() => setTab(2)}
                         >
                             { isUser(username) ?
@@ -323,7 +364,7 @@ function AccountPage() {
                         </div>
 
                         <div 
-                            className={tab ==3 ? "flex items-center cursor-pointer w-[70px] h-[50px] border-t-[1px] border-black text-black" : "flex items-center cursor-pointer w-[70px] h-[50px]"}
+                            className={tab ==3 ? "flex items-center justify-center cursor-pointer w-[30%] sm:w-[60px] h-[50px] border-t-[1px] border-black text-black" : "flex items-center justify-center cursor-pointer w-[30%] sm:w-[60px] h-[50px]"}
                             onClick={() => setTab(3)}
                         >
                             <div className="text-[15px]">
@@ -332,7 +373,7 @@ function AccountPage() {
                             <p className="ml-[5px] text-[13px] ">TAGGED</p>
                         </div>
                     </div>
-                    <div className="mx-[30px] mt-[30px]">
+                    <div className="sm:mx-[30px] mx-[20px] sm:mt-[30px]">
                         <div className={tab == 1 ?"block" : "hidden"}>
                             { isUser(username) ? <Posts userData = { userData } posts ={ posts } isUser = {isUser} /> : <Posts userData = { otherUser } posts ={ posts } isUser = {isUser} />}
                         </div>

@@ -76,14 +76,14 @@ function Saved({ saved, userData }) {
                     </div>
                 ):
                 (
-                    <div className="flex flex-wrap">
+                    <div className="flex flex-wrap justify-around">
                         {
                             savedPost.map((saved) => {
                                 return(
-                                    <div onClick={handlePostPopUp} className="cursor-pointer select-none relative group mt-[10px] bg-slate-900 h-[300px] w-[300px] flex items-center justify-center mr-[10px]">
+                                    <div onClick={handlePostPopUp} className="cursor-pointer select-none relative group mt-[10px] bg-slate-900 sm:h-[300px] h-[100px] sm:w-[300px] w-[100px] flex items-center justify-center mr-[10px]">
                                         { saved?.media[0]?.type == "img" ?
-                                            (<img className="max-h-[300px] max-w-[300px]" src={saved?.media[0]?.url} alt="saved post" />) :
-                                            (<video className="max-h-[300px] max-w-[300px]" src={saved?.media[0]?.url} alt="saved post" autoPlay muted/>)
+                                            (<img className="sm:max-h-[300px] max-h-[100px] sm:max-w-[300px] max-w-[100px]" src={saved?.media[0]?.url} alt="saved post" />) :
+                                            (<video className="sm:max-h-[300px] max-h-[100px] sm:max-w-[300px] max-w-[100px]" src={saved?.media[0]?.url} alt="saved post" autoPlay muted/>)
                                         }
                                         <div className=" absolute group-hover:flex justify-evenly items-center inset-0 hidden bg-[rgba(35,35,35,0.16)]">
                                             <div className="flex items-center text-white">

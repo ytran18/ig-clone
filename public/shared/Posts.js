@@ -67,7 +67,7 @@ function Posts({ userData, posts, isUser }) {
                                 (
                                     <div className="flex flex-col items-center justify-center">
                                         <Image className="w-[50px] h-[50px] mb-[20px]" src={Camera} />
-                                        <div className="text-[32px] font-semibold">User doesn't up any posts</div>
+                                        <div className="text-[32px] font-semibold text-center">User doesn't up any posts</div>
                                     </div>
                                 )
                             ) :
@@ -76,12 +76,12 @@ function Posts({ userData, posts, isUser }) {
                                 {
                                     posts.map( (post) => {
                                         return(
-                                            <div onClick={handlePostPopUp} className="cursor-pointer select-none relative group mt-[10px] bg-slate-900 h-[300px] w-[300px] flex items-center justify-center mr-[10px]">
+                                            <div onClick={handlePostPopUp} className="cursor-pointer select-none relative group mt-[10px] bg-slate-900 sm:h-[300px] h-[100px] sm:w-[300px] w-[100px] flex items-center justify-center mr-[10px]">
                                                 
                                                 { post.media[0].type == "img" ? 
-                                                    (<img className="max-h-[300px] max-w-[300px]" src={post.media[0].url} alt = "post"/>) : 
+                                                    (<img className="sm:max-h-[300px] max-h-[100px] sm:max-w-[300px] max-w-[100px]" src={post.media[0].url} alt = "post"/>) : 
 
-                                                    (<video className="max-h-[300px] max-w-[300px]" src={post.media[0].url} alt = "post" autoPlay muted/>)
+                                                    (<video className="sm:max-h-[300px] max-h-[100px] sm:max-w-[300px] max-w-[100px]" src={post.media[0].url} alt = "post" autoPlay muted/>)
                                                 } 
 
                                                 <div className=" absolute group-hover:flex justify-evenly items-center inset-0 hidden bg-[rgba(35,35,35,0.16)]">
