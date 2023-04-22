@@ -33,9 +33,6 @@ export default function Home() {
     const [users, setUsers] = useState([]) // state to store users get from firebase realtime database
     const [notFollow, setNotFollow] = useState([])
 
-    // query to get some users from firebase realtime database
-    const getUsers = query(ref(db, "users/"))
-    
     // get all posts from firebase realtime database
     useEffect(() =>
     {
@@ -54,6 +51,7 @@ export default function Home() {
     // get 5 users from firebase realtime database
     useEffect(() =>
     {
+        const getUsers = query(ref(db, "users/"))
         let arr
         get(getUsers).then((snapshot) =>
         {
@@ -79,7 +77,7 @@ export default function Home() {
                 }
             }
         })
-    },[getUsers, user])
+    },[user])
 
     const renderPostArea = useMemo(() =>
     {
