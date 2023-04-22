@@ -77,30 +77,11 @@ function PostArea ({ posts, notFollowing })
             <div> <Post post={notFollow}/> </div> 
         )
     },[notFollow])
-    // useEffect(() =>
-    // {
-    //     console.log("follow");
-    //     console.log(follow);
-    //     console.log("-------");
-    // },[follow])
-    
-    // useEffect(() =>
-    // {
-    //     console.log("notFollow");
-    //     console.log(notFollow);
-    //     console.log("-------");
-    // },[notFollow])
 
     return (
         <div className="w-full h-full flex flex-col items-center px-2">
             {renderFollow}
             {renderNotFollow}
-            {/* {
-                posts.map(( item, index ) =>
-                {
-                    return (  <div key={index}> <Post post={item}/> </div> )
-                })
-            } */}
         </div>
     )
 }
