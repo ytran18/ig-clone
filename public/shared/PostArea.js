@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 import { useUserPackageHook } from "../redux/hooks"
 
@@ -6,7 +6,6 @@ import Post from "./Post"
 
 function PostArea ({ posts, notFollowing })
 {
-
     // user
     const user = useUserPackageHook()
 
@@ -25,38 +24,46 @@ function PostArea ({ posts, notFollowing })
         })
     },[notFollowing, notFollowingUsers])
 
-
     useEffect(() =>
     {
-        notFollowingUsers.length > 0 ? 
-        (
-            posts?.map((item, index) =>
-            {
-                const postObject = Object.values(item)
-                postObject?.map((data, index2) =>
-                {
-                    if (notFollowingUsers.includes(data?.userId))
-                    {
-                        if (!notFollow.includes(data))
-                        {
-                            setNotFollow(prev => [...prev, data])
-                        }
+        if (notFollowingUsers.length === 0 || !posts) return;
+
+        const newNotFollow = [];
+        const newFollow = [];
+        console.log(notFollowingUsers);
+
+        posts.forEach((item) => {
+            const postObject = Object.values(item);
+
+            postObject.forEach((data) => {
+                if (notFollowingUsers.includes(data?.userId)) {
+                    if (!newNotFollow.some((item) => item.postId === data.postId)) {
+                        newNotFollow.push(data);
                     }
-                    else {
-                        if (!follow.includes(data))
-                        {
-                            setFollow(prev => [...prev, data])
+                    // remove from newFollow if previously added
+                    newFollow.forEach((f, index) => {
+                        if (f.postId === data.postId) {
+                            newFollow.splice(index, 1);
                         }
+                    });
+                } else {
+                    if (!newFollow.some((item) => item.postId === data.postId)) {
+                        newFollow.push(data);
                     }
-                })
-            })
-        )
-        :
-        (null)
-    },[notFollowingUsers, posts, follow, notFollow])
+                    // remove from newNotFollow if previously added
+                    newNotFollow.forEach((n, index) => {
+                        if (n.postId === data.postId) {
+                            newNotFollow.splice(index, 1);
+                        }
+                    });
+                }
+            });
+        });
+        setNotFollow(newNotFollow);
+        setFollow(newFollow);
+    },[notFollowingUsers, posts])
 
     // display all posts from database
-
     const renderFollow = useMemo(() =>
     {
         return (
@@ -70,16 +77,30 @@ function PostArea ({ posts, notFollowing })
             <div> <Post post={notFollow}/> </div> 
         )
     },[notFollow])
-
-    useEffect(() =>
-    {
-        console.log(notFollowingUsers);
-    },[notFollowingUsers])
+    // useEffect(() =>
+    // {
+    //     console.log("follow");
+    //     console.log(follow);
+    //     console.log("-------");
+    // },[follow])
+    
+    // useEffect(() =>
+    // {
+    //     console.log("notFollow");
+    //     console.log(notFollow);
+    //     console.log("-------");
+    // },[notFollow])
 
     return (
         <div className="w-full h-full flex flex-col items-center px-2">
             {renderFollow}
             {renderNotFollow}
+            {/* {
+                posts.map(( item, index ) =>
+                {
+                    return (  <div key={index}> <Post post={item}/> </div> )
+                })
+            } */}
         </div>
     )
 }

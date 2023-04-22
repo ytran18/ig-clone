@@ -8,9 +8,9 @@ import Story from "../public/shared/Story";
 import Loading from "../public/shared/LoadingIg";
 
 // firebase
-import { ref, query, onValue, get } from "firebase/database"
+import { ref, query, onValue, get, off } from "firebase/database"
 import { db } from "../src/firebase"
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // redux
 import { useUserPackageHook } from "../public/redux/hooks"
@@ -33,14 +33,13 @@ export default function Home() {
     const [users, setUsers] = useState([]) // state to store users get from firebase realtime database
     const [notFollow, setNotFollow] = useState([])
 
-    // query to get post from firebase realtime database
-    const getPost = query(ref(db,"posts/"))
     // query to get some users from firebase realtime database
     const getUsers = query(ref(db, "users/"))
-
+    
     // get all posts from firebase realtime database
     useEffect(() =>
     {
+        const getPost = query(ref(db,"posts/"))
         onValue(getPost, (snapshot) =>
         {
             const value = snapshot.val()
@@ -51,6 +50,7 @@ export default function Home() {
             }
         })
     },[])
+
     // get 5 users from firebase realtime database
     useEffect(() =>
     {
@@ -61,26 +61,25 @@ export default function Home() {
             if (value != null)
             {
                 let usersObject = Object.values(value)
-                let newArr
+                let newArr = usersObject
                 usersObject?.map((item, index) =>
                 {
-                    if (item?.userId === user?.userId)
-                    {
-                        if (item?.following)
-                        {
-                            item?.following?.map((data, index) =>
-                            {
-                                newArr = usersObject?.filter((item2) => item2?.userId !== data)
-                            })
-                        }
+                    if (item.userId === user.userId && item.following) {
+                        item.following.forEach((data) => {
+                          newArr = newArr.filter((item2) => item2.userId !== data)
+                        })
                     }
                 })
                 arr = newArr?.filter((data) => data?.userId !== user?.userId )
                 setNotFollow(arr)
-                setUsers(arr?.slice(0,5))
+                
+                if (arr?.length < 5) { setUsers(arr) }
+                else {
+                    setUsers(arr?.slice(0,5))
+                }
             }
         })
-    },[])
+    },[getUsers, user])
 
     const renderPostArea = useMemo(() =>
     {
@@ -92,7 +91,7 @@ export default function Home() {
                 </div>
             </div>
         )
-    },[notFollow])
+    },[notFollow, posts])
 
     return (
         <>
@@ -123,5 +122,3 @@ export default function Home() {
         </>
     );
 }
-
-
