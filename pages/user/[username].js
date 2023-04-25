@@ -378,7 +378,7 @@ function AccountPage() {
                             { isUser(username) ? <Posts userData = { userData } posts ={ posts } isUser = {isUser} /> : <Posts userData = { otherUser } posts ={ posts } isUser = {isUser} />}
                         </div>
                         <div className={tab == 2 ?"block" : "hidden"}>
-                            { isUser(username) ? <Saved saved = { userData?.saved } userData = { userData } /> : <Reels saved = { otherUser?.saved } userData = { otherUser }/> }
+                            { isUser(username) ? <Saved userData = { userData } /> : <Reels userData = { otherUser }/> }
                         </div>
                         <div className={tab == 3 ?"block" : "hidden"}>
                             <Tagged/>
