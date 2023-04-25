@@ -7,16 +7,14 @@ import { CommentIcon, LoveIcon, DocumentDuplicate } from "../icons/icons"
 
 //firebase
 import {db} from "../../src/firebase"
-import { get, ref, query, onValue } from "firebase/database"
+import { ref, onValue } from "firebase/database"
 
 //component
 import PostPopUp from "./PostPopUp"
 import OverLayBlock from "./OverLayBlock"
-import { comment } from "postcss"
 
 function PostsContent ({post}) {
     const [postPopUp, setPostPopUp] = useState(false)
-    // const [love, setLove] = useState(false)
 
     const user = useUserPackageHook()
 
@@ -75,7 +73,7 @@ function PostsContent ({post}) {
                 </div>)
             }
             <div onClick={(e) => {e.stopPropagation()}} className={postPopUp ? "fixed z-50 w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgba(19,18,18,0.71)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl" : "hidden"}>
-                <OverLayBlock><PostPopUp close={handlePostPopUp} caption={post?.caption} createAt={post?.createAt} amountOfLove={post?.likes} owner={post?.userId} media={post?.media} postId={post?.postId} loveStatus={love}/></OverLayBlock>
+                <OverLayBlock><PostPopUp close={handlePostPopUp} caption={post?.caption} createAt={post?.createAt} amountOfLove={post?.likes?.length || 0} owner={post?.userId} media={post?.media} postId={post?.postId} loveStatus={love}/></OverLayBlock>
             </div>
         </div>
     )
