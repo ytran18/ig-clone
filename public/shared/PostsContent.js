@@ -36,7 +36,7 @@ function PostsContent ({post}) {
     const isLove = () => {
         const likes = post?.likes
         return (
-            likes.some((like) => {
+            likes?.some((like) => {
                 if(like === user.userId) {return true}
             })
         )
