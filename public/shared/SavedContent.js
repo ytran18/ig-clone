@@ -32,7 +32,7 @@ function SavedContent({saved}) {
     const isLove = () => {
         const likes = saved?.likes
         return (
-            likes.some((like) => {
+            likes?.some((like) => {
                 if(like === user.userId) {return true}
             })
         )

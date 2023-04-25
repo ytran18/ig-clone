@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 
 //firebase
-import { ref, update, onValue} from "firebase/database"
+import { ref, onValue} from "firebase/database"
 import { db } from "../../src/firebase"
 
 //icons/images
@@ -13,10 +13,22 @@ import PostPopUp from "../shared/PostPopUp"
 import SavedContent from "./SavedContent";
 
 
-function Saved({ saved, userData }) {
+function Saved({ userData }) {
+    const [save, setSave] = useState()
+
+    useEffect(() => {
+        onValue(ref(db, 'users/' + userData?.userId + '/saved'), (snapshot) => {
+            var save1 = []
+            snapshot.forEach((childSnapshot) => {
+                save1.push(childSnapshot.val())
+            })
+            setSave(save1)
+        })
+    }, [])
+
     const getPost = () => {
         let posts = []
-        saved?.forEach( (save) => {
+        save?.forEach( (save) => {
             onValue(ref(db, '/posts/'), (snapshot) => {
                 snapshot.forEach((childSnapshot) => {
                     childSnapshot.forEach((post) => {
