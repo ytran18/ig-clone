@@ -10,35 +10,10 @@ import { LoveIcon, CommentIcon, DocumentDuplicate } from "../icons/icons"
 
 //component
 import PostPopUp from "../shared/PostPopUp"
+import SavedContent from "./SavedContent";
 
 
 function Saved({ saved, userData }) {
-    const [postPopUp, setPostPopUp] = useState(false)
-
-    const handlePostPopUp = () => {
-        setPostPopUp(!postPopUp)
-    }
-
-    // const [post, setPost] = useState()
-
-    // useEffect( () => {
-    //     for(let i = 0; i <saved?.length; i++){
-    //         onValue(ref(db, '/posts/'), (snapshot) => {
-    //             var posts = []
-    //             snapshot.forEach((childSnapshot) => {
-    //                 childSnapshot.forEach((post) => {
-    //                     if(post.val().postId == saved[i]){
-    //                         posts.push(post.val())
-    //                     }
-    //                 })
-    //             })
-    //             setSavedPost(posts)
-    //         })
-    //     }
-    // } ,[])
-
-    // console.log("saved post: ", post)
-
     const getPost = () => {
         let posts = []
         saved?.forEach( (save) => {
@@ -76,31 +51,12 @@ function Saved({ saved, userData }) {
                     </div>
                 ):
                 (
-                    <div className="flex flex-wrap justify-around">
+                    <div className="flex flex-wrap">
                         {
                             savedPost.map((saved) => {
                                 return(
-                                    <div onClick={handlePostPopUp} className="cursor-pointer select-none relative group mt-[10px] bg-slate-900 sm:h-[300px] h-[100px] sm:w-[300px] w-[100px] flex items-center justify-center mr-[10px]">
-                                        { saved?.media[0]?.type == "img" ?
-                                            (<img className="sm:max-h-[300px] max-h-[100px] sm:max-w-[300px] max-w-[100px]" src={saved?.media[0]?.url} alt="saved post" />) :
-                                            (<video className="sm:max-h-[300px] max-h-[100px] sm:max-w-[300px] max-w-[100px]" src={saved?.media[0]?.url} alt="saved post" autoPlay muted/>)
-                                        }
-                                        <div className=" absolute group-hover:flex justify-evenly items-center inset-0 hidden bg-[rgba(35,35,35,0.16)]">
-                                            <div className="flex items-center text-white">
-                                                {CommentIcon} 
-                                                <div className=" font-bold text-white">{saved.comment == undefined ? "0" : `${saved.comment.length}`}</div>
-                                            </div>
-                                            <div className="flex items-center text-white">
-                                                {LoveIcon}
-                                                <div className=" font-bold text-white">{saved.likes == undefined ? "0" : `${saved.likes.length}`}</div>
-                                            </div>
-                                        </div>
-                                        {
-                                            saved?.media.length > 1 && (<div className=" absolute top-2 right-2 text-white">{DocumentDuplicate}</div>)
-                                        }
-                                        <div className={postPopUp ? "fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgba(19,18,18,0.71)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl" : "hidden"}>
-                                            <PostPopUp caption={saved.caption} createAt={saved.createAt} amountOfLove={saved.likes} owner={saved.userId} />
-                                        </div>
+                                    <div className="cursor-pointer select-none relative group mt-[10px] bg-slate-900 sm:h-[300px] h-[100px] sm:w-[300px] w-[100px] flex items-center justify-center mr-[10px]">
+                                        <SavedContent saved = {saved} />
                                     </div>
                                 )
                             })
