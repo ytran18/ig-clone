@@ -11,10 +11,11 @@ import Loading from "./Loading"
 
 //component
 import PostPopUp from "../shared/PostPopUp"
+import PostsContent from "./PostsContent"
+import OverLayBlock from "./OverLayBlock"
 
 function Posts({ userData, posts, isUser }) {
     const [createPost, setCreatePost] = useState(false)
-    const [postPopUp, setPostPopUp] = useState(false)
 
     console.log(posts)
 
@@ -22,10 +23,6 @@ function Posts({ userData, posts, isUser }) {
 
     const handleCreatePost = () => {
         setCreatePost(!createPost)
-    }
-
-    const handlePostPopUp = () => {
-        setPostPopUp(!postPopUp)
     }
 
     return (
@@ -76,33 +73,8 @@ function Posts({ userData, posts, isUser }) {
                                 {
                                     posts.map( (post) => {
                                         return(
-                                            <div onClick={handlePostPopUp} className="cursor-pointer select-none relative group mt-[10px] bg-slate-900 sm:h-[300px] h-[100px] sm:w-[300px] w-[100px] flex items-center justify-center mr-[10px]">
-                                                
-                                                { post.media[0].type == "img" ? 
-                                                    (<img className="sm:max-h-[300px] max-h-[100px] sm:max-w-[300px] max-w-[100px]" src={post.media[0].url} alt = "post"/>) : 
-
-                                                    (<video className="sm:max-h-[300px] max-h-[100px] sm:max-w-[300px] max-w-[100px]" src={post.media[0].url} alt = "post" autoPlay muted/>)
-                                                } 
-
-                                                <div className=" absolute group-hover:flex justify-evenly items-center inset-0 hidden bg-[rgba(35,35,35,0.16)]">
-                                                    <div className="flex items-center text-white">
-                                                        {CommentIcon} 
-                                                        <div className=" font-bold text-white">{post.comment == undefined ? "0" : `${post.comment.length}`}</div>
-                                                    </div>
-                                                    <div className="flex items-center text-white">
-                                                        {LoveIcon}
-                                                        <div className=" font-bold text-white">{post.likes == undefined ? "0" : `${post.likes.length}`}</div>
-                                                    </div>
-                                                </div>
-                                                    
-                                                {   post.media.length > 1 &&
-                                                    (<div className=" absolute top-2 right-2 text-white">
-                                                        {DocumentDuplicate}
-                                                    </div>)
-                                                }
-                                                <div className={postPopUp ? "fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgba(19,18,18,0.71)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl" : "hidden"}>
-                                                    <PostPopUp caption={post.caption} createAt={post.createAt} amountOfLove={post.likes} owner={userData.userId} />
-                                                </div>
+                                            <div className="cursor-pointer select-none relative group mt-[10px] bg-slate-900 sm:h-[300px] h-[100px] sm:w-[300px] w-[100px] flex items-center justify-center mr-[10px]">
+                                                <PostsContent post = {post}/>
                                             </div>
                                         )
                                     } )
