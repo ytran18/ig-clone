@@ -93,7 +93,7 @@ function FollowersPopUp({handleClose, isFollowing, userData, getFollower, getFol
                                 {CloseIcon}
                             </div>
                         </div>
-                        <div className="h-[90%] pt-2">
+                        <div className="h-[90%] pt-2 overflow-y-scroll scrollbar-hide">
                             <div className="flex flex-col">
                                 {follower?.map((fler) => {
                                     return(
