@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 
 // redux
 import { useUserPackageHook } from "../public/redux/hooks"
+import MobileSidebar from "../public/shared/MobileSidebar";
 
 export default function Home() {
 
@@ -96,6 +97,9 @@ export default function Home() {
                         <div className="hidden lg:flex justify-center">
                             <Right users={users}/>
                         </div>
+                    </div>
+                    <div className="fixed md:hidden bottom-0 h-[50px] z-10 bg-white p-4 w-full border-t-[1px] border-t-[rgb(219,219,2190)]">
+                        <MobileSidebar />
                     </div>
                 </>
             )
