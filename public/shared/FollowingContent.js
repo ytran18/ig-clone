@@ -2,6 +2,7 @@
 import Image from "next/image"
 import { useUserPackageHook } from "../redux/hooks"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/router"
 
 //images/icons
 
@@ -12,15 +13,12 @@ import Unfollow from "../shared/Unfollow"
 import {db} from "../../src/firebase"
 import {update, ref, query} from "firebase/database"
 
-function FollowingContent({ following, isFollowing, handleFollow, isUser, getFollower, getFollowing }) {
+function FollowingContent({handleClose, following, isFollowing, handleFollow, isUser, getFollower, getFollowing }) {
     
     const [unfollow, setUnfollow] = useState(false)
     const userData = useUserPackageHook()
     const [follow, setFollow] = useState(false)
-    
-
-    //query 
-    const pathFollowing = query(ref(db, 'users/' + userData.userId))
+    const router = useRouter()
 
     useEffect(() => {
         if(isFollowing(following)){
@@ -30,7 +28,12 @@ function FollowingContent({ following, isFollowing, handleFollow, isUser, getFol
 
 
     const handleUnfollow = () => {
-        setUnfollow(!unfollow)
+        setUnfollow(!unfollow)  
+    }
+
+    const handleOtherUserAccountPage = () => {
+        router.push(`/user/${following?.username}`)
+        handleClose()
     }
 
     return(
@@ -39,8 +42,8 @@ function FollowingContent({ following, isFollowing, handleFollow, isUser, getFol
                 <Unfollow handleUnfollowPopUp = {handleUnfollow} getFollower = {getFollower} getFollowing = {getFollowing} setFollowing = {setFollow} userData = {userData} otherUser = {following}  />
             </div>
             <div className="w-full flex justify-between items-center px-[10px] py-[5px]">
-                <div className="flex items-center">
-                    <img src={following?.avatar} className="w-[40px] h-[40px] rounded-full cursor-pointer" />
+                <div onClick={handleOtherUserAccountPage} className="flex items-center cursor-pointer">
+                    <img src={following?.avatar} className="w-[40px] h-[40px] rounded-full" />
 
                     <div className="ml-[10px] text-[14px]">
                         <div className=" font-[600]">{following?.name}</div>

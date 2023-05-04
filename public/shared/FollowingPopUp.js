@@ -77,7 +77,7 @@ function FollowingPopUp( { handleClose,isFollowing, getFollowing, getFollower, u
                 <div className="h-[90%] overflow-y-scroll scrollbar-hide">
                     { following?.map((flwing) => {
                         return(
-                            <FollowingContent following = {flwing} handleFollow = {handleFollow} isFollowing = {isFollowing} isUser = {isUser} getFollower = {getFollower} getFollowing = {getFollowing} />
+                            <FollowingContent handleClose = {handleClose} following = {flwing} handleFollow = {handleFollow} isFollowing = {isFollowing} isUser = {isUser} getFollower = {getFollower} getFollowing = {getFollowing} />
                         )
                     })}
                 </div>
