@@ -1,4 +1,5 @@
 //hooks
+import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useUserPackageHook } from "../redux/hooks"
 
@@ -9,9 +10,10 @@ import {update, ref} from "firebase/database"
 //components
 import Unfollow from "./Unfollow"
 
-function FollowersContent({ follower, isFollowing, getFollowing, getFollower, isUser }){
+function FollowersContent({handleClose, follower, isFollowing, getFollowing, getFollower, isUser }){
     const [follow, setFollow] = useState(false)
     const [unfollow, setUnfollow] = useState(false)
+    const router = useRouter()
 
     const userData = useUserPackageHook()
 
@@ -23,6 +25,11 @@ function FollowersContent({ follower, isFollowing, getFollowing, getFollower, is
 
     const handleUnfollow = () => {
         setUnfollow(!unfollow)
+    }
+
+    const handleClckOtherUser = () => {
+        router.push(`/user/${follower?.username}`)
+        handleClose()
     }
 
     const handleFollow = () => {
@@ -43,8 +50,8 @@ function FollowersContent({ follower, isFollowing, getFollowing, getFollower, is
                 <Unfollow handleUnfollowPopUp = {handleUnfollow} getFollower = {getFollower} setFollowing = {setFollow} getFollowing = {getFollowing} userData = {userData} otherUser = {follower} />
             </div>
             <div className="flex items-center justify-between mx-3 mb-[10px]">
-                <div className="flex items-center">
-                    <img className="w-[40px] h-[40px] rounded-full cursor-pointer" src={follower?.avatar} />
+                <div onClick={handleClckOtherUser} className="flex items-center cursor-pointer">
+                    <img className="w-[40px] h-[40px] rounded-full" src={follower?.avatar} />
                     <div className="text-[14px] ml-2">
                         <div className="font-[600]">{follower?.name}</div>
                         <div className="text-[rgb(172,172,172)]">{follower?.username}</div>
