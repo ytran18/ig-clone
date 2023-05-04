@@ -23,6 +23,7 @@ import FollowersPopUp from "../../public/shared/FollowersPopUp"
 import Loading from "../../public/shared/Loading"
 import Reels from "../../public/shared/Reel"
 import Unfollow from "../../public/shared/Unfollow"
+import MobileSidebar from "../../public/shared/MobileSidebar"
 
 
 function AccountPage() {
@@ -69,7 +70,7 @@ function AccountPage() {
                 setPosts(posts1)
             });
         }
-    },[])
+    },[username])
 
     useEffect( () => {
         onValue(ref2(db,'users/' + userData.userId + '/avatar'), (snapshot) => {
@@ -288,7 +289,7 @@ function AccountPage() {
                                 }
                             </div>
                             <div className="hidden sm:flex">
-                                <p className="mr-[40px]">{numOfPost()} posts</p>
+                                <p className="mr-[40px]">{posts?.length} posts</p>
 
                                 <p 
                                     className="mr-[40px] cursor-pointer"
@@ -308,7 +309,7 @@ function AccountPage() {
                     </div>
                     <div className="py-[5px] flex sm:hidden items-center justify-around">
                         <div className=" text-center">
-                            <p className="sm:mr-[40px] font-semibold">{numOfPost()}</p>
+                            <p className="sm:mr-[40px] font-semibold">{posts?.length}</p>
                             <p className="text-[#7373a0] text-[15px]">posts</p>
                         </div>
 
@@ -384,6 +385,10 @@ function AccountPage() {
                             <Tagged/>
                         </div>
                     </div>
+                </div>
+
+                <div className="fixed bottom-2 right-0 left-0 sm:hidden">
+                    <MobileSidebar/>
                 </div>
 
             </div>
