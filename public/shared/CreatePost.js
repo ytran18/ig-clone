@@ -16,16 +16,75 @@ function CreatePost( {handleCreatePost, userData} ) {
 
     const [discardPost, setDiscardPost] = useState(false)
 
+    const [isReels, setIsReels] = useState(false)
+    
+    const [warning, setWarning] = useState(false)
+
+    const [msg, setMsg] = useState("")
+
     const handleChange = (e) => {
         if(e.target.files.length !== 0){
-            const url = URL.createObjectURL(e.target.files[0])
-            const file = e.target.files[0]
-            setSelectedFile( prev => [...prev,{url: url, file: file}])
+            if(isReels){
+                setWarning(true)
+                setTimeout(() => {
+                    setWarning(false)
+                }, 5000)
+                setMsg("You cannot add photo or video because this video is longer then one minute")
+            }
+            else{
+                if(e.target.files[0].type.includes('video')){
+                    if(e.target.files[0].size >= 14594091){
+                        if(selectedFile.length === 0){
+                            const url = URL.createObjectURL(e.target.files[0])
+                            const file = e.target.files[0]
+                            setSelectedFile( prev => [...prev,{url: url, file: file}])
+                            setIsReels(true)
+                        }
+                        else{
+                            setWarning(true)
+                            setTimeout(() => {
+                                setWarning(false)
+                            }, 5000)
+                            setMsg("This video is too long. Please choose video less one minutes")
+                        }
+                    }
+                    else{
+                        const url = URL.createObjectURL(e.target.files[0])
+                        const file = e.target.files[0]
+                        setSelectedFile( prev => [...prev,{url: url, file: file}])
+                    }
+                }
+                else{
+                    const url = URL.createObjectURL(e.target.files[0])
+                    const file = e.target.files[0]
+                    setSelectedFile( prev => [...prev,{url: url, file: file}])
+                }
+            }
+            // if(e.target.files[0].type.includes('video')) {
+            //     if(e.target.files[0].size > 14594091){
+            //         if(isReels){
+            //             console.log("This video is too long. Please choose video less one minutes")
+            //         }
+            //         else{
+            //             const url = URL.createObjectURL(e.target.files[0])
+            //             const file = e.target.files[0]
+            //             setSelectedFile( prev => [...prev,{url: url, file: file}])
+            //             setIsReels(true)
+            //         }
+            //     }
+            //     else{
+
+            //     }
+            // }
+            // else {
+                
+            // }
         } 
     }
 
     const handleDiscardPost = () => {
         setDiscardPost(!discardPost)
+        setIsReels(false)
     }
 
     const handleSelectedFile = () => {
@@ -81,7 +140,10 @@ function CreatePost( {handleCreatePost, userData} ) {
                     </div>
                 ): 
                 (
-                    <SliderPicture 
+                    <SliderPicture
+                        isReels = {isReels}
+                        warning = {warning}
+                        msg = {msg} 
                         userData = { userData }
                         selectedFile = {selectedFile}
                         handleChange = {handleChange}
