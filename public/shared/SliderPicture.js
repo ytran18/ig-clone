@@ -84,19 +84,19 @@ function SliderPicture( {isReels, warning, msg, selectedFile, handleChange, hand
                             )
                         }
                         <div 
-                            className={`absolute left-3 top-[50%] text-white font-extrabold cursor-pointer ${currentIndex == 0 ? "hidden" : "block"}`}
+                            className={`absolute left-3 top-[50%] text-white bg-[#303338b7] rounded-full font-extrabold cursor-pointer ${currentIndex == 0 ? "hidden" : "block"}`}
                             onClick={handleChevronLeft}
                         >
                         {ChevronLeft}
                         </div>
 
                         <div 
-                            className={`absolute right-3 top-[50%] text-white font-extrabold cursor-pointer ${currentIndex == selectedFile.length -1 ? "hidden" : "block"}`}
+                            className={`absolute right-3 top-[50%] text-white bg-[#303338b7] rounded-full font-extrabold cursor-pointer ${currentIndex == selectedFile.length -1 ? "hidden" : "block"}`}
                             onClick={handleChevronRight}
                         >
                             {ChevronRight}
                         </div>
-                        <label htmlFor="addFile" className=" font-extrabold text-[50px] text-white absolute bottom-2 right-2 cursor-pointer">
+                        <label htmlFor="addFile" className=" font-extrabold text-[50px] text-white bg-[#303338b7] rounded-full absolute bottom-2 right-2 cursor-pointer">
                             {Plus}
                         </label>
                     </div>
