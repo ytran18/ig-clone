@@ -47,10 +47,6 @@ function Reels({userData, isUser}) {
                             <div className="text-[32px] font-semibold text-center">User haven't up any reels</div>
                         </div>
                     )
-                    // <div className="flex flex-col items-center justify-center">
-                    //     <Image className="w-[50px] h-[50px] mb-[20px]" src={Camera} />
-                    //     <div className="text-[32px] font-semibold text-center">User haven't up any reels</div>
-                    // </div>
                 ) :
                 (
                     <div className="flex flex-wrap">
