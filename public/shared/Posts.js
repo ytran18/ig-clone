@@ -14,8 +14,25 @@ import PostPopUp from "../shared/PostPopUp"
 import PostsContent from "./PostsContent"
 import OverLayBlock from "./OverLayBlock"
 
-function Posts({ userData, posts, isUser }) {
+//firebase
+import { ref, onValue} from "firebase/database"
+import { db } from "../../src/firebase"
+
+
+function Posts({ userData, isUser }) {
     const [createPost, setCreatePost] = useState(false)
+
+    const [posts, setPosts] = useState([])
+
+    useEffect(() => {
+        onValue(ref(db, `/posts/${userData?.userId}/`), (snapshot) => {
+            var posts1 = []
+            snapshot.forEach( (childSnapshot) => {
+                posts1.push(childSnapshot.val())
+            });
+            setPosts(posts1)
+        });
+    }, [userData])
 
     console.log(posts)
 
