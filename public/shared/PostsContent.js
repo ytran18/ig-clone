@@ -28,9 +28,6 @@ function PostsContent ({post}) {
         return comment
     }
 
-    console.log("Comment: ", getComment().length)
-
-
     console.log("likes: ",post?.likes )
 
     const isLove = () => {
