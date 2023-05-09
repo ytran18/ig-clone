@@ -251,4 +251,25 @@ const MiniHearthRed = (
     <svg aria-label="Unlike" class="x1lliihq x1n2onr6" color="rgb(255, 48, 64)" fill="rgb(255, 48, 64)" height="12" role="img" viewBox="0 0 48 48" width="12"><title>Unlike</title><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg>
 )
 
-export { IgLogo, FacebookIcon, SuccessIcon, FailIcon, CloseIcon, HomeIcon, Explore, ReelIcon, MessagesIcon, NotificationIcon, CreateIcon, IgSidebar, IgIcon, EditIcon, PostsIcon, SavedIcon, TaggedIcon, SearchIcon, MoreIcon, HomeSelectIcon, SearchSelectIcon, ExploreSelectIcon, ReelSelectIcon, MessagesSelectIcon, NotificationSelectIcon, CreateSelectIcon, MoreSelectIcon, TimeIcon, SavedIconBig, MoonIcon, MediaIcon, CloseIconSmall, LoveIcon, CommentIcon, MoreDotIcon, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, DocumentDuplicate, Plus, Dot, SharePost, CommentPost, SavedPost, NotSavedPost, LovePost, NotLovePost, MuteAudio, OnAudio, MiniHearth, MiniHearthRed }
+const Phone = (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+    </svg>
+
+)
+
+const VideoCamera = (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+    </svg>
+
+)
+
+const Photo = (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+    </svg>
+
+)
+
+export { IgLogo, FacebookIcon, SuccessIcon, FailIcon, CloseIcon, HomeIcon, Explore, ReelIcon, MessagesIcon, NotificationIcon, CreateIcon, IgSidebar, IgIcon, EditIcon, PostsIcon, SavedIcon, TaggedIcon, SearchIcon, MoreIcon, HomeSelectIcon, SearchSelectIcon, ExploreSelectIcon, ReelSelectIcon, MessagesSelectIcon, NotificationSelectIcon, CreateSelectIcon, MoreSelectIcon, TimeIcon, SavedIconBig, MoonIcon, MediaIcon, CloseIconSmall, LoveIcon, CommentIcon, MoreDotIcon, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, DocumentDuplicate, Plus, Dot, SharePost, CommentPost, SavedPost, NotSavedPost, LovePost, NotLovePost, MuteAudio, OnAudio, MiniHearth, MiniHearthRed, Phone, VideoCamera }
