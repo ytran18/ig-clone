@@ -32,10 +32,10 @@ function ChatContent() {
             </div>
             <div className="h-[90%]">
                 <div className="h-[80%]">
-                    <div className=" my-4 mx-4 w-[250px] h-auto rounded-xl border-[1px] px-3 py-2">
+                    <div className=" my-4 mx-4 w-fit h-auto rounded-xl border-[1px] px-3 py-2">
                         hello
                     </div>
-                    <div className="my-4 mx-4 w-[250px] h-auto rounded-xl border-[1px] float-right px-3 py-2 flex flex-row-reverse">Homnay toi buon</div>
+                    <div className="my-4 mx-4 w-fit h-auto rounded-xl border-[1px] float-right px-3 py-2 flex ">Homnay toi buon</div>
                 </div>
                 <div className="h-[20%] flex items-center justify-center">
                     <div className=" rounded-3xl border-[1px] w-[90%] h-[50%] flex items-center justify-between px-6">
