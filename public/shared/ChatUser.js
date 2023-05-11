@@ -2,6 +2,7 @@
 import Image from "next/image"
 import XinSoo from "../icons/xinsoo.jpg"
 
+
 function ChatUser(){
     return(
         <div className="flex items-center w-full p-2 hover:bg-[#efefef]">
