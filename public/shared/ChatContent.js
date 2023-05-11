@@ -3,17 +3,55 @@
 import Image from "next/image"
 import XinSoo from "../icons/xinsoo.jpg"
 import {Phone, VideoCamera, MoreDotIcon, Photo, LoveIcon} from "../icons/icons"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-function ChatContent() {
+//firebase
+import {fireStore} from "../../src/firebase"
+import { collection, addDoc,serverTimestamp, doc, setDoc,where, getDocs, onSnapshot, query, orderBy } from 'firebase/firestore'
+
+//redux 
+import {useUserPackageHook} from "../redux/hooks"
+
+function ChatContent({messId}) {
 
     const [send, setSend] = useState(false)
+    const [messages, setMessages] = useState([])
+    const [newMess, setNewMess] = useState("")
+
+    const user = useUserPackageHook()
+
+    useEffect(() => {
+        const queryMessages = query(collection(fireStore, "messages"),where("messId", "==", `${messId}`), orderBy("createdAt"))
+            onSnapshot(queryMessages, (snapshot) => {
+                let mess = []
+                snapshot.forEach((doc) => {
+                    mess.push(doc.data())
+                })
+                setMessages(mess)
+            })
+    },[messId])
 
     const handleChange = (e) => {
         if(e.target.value == ""){
             setSend(false)
         }else{
             setSend(true)
+        }
+        setNewMess(e.target.value)
+    }
+
+    console.log(messages)
+
+    const handleSend = async (e) => {
+        if (e.key === "Enter"){
+            await addDoc(collection(fireStore, "messages"), {
+                text: newMess,
+                createdAt: serverTimestamp(),
+                userId: user?.userId,
+                messId: messId
+            })
+            await setNewMess("")
+            // messageRef.current?.scrollIntoView()
         }
     }
 
@@ -31,15 +69,40 @@ function ChatContent() {
                 </div>
             </div>
             <div className="h-[90%]">
-                <div className="h-[80%]">
-                    <div className=" my-4 mx-4 w-fit h-auto rounded-xl border-[1px] px-3 py-2">
+                <div className="h-[80%] overflow-y-scroll scrollbar-hide">
+                    {
+                        messages?.map((message) => {
+                            if(user?.userId == message?.userId){
+                                return(
+                                    <div className="flex flex-row-reverse my-2 mx-2">
+                                        <div className="w-fit h-auto rounded-xl border-[1px] px-3 py-2">
+                                            <div>{message?.text}</div>
+                                        </div>
+                                    </div>
+                                )
+                            }
+                            else{
+                                return(
+                                    <div className=" my-4 mx-4 w-fit h-auto rounded-xl border-[1px] px-3 py-2">
+                                        {message?.text}
+                                    </div>
+                                )
+                            }
+                        })   
+                    }
+                    {/* <div className=" my-4 mx-4 w-fit h-auto rounded-xl border-[1px] px-3 py-2">
                         hello
                     </div>
-                    <div className="my-4 mx-4 w-fit h-auto rounded-xl border-[1px] float-right px-3 py-2 flex ">Homnay toi buon</div>
+                    <div className="my-4 mx-4 w-fit h-auto rounded-xl border-[1px] float-right px-3 py-2 flex ">Homnay toi buon</div> */}
                 </div>
                 <div className="h-[20%] flex items-center justify-center">
                     <div className=" rounded-3xl border-[1px] w-[90%] h-[50%] flex items-center justify-between px-6">
-                        <input onChange={handleChange} className=" outline-none w-[90%]" placeholder="Messages...."/>
+                        <input 
+                            onChange={handleChange} 
+                            className=" outline-none w-[90%]" 
+                            placeholder="Messages...."
+                            value={newMess}
+                            onKeyDown={handleSend}/>
                         <div className={send ? "hidden" : "flex w-[10%] justify-between"}>
                             <div>{Photo}</div>
                             <div> {LoveIcon} </div>

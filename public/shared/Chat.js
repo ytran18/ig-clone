@@ -6,13 +6,35 @@ import ChatContent from "./ChatContent"
 import ChatUser from "./ChatUser"
 
 //firebase
-import {} from "../../src/firebase"
+import {fireStore} from "../../src/firebase"
+import { collection, addDoc, doc, setDoc, query, where, getDocs, onSnapshot } from 'firebase/firestore'
+
 
 //redux 
 import {useUserPackageHook} from "../redux/hooks"
+import { useEffect, useState } from "react"
 
 function Chat() {
+    const [messages, setMess] = useState([])
+    const [messId, setMessId] = useState("")
+
     const user = useUserPackageHook()
+
+    useEffect(() => {
+        const q = query(collection(fireStore, `${user?.userId}`))
+        onSnapshot(q, (snapshot) => {
+            let mess = []
+            snapshot.forEach((doc) => {
+                mess.push(doc.data())
+            })
+            setMess(mess)
+        })
+    },[])
+
+    console.log(messages)
+
+    console.log(messId)
+
     return(
         <div className="w-full h-full flex">
             <div className="w-[30%] h-full border-r-[1px]">
@@ -25,11 +47,15 @@ function Chat() {
                     </div>
                 </div>
                 <div className="h-[90%]"> 
-                    <ChatUser/>
+                    {messages.map((mess) => {
+                        return(
+                            <ChatUser messId = {mess?.messId} userId = {mess?.userId} setMessId = {setMessId} messIdState = {messId} />
+                        )
+                    })}
                 </div>
             </div>
             <div className="w-[70%] h-full">
-                <ChatContent/>
+                <ChatContent messId = {messId}/>
             </div>
         </div>
     )
