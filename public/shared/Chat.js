@@ -1,7 +1,12 @@
 //icon/images
 import {  } from "../icons/icons"
+
+//component
 import ChatContent from "./ChatContent"
 import ChatUser from "./ChatUser"
+
+//firebase
+import {} from "../../src/firebase"
 
 //redux 
 import {useUserPackageHook} from "../redux/hooks"
