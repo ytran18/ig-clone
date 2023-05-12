@@ -8,7 +8,7 @@ function Messages() {
             <div className="">
                 <SideBar/>
             </div>
-            <div className="w-[80%] flex items-center justify-center bg-[#fafafa]">
+            <div className="w-[80%] h-screen flex items-center justify-center bg-[#fafafa]">
                 <div className="bg-white w-full h-[90%] m-8 border-[1px]">
                     <Chat/>
                 </div>
