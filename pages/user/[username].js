@@ -257,8 +257,11 @@ function AccountPage() {
                                     </div>) :
                                     ( following ? 
                                         (
-                                            <div onClick={handleUnfollowPopUp} className="bg-[#efefef] items-center justify-center flex mr-[10px] rounded-lg sm:rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
-                                                Following
+                                            <div className="flex">
+                                                <div onClick={handleUnfollowPopUp} className="bg-[#efefef] mb-2 sm:mb-0 items-center justify-center flex mr-[10px] rounded-lg sm:rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
+                                                    Following
+                                                </div>
+                                                <div className="bg-[#efefef] items-center justify-center flex mr-[10px] rounded-lg sm:rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">Message</div>
                                             </div>
                                         ) :
                                         (
@@ -268,6 +271,7 @@ function AccountPage() {
                                         )
                                     )
                                 }
+                                
                                 {
                                     isUser(username) ? 
                                     ( 
