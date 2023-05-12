@@ -17,6 +17,7 @@ import { useEffect, useState } from "react"
 function Chat() {
     const [messages, setMess] = useState([])
     const [messId, setMessId] = useState("")
+    const [otherUser, setOtherUser] = useState()
 
     const user = useUserPackageHook()
 
@@ -49,13 +50,13 @@ function Chat() {
                 <div className="h-[90%]"> 
                     {messages.map((mess) => {
                         return(
-                            <ChatUser messId = {mess?.messId} userId = {mess?.userId} setMessId = {setMessId} messIdState = {messId} />
+                            <ChatUser messId = {mess?.messId} lastestMess = {mess?.lastestMess} userId = {mess?.userId} setMessId = {setMessId} messIdState = {messId} setOtherUser = {setOtherUser} />
                         )
                     })}
                 </div>
             </div>
             <div className="w-[70%] h-full">
-                <ChatContent messId = {messId}/>
+                <ChatContent messId = {messId} otherUser = {otherUser} />
             </div>
         </div>
     )
