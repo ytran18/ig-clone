@@ -3,33 +3,38 @@
 import Image from "next/image"
 import XinSoo from "../icons/xinsoo.jpg"
 import {Phone, VideoCamera, MoreDotIcon, Photo, LoveIcon} from "../icons/icons"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 //firebase
 import {fireStore} from "../../src/firebase"
-import { collection, addDoc,serverTimestamp, doc, setDoc,where, getDocs, onSnapshot, query, orderBy } from 'firebase/firestore'
+import { collection, addDoc,serverTimestamp, doc, setDoc,where, getDocs, onSnapshot, query, orderBy, updateDoc } from 'firebase/firestore'
 
 //redux 
 import {useUserPackageHook} from "../redux/hooks"
 
-function ChatContent({messId}) {
+function ChatContent({messId, otherUser}) {
 
     const [send, setSend] = useState(false)
     const [messages, setMessages] = useState([])
     const [newMess, setNewMess] = useState("")
+    const messRef = useRef()
 
     const user = useUserPackageHook()
 
     useEffect(() => {
         const queryMessages = query(collection(fireStore, "messages"),where("messId", "==", `${messId}`), orderBy("createdAt"))
-            onSnapshot(queryMessages, (snapshot) => {
-                let mess = []
-                snapshot.forEach((doc) => {
-                    mess.push(doc.data())
-                })
-                setMessages(mess)
+        onSnapshot(queryMessages, (snapshot) => {
+            let mess = []
+            snapshot.forEach((doc) => {
+                mess.push(doc.data())
             })
+            setMessages(mess)
+        })
     },[messId])
+
+    useEffect(() => {
+        messRef.current?.scrollIntoView({behavior: 'smooth'})
+    },[messages])
 
     const handleChange = (e) => {
         if(e.target.value == ""){
@@ -42,6 +47,8 @@ function ChatContent({messId}) {
 
     console.log(messages)
 
+    console.log(otherUser)
+
     const handleSend = async (e) => {
         if (e.key === "Enter"){
             await addDoc(collection(fireStore, "messages"), {
@@ -50,8 +57,11 @@ function ChatContent({messId}) {
                 userId: user?.userId,
                 messId: messId
             })
+            await updateDoc(doc(fireStore,`${user?.userId}`, messId), {
+                lastestMess: newMess
+            })
             await setNewMess("")
-            // messageRef.current?.scrollIntoView()
+            messRef.current?.scrollIntoView({behavior: 'smooth'})
         }
     }
 
@@ -59,8 +69,9 @@ function ChatContent({messId}) {
         <div className="w-full h-full">
             <div className="h-[10%] border-b-[1px] flex items-center justify-between px-4">
                 <div className="flex items-center">
-                    <Image src={XinSoo} className="max-h-[30px] max-w-[30px] rounded-full mr-3" />
-                    <div className="text-black font-semibold cursor-pointer hover:text-[#777373c6]">xinsooo</div>
+                    {/* <Image src={XinSoo} className="max-h-[30px] max-w-[30px] rounded-full mr-3" /> */}
+                    <img src={otherUser?.avatar} className="max-h-[30px] max-w-[30px] rounded-full mr-3" />
+                    <div className="text-black font-semibold cursor-pointer hover:text-[#777373c6]">{otherUser?.username}</div>
                 </div>
                 <div className="flex items-center justify-around w-[150px]">
                     <div className=" cursor-pointer">{Phone}</div>
@@ -90,10 +101,7 @@ function ChatContent({messId}) {
                             }
                         })   
                     }
-                    {/* <div className=" my-4 mx-4 w-fit h-auto rounded-xl border-[1px] px-3 py-2">
-                        hello
-                    </div>
-                    <div className="my-4 mx-4 w-fit h-auto rounded-xl border-[1px] float-right px-3 py-2 flex ">Homnay toi buon</div> */}
+                    <div ref={messRef}></div>
                 </div>
                 <div className="h-[20%] flex items-center justify-center">
                     <div className=" rounded-3xl border-[1px] w-[90%] h-[50%] flex items-center justify-between px-6">
