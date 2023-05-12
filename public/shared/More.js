@@ -21,9 +21,14 @@ function More ()
         router.push("/auth/Login")
     }
 
+    const handleSettings = () =>
+    {
+        router.push("/user/settings")
+    }
+
     return (
         <div className="w-[238px] h-[264px] shadow-2xl rounded-[10px] bg-white drop-shadow-2xl">
-            <div className="w-full h-[44px] flex justify-between px-3 items-center select-none cursor-pointer border-b-[1px] border-b-[rgb(234,234,234)] hover:bg-[rgb(250,250,250)]">
+            <div className="w-full h-[44px] flex justify-between px-3 items-center select-none cursor-pointer border-b-[1px] border-b-[rgb(234,234,234)] hover:bg-[rgb(250,250,250)]" onClick={handleSettings}>
                 <div className="font-[400]">Settings</div>
                 <div className="">{EditIcon}</div>
             </div>
