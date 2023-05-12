@@ -43,14 +43,6 @@ function Saved({ userData }) {
     }
 
     const savedPost = getPost()
-
-    console.log("saved posts: ", savedPost[0]?.media[0]?.type);
-
-    savedPost.map((saved) => {
-        console.log(saved.caption);
-    })
-
-
     return(
         <div>
             { savedPost.length == 0 ? 

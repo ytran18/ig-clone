@@ -28,8 +28,6 @@ function PostsContent ({post}) {
         return comment
     }
 
-    console.log("likes: ",post?.likes )
-
     const isLove = () => {
         const likes = post?.likes
         return (

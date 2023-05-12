@@ -13,19 +13,6 @@ import { onValue, ref, update } from "firebase/database"
 
 
 function FollowingPopUp( { handleClose,isFollowing, getFollowing, getFollower, userData, isUser } ) {
-
-    // const [following, setFollowing] = useState()
-
-    // useEffect(() => {
-    //     const followings = getFollowing(userData?.userId)
-    //     let following1 = []
-    //     followings.forEach((flwing) => {
-    //         const user = getUser(flwing)
-    //         following1.push(user)
-    //     })
-    //     setFollowing(following1)
-    // }, [])
-
     const getUser = (userId) => {
         let user = null
         onValue(ref(db, 'users/' + userId), (snapshot) => {

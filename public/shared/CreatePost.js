@@ -60,25 +60,6 @@ function CreatePost( {handleCreatePost, userData} ) {
                     setSelectedFile( prev => [...prev,{url: url, file: file}])
                 }
             }
-            // if(e.target.files[0].type.includes('video')) {
-            //     if(e.target.files[0].size > 14594091){
-            //         if(isReels){
-            //             console.log("This video is too long. Please choose video less one minutes")
-            //         }
-            //         else{
-            //             const url = URL.createObjectURL(e.target.files[0])
-            //             const file = e.target.files[0]
-            //             setSelectedFile( prev => [...prev,{url: url, file: file}])
-            //             setIsReels(true)
-            //         }
-            //     }
-            //     else{
-
-            //     }
-            // }
-            // else {
-                
-            // }
         } 
     }
 

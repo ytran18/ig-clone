@@ -20,8 +20,6 @@ function PrePost( {isReels, selectedFile, handlePrePost, handleCreatePost, userD
     const [hideLike, setHideLike] = useState(false)
     const [blockComment, setBlockComment] = useState(false)
     const [caption, setCaption] = useState("")
-    console.log(selectedFile)
-    console.log('userData.userId: '+ userData.userId)
 
     const handleShare = () => {
         const id = uuid.v4()

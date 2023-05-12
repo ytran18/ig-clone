@@ -33,11 +33,7 @@ function Posts({ userData, isUser }) {
             setPosts(posts1)
         });
     }, [userData])
-
-    console.log(posts)
-
-    console.log(userData);
-
+    
     const handleCreatePost = () => {
         setCreatePost(!createPost)
     }

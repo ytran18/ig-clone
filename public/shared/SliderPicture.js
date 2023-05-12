@@ -31,9 +31,7 @@ function SliderPicture( {isReels, warning, msg, selectedFile, handleChange, hand
     const handleChevronRight = () => {
         setCurrentIndex( prev => prev + 1)
     }
-
-    console.log(selectedFile[0].file.size)
-
+    
     return(
         <div className="w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <div className={prePost ? " w-full h-full flex items-center justify-center" : "hidden"}>

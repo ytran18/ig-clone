@@ -15,21 +15,6 @@ import FollowersContent from "./FollowersContent"
 
 
 function FollowersPopUp({handleClose, isFollowing, userData, getFollower, getFollowing, isUser }) {
-//     const [follower, setFollower] = useState()
-
-//     useEffect(() => {
-//         const follower1 = getFollower(userData?.userId)
-//         let follower2 = []
-//         follower1.forEach((fler) => {
-//             const user = getUser(fler)
-//             follower2.push(user)
-//             console.log(user)
-//         })
-//         console.log("follower2: ", follower2)
-//         setFollower(follower2)
-//     },[])
-
-    
     const getUser = (userId) => {
         let user = null
         onValue(ref(db, 'users/' + userId), (snapshot) => {
