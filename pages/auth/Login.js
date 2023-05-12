@@ -97,16 +97,19 @@ function Login() {
                     })
                     router.push(`/`)
                 }
-            } )
+            } ).catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // The email of the user's account used.
+                const email = error.customData.email;
+                // The AuthCredential type that was used.
+                const credential = GoogleAuthProvider.credentialFromError(error);
+            })
     }
 
     return(
-        // className={ userDatas.length == 0 ? "hidden" : "flex flex-col items-center mt-[30px]"
         <div className=' w-screen h-screen'>
-            <div className={ userDatas.length == 0 ? "flex flex-col items-center justify-center h-screen animate-bounce" : "hidden"}>
-                <div> {IgLogo} </div>
-                <Image className='max-w-[100px] max-h-[100px]' src={Instagram} />
-            </div>
             <div className={userDatas.length == 0 ? "hidden" : "flex flex-col items-center"}>
                 <div className={ isPopUp ? "block" : "hidden"} > 
                     <PopUp 

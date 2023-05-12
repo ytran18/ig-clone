@@ -1,9 +1,52 @@
-import Image from "next/image"
+//hooks
+import { useState, useEffect } from "react"
+
+//component
+import FollowingContent from "./FollowingContent"
+
+//images/icons
 import { CloseIcon } from "../icons/icons"
-import Messi from "../icons/messi.jpg"
+
+//firebase
+import { db } from "../../src/firebase"
+import { onValue, ref, update } from "firebase/database"
 
 
-function FollowingPopUp( {handleClose} ) {
+function FollowingPopUp( { handleClose,isFollowing, getFollowing, getFollower, userData, isUser } ) {
+    const getUser = (userId) => {
+        let user = null
+        onValue(ref(db, 'users/' + userId), (snapshot) => {
+            user = snapshot.val()
+        })
+        return user
+    }
+
+    const handleFollow = (otherUser, setFollow) => {
+        const following = getFollowing(userData.userId)
+        const follower = getFollower(otherUser?.userId)
+        update(ref(db, 'users/' + userData.userId),{
+            following: [...following, otherUser?.userId]
+        })
+        update(ref(db, 'users/' + otherUser?.userId), {
+            follower: [...follower, userData.userId]
+        })
+        setFollow(true)
+    }
+
+    const followings = () => {
+        const followings = getFollowing(userData?.userId)
+        let following1 = []
+        followings.forEach((flwing) => {
+            const user = getUser(flwing)
+            following1.push(user)
+        })
+        return following1
+    }
+
+    const following = followings()
+
+    console.log("following: ", following)
+
     return (
         <div className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgba(35,35,35,0.16)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl z-50">
             <div className="w-[440px] h-[440px] bg-white rounded-2xl">
@@ -18,30 +61,12 @@ function FollowingPopUp( {handleClose} ) {
                     </div>
                 </div>
 
-                <div className="h-[10%] border-b-[1px] flex items-center justify-center">
-                    <div className="w-[90%] text-center text-[16px] font-semibold ml-[-20px]">People</div>
-                </div>
-
-                <div className="h-[80%] overflow-y-scroll">
-                    <div className="flex justify-between px-[16px] py-[8px]">
-
-                        <div className="flex items-center">
-                            <Image
-                                src={Messi}
-                                className = "h-[50px] w-[50px] rounded-full"
-                            />
-                            <div className="ml-[10px]">
-                                <div className=" font-semibold">leomessi</div>
-                                <div className="text-[#8e8e8e]"> Leo Messi</div>
-                            </div>
-                        </div>
-
-                        <div className="bg-[#efefef] px-[12px] py-[8px] flex items-center justify-center rounded-lg cursor-pointer">
-                            Following
-                        </div>
-                    </div>
-                    
-                    
+                <div className="h-[90%] overflow-y-scroll scrollbar-hide">
+                    { following?.map((flwing) => {
+                        return(
+                            <FollowingContent handleClose = {handleClose} following = {flwing} handleFollow = {handleFollow} isFollowing = {isFollowing} isUser = {isUser} getFollower = {getFollower} getFollowing = {getFollowing} />
+                        )
+                    })}
                 </div>
             </div>
         </div>

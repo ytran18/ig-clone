@@ -4,11 +4,12 @@ import { postPackage } from "../redux/actions"
 
 //component
 import PrePost from "./PrePost"
+import WarningMsg from "./WarningMsg"
 
 //icon
 import { ArrowLeft, ChevronLeft, ChevronRight, Plus } from "../icons/icons" 
 
-function SliderPicture( {selectedFile, handleChange, handleDiscardPost, handleCreatePost, userData,handleSelectedFile} ) {
+function SliderPicture( {isReels, warning, msg, selectedFile, handleChange, handleDiscardPost, handleCreatePost, userData,handleSelectedFile} ) {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [prePost, setPrePost] = useState(false)
 
@@ -30,11 +31,12 @@ function SliderPicture( {selectedFile, handleChange, handleDiscardPost, handleCr
     const handleChevronRight = () => {
         setCurrentIndex( prev => prev + 1)
     }
-
+    
     return(
         <div className="w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <div className={prePost ? " w-full h-full flex items-center justify-center" : "hidden"}>
-                <PrePost 
+                <PrePost
+                    isReels = {isReels} 
                     userData = { userData }
                     selectedFile = {selectedFile}
                     handlePrePost = {handlePrePost} 
@@ -44,7 +46,6 @@ function SliderPicture( {selectedFile, handleChange, handleDiscardPost, handleCr
             </div>
             <div 
                 className={`w-[400px] h-[440px] bg-white rounded-xl  ${prePost ? "hidden" : "block"}`}
-                
             >
                 <div className={"h-full w-full"}>
                     <div className={"h-[10%] flex items-center justify-between border-b-[1px] border-slate-300 font-semibold px-[20px]"}>
@@ -60,6 +61,10 @@ function SliderPicture( {selectedFile, handleChange, handleDiscardPost, handleCr
                         </div>
                     </div>
                     <div className="h-[90%] relative flex items-center justify-center bg-black">
+                        <div className={warning ? "absolute" : "hidden"}>
+                            <WarningMsg msg={msg}/>
+                        </div>
+
                         {
                             selectedFile[currentIndex].file.type.includes('image') ? 
                             (
@@ -77,19 +82,19 @@ function SliderPicture( {selectedFile, handleChange, handleDiscardPost, handleCr
                             )
                         }
                         <div 
-                            className={`absolute left-3 top-[50%] text-white font-extrabold cursor-pointer ${currentIndex == 0 ? "hidden" : "block"}`}
+                            className={`absolute left-3 top-[50%] text-white bg-[#303338b7] rounded-full font-extrabold cursor-pointer ${currentIndex == 0 ? "hidden" : "block"}`}
                             onClick={handleChevronLeft}
                         >
                         {ChevronLeft}
                         </div>
 
                         <div 
-                            className={`absolute right-3 top-[50%] text-white font-extrabold cursor-pointer ${currentIndex == selectedFile.length -1 ? "hidden" : "block"}`}
+                            className={`absolute right-3 top-[50%] text-white bg-[#303338b7] rounded-full font-extrabold cursor-pointer ${currentIndex == selectedFile.length -1 ? "hidden" : "block"}`}
                             onClick={handleChevronRight}
                         >
                             {ChevronRight}
                         </div>
-                        <label htmlFor="addFile" className=" font-extrabold text-[50px] text-white absolute bottom-2 right-2 cursor-pointer">
+                        <label htmlFor="addFile" className=" font-extrabold text-[50px] text-white bg-[#303338b7] rounded-full absolute bottom-2 right-2 cursor-pointer">
                             {Plus}
                         </label>
                     </div>

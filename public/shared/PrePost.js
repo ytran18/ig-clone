@@ -14,14 +14,12 @@ import { ref as ref2, set } from "firebase/database"
 
 const uuid = require("uuid")
 
-function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData, handleSelectedFile} ) {
+function PrePost( {isReels, selectedFile, handlePrePost, handleCreatePost, userData, handleSelectedFile} ) {
     const imgs = usePostPackageHook()
     const [currentIndex, setCurrentIndex] = useState(0)
     const [hideLike, setHideLike] = useState(false)
     const [blockComment, setBlockComment] = useState(false)
     const [caption, setCaption] = useState("")
-    console.log(selectedFile)
-    console.log('userData.userId: '+ userData.userId)
 
     const handleShare = () => {
         const id = uuid.v4()
@@ -44,8 +42,9 @@ function PrePost( {selectedFile, handlePrePost, handleCreatePost, userData, hand
                                 caption: caption,
                                 media: media,
                                 likes: [null],
-                                comment: [null],
+                                comment: [{caption: caption, userId: userData.userId, username: userData.username}],
                                 tagPeople: [null],
+                                isReels: isReels,
                                 hideLike: hideLike,
                                 blockComment: blockComment
                             })
