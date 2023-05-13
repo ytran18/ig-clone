@@ -57,9 +57,6 @@ function ChatContent({messId, otherUser}) {
                 userId: user?.userId,
                 messId: messId
             })
-            await updateDoc(doc(fireStore,`${user?.userId}`, messId), {
-                lastestMess: newMess
-            })
             await setNewMess("")
             messRef.current?.scrollIntoView({behavior: 'smooth'})
         }
