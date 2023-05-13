@@ -10,7 +10,9 @@ import { EditIcon, PostsIcon, SavedIcon, TaggedIcon, MoreDotIcon } from "../../p
 //firebase
 import { ref as ref2, update, onValue, set} from "firebase/database"
 import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
-import { storage,db } from "../../src/firebase"
+import { storage,db,fireStore } from "../../src/firebase"
+import { collection, addDoc,serverTimestamp, doc, setDoc,where, getDocs, onSnapshot, query, orderBy, updateDoc } from 'firebase/firestore'
+
 
 //component
 import EditPopUp from "../../public/shared/EditPopUp"
@@ -24,6 +26,8 @@ import Loading from "../../public/shared/Loading"
 import Reels from "../../public/shared/Reel"
 import Unfollow from "../../public/shared/Unfollow"
 import MobileSidebar from "../../public/shared/MobileSidebar"
+
+const uuid = require("uuid")
 
 
 function AccountPage() {
@@ -159,6 +163,18 @@ function AccountPage() {
         setFollowing(true)
     }
 
+    const handleMessage = async () => {
+        const id = uuid.v4()
+        await setDoc(doc(fireStore, `${userData?.userId}`, id), {
+            messId: id,
+            userId: otherUser?.userId
+        }, {merge: true})
+        await setDoc(doc(fireStore, `${otherUser?.userId}`, id), {
+            messId: id,
+            userId: userData?.userId
+        }, {merge: true})
+    }
+
     const handleUnfollowPopUp = () => {
         setUnfollow(!unfollow)
     }
@@ -261,7 +277,7 @@ function AccountPage() {
                                                 <div onClick={handleUnfollowPopUp} className="bg-[#efefef] mb-2 sm:mb-0 items-center justify-center flex mr-[10px] rounded-lg sm:rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">
                                                     Following
                                                 </div>
-                                                <div className="bg-[#efefef] items-center justify-center flex mr-[10px] rounded-lg sm:rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">Message</div>
+                                                <div onClick={handleMessage} className="bg-[#efefef] items-center justify-center flex mr-[10px] rounded-lg sm:rounded py-[7px] px-[16px] font-semibold text-[14px] cursor-pointer">Message</div>
                                             </div>
                                         ) :
                                         (
