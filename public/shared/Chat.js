@@ -50,7 +50,7 @@ function Chat() {
                 <div className="h-[90%]"> 
                     {messages.map((mess) => {
                         return(
-                            <ChatUser messId = {mess?.messId} lastestMess = {mess?.lastestMess} userId = {mess?.userId} setMessId = {setMessId} messIdState = {messId} setOtherUser = {setOtherUser} />
+                            <ChatUser messId = {mess?.messId} userId = {mess?.userId} setMessId = {setMessId} messIdState = {messId} setOtherUser = {setOtherUser} />
                         )
                     })}
                 </div>

@@ -5,20 +5,36 @@ import XinSoo from "../icons/xinsoo.jpg"
 //hook
 import { useEffect, useState } from "react"
 
+//redux 
+import {useUserPackageHook} from "../redux/hooks"
+
 //firebase
-import {db} from "../../src/firebase"
+import {db, fireStore} from "../../src/firebase"
 import { set, ref, update, onValue} from "firebase/database"
+import { collection, addDoc,serverTimestamp, doc, setDoc,where, getDocs, onSnapshot, query, orderBy, updateDoc } from 'firebase/firestore'
 
-
-
-
-function ChatUser({messId,lastestMess,userId,setMessId, messIdState, setOtherUser}){
+function ChatUser({messId,userId,setMessId, messIdState, setOtherUser}){
     const [user, setUser] = useState()
+    const [lastMess, setLastMess] = useState()
+
+    //user who login
+    const mainUser = useUserPackageHook()
 
     useEffect(() => {
         onValue(ref(db, 'users/' + userId), (snapshot) => {
             const data = snapshot.val()
             setUser(data)
+        })
+    },[])
+
+    useEffect(() => {
+        const queryMessages = query(collection(fireStore, "messages"),where("messId", "==", `${messId}`), orderBy("createdAt"))
+        onSnapshot(queryMessages, (snapshot) => {
+            let mess = []
+            snapshot.forEach((doc) => {
+                mess.push(doc.data())
+            })
+            setLastMess(mess[mess.length - 1])
         })
     },[])
 
@@ -39,7 +55,19 @@ function ChatUser({messId,lastestMess,userId,setMessId, messIdState, setOtherUse
             <img src={user?.avatar} className=" rounded-full max-w-[50px] max-h-[50px] mr-4"/>
             <div className=" overflow-hidden">
                 <div className="text-black font-semibold">{user?.username}</div>
-                <div className=" text-[#73737c] text-[14px]">{lastestMess}</div>
+                {/* <div className=" text-[#73737c] text-[14px]">{lastMess}</div> */}
+                {
+                    mainUser?.userId === lastMess?.userId ?
+                    (
+                        <div className=" text-[#73737c] text-[14px]">
+                            You: {lastMess?.text}
+                        </div>
+                    ) :
+                    
+                    (
+                        <div className=" text-[#73737c] text-[14px]">{lastMess?.text}</div>
+                    )
+                }
             </div>
         </div>
     )
