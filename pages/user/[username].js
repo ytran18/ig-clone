@@ -44,6 +44,9 @@ function AccountPage() {
     const [following, setFollowing] = useState(false)
     const [unfollow, setUnfollow] =  useState(false)
 
+    //other user who main user has messaged
+    const [userMess, setUserMess] = useState([])
+
     useEffect( () => {
         if(userData.userId == null) router.push("/auth/Login") 
     })
@@ -87,6 +90,30 @@ function AccountPage() {
             setFollowing(true)
         }
     })
+
+    useEffect(() => {
+        const q = query(collection(fireStore, `${userData?.userId}`))
+        onSnapshot(q, (snapshot) => {
+            let userMess1 = []
+            snapshot.forEach((doc) => {
+                userMess1.push(doc.data().userId)
+            })
+            setUserMess(userMess1)
+        })
+    },[])
+
+    console.log(userMess)
+
+    //check if user has messaged with this user
+    const checkUserMess = (userId) => {
+        let isUser = false
+        userMess?.forEach((id) => {
+            if(id === userId){
+                isUser = true
+            }
+        })
+        return isUser
+    }
 
     //check if it is user or other user
     const isUser = (username) => {
@@ -165,14 +192,21 @@ function AccountPage() {
 
     const handleMessage = async () => {
         const id = uuid.v4()
-        await setDoc(doc(fireStore, `${userData?.userId}`, id), {
-            messId: id,
-            userId: otherUser?.userId
-        }, {merge: true})
-        await setDoc(doc(fireStore, `${otherUser?.userId}`, id), {
-            messId: id,
-            userId: userData?.userId
-        }, {merge: true})
+
+        if(checkUserMess(otherUser?.userId)){
+            router.push("/messages")
+        }
+        else{
+            await setDoc(doc(fireStore, `${userData?.userId}`, id), {
+                messId: id,
+                userId: otherUser?.userId
+            }, {merge: true})
+            await setDoc(doc(fireStore, `${otherUser?.userId}`, id), {
+                messId: id,
+                userId: userData?.userId
+            }, {merge: true})
+            router.push("/messages")
+        }
     }
 
     const handleUnfollowPopUp = () => {
