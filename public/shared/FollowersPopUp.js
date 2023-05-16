@@ -1,6 +1,6 @@
 //hooks
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 
 //images/icons
 import { CloseIcon } from "../icons/icons"
@@ -34,7 +34,7 @@ function FollowersPopUp({handleClose, isFollowing, userData, getFollower, getFol
         return follower2
     }
 
-    const follower = followers()
+    const follower = useMemo(() => followers(), [userData])
 
     return(
         <div className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgba(35,35,35,0.16)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl z-50">
