@@ -14,7 +14,7 @@ import { collection, addDoc, doc, setDoc, query, where, getDocs, onSnapshot } fr
 import {useUserPackageHook} from "../redux/hooks"
 import { useEffect, useState } from "react"
 
-function Chat() {
+function Chat({handleNewMessage}) {
     const [messages, setMess] = useState([])
     const [messId, setMessId] = useState("")
     const [otherUser, setOtherUser] = useState()
@@ -56,7 +56,7 @@ function Chat() {
                 </div>
             </div>
             <div className="w-[70%] h-full">
-                <ChatContent messId = {messId} otherUser = {otherUser} />
+                <ChatContent handleNewMessage = {handleNewMessage} messId = {messId} otherUser = {otherUser} />
             </div>
         </div>
     )
