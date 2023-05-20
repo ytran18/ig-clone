@@ -79,7 +79,7 @@ function ChatContent({handleNewMessage, messId, otherUser}) {
                     <div className="w-full h-full">
                         <div className="h-[10%] border-b-[1px] flex items-center justify-between px-4">
                             <div className="flex items-center">
-                                <img src={otherUser?.avatar} className="max-h-[30px] max-w-[30px] rounded-full mr-3" />
+                                <img src={otherUser?.avatar} className="h-[30px] w-[30px] rounded-full mr-3" />
                                 <div className="text-black font-semibold cursor-pointer hover:text-[#777373c6]">{otherUser?.username}</div>
                             </div>
                             <div className="flex items-center justify-around w-[150px]">
