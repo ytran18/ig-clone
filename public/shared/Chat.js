@@ -30,7 +30,7 @@ function Chat({handleNewMessage}) {
             })
             setMess(mess)
         })
-    },[])
+    },[messages])
 
     console.log(messages)
 
