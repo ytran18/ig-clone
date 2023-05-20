@@ -102,8 +102,6 @@ function AccountPage() {
         })
     },[])
 
-    console.log(userMess)
-
     //check if user has messaged with this user
     const checkUserMess = (userId) => {
         let isUser = false
