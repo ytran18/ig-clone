@@ -2,6 +2,8 @@
 import Chat from "../public/shared/Chat"
 import SideBar from "../public/shared/Sidebar"
 import NewMessage from "../public/shared/NewMessage"
+import MobileSidebar from "../public/shared/MobileSidebar"
+
 
 import {useUserPackageHook} from "../public/redux/hooks"
 import { useEffect, useState } from "react"
@@ -24,17 +26,21 @@ function Messages() {
     }
 
     return(
-        <div className=" w-screen flex">
-            <div className="">
+        <div className=" w-screen sm:flex">
+            <div className="hidden sm:block">
                 <SideBar/>
             </div>
-            <div className="w-[80%] h-screen flex items-center justify-center bg-[#fafafa]">
-                <div className="bg-white w-full h-[90%] m-8 border-[1px]">
+            <div className="w-full sm:w-[80%] h-screen sm:flex sm:items-center sm:justify-center bg-[#fafafa]">
+                <div className="bg-white w-full h-[95%] sm:m-8 border-[1px]">
                     <Chat handleNewMessage = {handleNewMessage} />
                 </div>
             </div>
             <div className={newMessage ? "block" : "hidden"}>
                 <NewMessage handleClose = {handleNewMessage} />
+            </div>
+
+            <div className="fixed bottom-3 right-0 left-0 sm:hidden">
+                <MobileSidebar/>
             </div>
         </div>
     )

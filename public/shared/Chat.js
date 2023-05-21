@@ -38,8 +38,8 @@ function Chat({handleNewMessage}) {
 
     return(
         <div className="w-full h-full flex">
-            <div className="w-[30%] h-full border-r-[1px]">
-                <div className="h-[10%] border-b-[1px] flex items-center justify-center">
+            <div className="w-[20%] sm:w-[30%] h-full border-r-[1px]">
+                <div className="hidden sm:flex h-[10%] border-b-[1px] items-center justify-center">
                     <div className="text-black font-semibold">{user?.username}</div>
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -55,7 +55,7 @@ function Chat({handleNewMessage}) {
                     })}
                 </div>
             </div>
-            <div className="w-[70%] h-full">
+            <div className="w-[80%] h-full">
                 <ChatContent handleNewMessage = {handleNewMessage} messId = {messId} otherUser = {otherUser} />
             </div>
         </div>

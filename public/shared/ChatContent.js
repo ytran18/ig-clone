@@ -70,14 +70,14 @@ function ChatContent({handleNewMessage, messId, otherUser}) {
                     <div className="flex flex-col items-center">
                         <Image src={MessageIcon} />
                         <div className=" font-medium text-[20px]">Your messages</div>
-                        <div>Send private photos and messages to a friend or group</div>
+                        <div className=" text-center" >Send private photos and messages to a friend or group</div>
                         <div onClick={handleNewMessage} className="p-4 bg-blue-600 rounded-xl text-white font-semibold cursor-pointer">Send message</div>
                     </div> 
                 ) :
 
                 (
                     <div className="w-full h-full">
-                        <div className="h-[10%] border-b-[1px] flex items-center justify-between px-4">
+                        <div className="h-[10%] border-b-[1px] flex items-center justify-between px-0 sm:px-4">
                             <div className="flex items-center">
                                 <img src={otherUser?.avatar} className="h-[30px] w-[30px] rounded-full mr-3" />
                                 <div className="text-black font-semibold cursor-pointer hover:text-[#777373c6]">{otherUser?.username}</div>

@@ -53,7 +53,7 @@ function ChatUser({messId,userId,setMessId, messIdState, setOtherUser}){
         <div onClick={handleClick} className={`flex items-center w-full p-2 cursor-pointer ${messId === messIdState ? "bg-[#efefef]" : ""} hover:bg-[#efefef]`}>
             {/* <Image src={XinSoo} className=" rounded-full max-w-[50px] max-h-[50px] mr-4" /> */}
             <img src={user?.avatar} className=" rounded-full w-[50px] h-[50px] mr-4"/>
-            <div className=" overflow-hidden">
+            <div className=" overflow-hidden hidden sm:block">
                 <div className="text-black font-semibold">{user?.username}</div>
                 {
                     mainUser?.userId === lastMess?.userId ?
