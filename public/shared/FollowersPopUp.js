@@ -28,9 +28,7 @@ function FollowersPopUp({handleClose, isFollowing, userData, getFollower, getFol
         follower1.forEach((fler) => {
             const user = getUser(fler)
             follower2.push(user)
-            console.log(user)
         })
-        console.log("follower2: ", follower2)
         return follower2
     }
 

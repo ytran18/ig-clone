@@ -45,10 +45,6 @@ function ChatContent({handleNewMessage, messId, otherUser}) {
         setNewMess(e.target.value)
     }
 
-    console.log(messages)
-
-    console.log(otherUser)
-
     const handleSend = async (e) => {
         if (e.key === "Enter"){
             await addDoc(collection(fireStore, "messages"), {

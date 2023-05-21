@@ -54,8 +54,6 @@ function NewMessage({handleClose}) {
         return isUser
     }
 
-    console.log(userMess)
-
     const handleChangeSearch = (e) => {
         setSearch(e.target.value)
         onValue(query(ref(db, "/users"), orderByChild("username"), startAt(e.target.value), endAt(e.target.value + '\uf8ff')), (snapshot) =>
@@ -96,12 +94,6 @@ function NewMessage({handleClose}) {
         setSearchResult([])
         setUserChat("")
     }
-
-    console.log(searchResult)
-
-    console.log("user chat: ", userChat)
-
-    console.log("Check User Mess:", checkUserMess(userChat))
 
     return(
         <div className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgb(89,89,89)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl">

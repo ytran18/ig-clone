@@ -32,10 +32,6 @@ function Chat({handleNewMessage}) {
         })
     },[messages])
 
-    console.log(messages)
-
-    console.log(messId)
-
     return(
         <div className="w-full h-full flex">
             <div className="w-[20%] sm:w-[30%] h-full border-r-[1px]">
