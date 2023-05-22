@@ -1,5 +1,6 @@
 //icon/images
-import {  } from "../icons/icons"
+import Image from "next/image"
+import XinSoo from "../icons/xinsoo.jpg"
 
 //component
 import ChatContent from "./ChatContent"
@@ -43,7 +44,7 @@ function Chat({handleNewMessage}) {
                         </svg>
                     </div>
                 </div>
-                <div className="h-[90%]"> 
+                <div className="h-[90%] overflow-y-scroll scrollbar-hide"> 
                     {messages.map((mess) => {
                         return(
                             <ChatUser messId = {mess?.messId} userId = {mess?.userId} setMessId = {setMessId} messIdState = {messId} setOtherUser = {setOtherUser} />
