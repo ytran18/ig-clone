@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, memo } from "react"
 
 //component
 import Loading from "./Loading"
@@ -66,4 +66,4 @@ function Reels({userData, isUser}) {
     )
 }
 
-export default Reels
+export default memo(Reels)

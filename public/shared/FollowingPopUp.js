@@ -1,5 +1,5 @@
 //hooks
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 
 //component
 import FollowingContent from "./FollowingContent"
@@ -43,9 +43,7 @@ function FollowingPopUp( { handleClose,isFollowing, getFollowing, getFollower, u
         return following1
     }
 
-    const following = followings()
-
-    console.log("following: ", following)
+    const following =  useMemo(() => followings(), [userData])
 
     return (
         <div className="fixed w-screen h-screen top-0 left-0 bottom-0 right-0 bg-[rgba(35,35,35,0.16)] bg-opacity-90 flex justify-center items-center drop-shadow-2xl shadow-2xl z-50">

@@ -1,5 +1,5 @@
 //hooks
-import { useEffect, useState } from "react"
+import { useEffect, useState,memo } from "react"
 import { useUserPackageHook } from "../redux/hooks"
 
 // icons/image
@@ -103,4 +103,4 @@ function Posts({ userData, isUser }) {
     )
 }
 
-export default Posts
+export default memo (Posts)
